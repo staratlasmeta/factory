@@ -1,0 +1,19 @@
+{
+  "name": "@staratlas/factory",
+  "version": "0.0.1",
+  "description": "Star Atlas Factory for constructing Transactions targeting Solana on-chain programs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/staratlasmeta/factory.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/staratlasmeta/factory/issues"
+  },
+  "homepage": "https://github.com/staratlasmeta/factory#readme"
+}
