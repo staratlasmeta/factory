@@ -22,16 +22,16 @@ export async function getPlayerFactionAccount(
  */
 export async function enlistPlayer(
   factionID: number,
-  payerKey: PublicKey = null,
+  playerKey: PublicKey = null,
   enlistInfoKey: PublicKey = null,
   programId: PublicKey = null,
-) {
-  const derivedAddressData = await getPlayerFactionAccount(payerKey, programId);
+): Promise<Transaction> {
+  const derivedAddressData = await getPlayerFactionAccount(playerKey, programId);
 
   const systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
   // Create Associated Player Faction Account
   const instruction = new TransactionInstruction({
-    keys: [{ pubkey: payerKey, isSigner: true, isWritable: true },
+    keys: [{ pubkey: playerKey, isSigner: true, isWritable: true },
       { pubkey: derivedAddressData[0], isSigner: false, isWritable: true },
       { pubkey: enlistInfoKey, isSigner: false, isWritable: true },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
