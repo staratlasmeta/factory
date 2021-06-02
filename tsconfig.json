@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./lib",
+    "outDir": "./build",
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
