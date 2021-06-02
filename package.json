@@ -18,7 +18,7 @@
     "start": "tsc --watch",
     "clean": "rm -rf lib",
     "lint": "eslint src",
-    "test": "jest"
+    "test": "jest --detectOpenHandles --no-cache --silent"
   },
   "dependencies": {
     "@solana/web3.js": "^1.15.0"
