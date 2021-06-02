@@ -1,0 +1,25 @@
+name: Star Atlas Factory Health Checks
+
+on:
+  pull_request:
+    branches: [ main, stable ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 14.16.1 ]
+
+    steps:
+    - name: Install dependencies
+      run: npm ci
+    - name: Run build
+      run: npm run build
+    - name: Run linter
+      run: npm run lint
+    - name: Run tests
+      run: npm run test
+    - name: Check the dependencies of all packages for vulnerabilities
+      run: npm audit --audit-level=critical
