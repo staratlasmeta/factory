@@ -20,7 +20,7 @@ export async function getPlayerFactionAccount(
 /**
  * Enlist player to faction
  */
-export async function enlistPlayer(
+export async function enlistToFaction(
   factionID: number,
   playerKey: PublicKey = null,
   enlistInfoKey: PublicKey = null,
