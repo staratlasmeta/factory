@@ -7,9 +7,9 @@ const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
 
 /**
- * Get player faction account
+ * Get player faction PDA
  */
-export async function getPlayerFactionAccount(
+export async function getPlayerFactionPDA(
   playerPublicKey: PublicKey, programId: PublicKey,
 ): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddress([
@@ -19,9 +19,9 @@ export async function getPlayerFactionAccount(
 }
 
 /**
- * Get enlist info address
+ * Get enlist info PDA
  */
-async function getEnlistInfoAccount(programId: PublicKey): Promise<[PublicKey, number]> {
+async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddress([
     Buffer.from(ENLIST_INFO_SEED, 'utf8')
   ], programId);
@@ -35,15 +35,15 @@ export async function enlistToFaction(
   playerKey: PublicKey = null,
   programId: PublicKey = null,
 ): Promise<Transaction> {
-  const [playerFactionPDA] = await getPlayerFactionAccount(playerKey, programId);
-  const [enlistInfoKey] = await getEnlistInfoAccount(programId);
+  const [playerFactionPDA] = await getPlayerFactionPDA(playerKey, programId);
+  const [enlistInfoPDA] = await getEnlistInfoPDA(programId);
 
   const systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
   // Create Associated Player Faction Account
   const instruction = new TransactionInstruction({
     keys: [{ pubkey: playerKey, isSigner: true, isWritable: true },
       { pubkey: playerFactionPDA, isSigner: false, isWritable: true },
-      { pubkey: enlistInfoKey, isSigner: false, isWritable: true },
+      { pubkey: enlistInfoPDA, isSigner: false, isWritable: true },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: systemProgramPubKey, isSigner: false, isWritable: false }],
     programId,
