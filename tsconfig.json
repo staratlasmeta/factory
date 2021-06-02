@@ -6,7 +6,8 @@
     "declaration": true,
     "declarationMap": true,
     "resolveJsonModule": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "esModuleInterop": true,
   },
   "include": ["./src/**/*"],
   "exclude": ["./src/**/*.test.js", "node_modules", "**/node_modules"]
