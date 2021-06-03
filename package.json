@@ -2,7 +2,6 @@
   "name": "@staratlas/factory",
   "version": "0.0.2",
   "description": "Star Atlas Factory for constructing Transactions targeting Solana on-chain programs",
-  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/staratlasmeta/factory.git"
@@ -13,12 +12,16 @@
     "url": "https://github.com/staratlasmeta/factory/issues"
   },
   "homepage": "https://github.com/staratlasmeta/factory#readme",
+  "main": "dist/index.js",
+  "source": "src/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "start": "tsc --watch",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build",
     "lint": "eslint src",
-    "test": "jest --detectOpenHandles --no-cache --silent"
+    "test": "jest --detectOpenHandles --no-cache --silent",
+    "start": "tsc --watch"
   },
   "dependencies": {
     "@solana/web3.js": "^1.15.0"
@@ -36,6 +39,6 @@
     "typescript": "^4.3.2"
   },
   "files": [
-    "lib"
+    "dist"
   ]
 }
