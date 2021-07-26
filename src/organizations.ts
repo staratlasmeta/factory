@@ -5,7 +5,7 @@ import {
   Transaction,
   TransactionInstruction,
   Keypair,
-  Connection
+  Connection,
 } from '@solana/web3.js';
 import { longToByteArray, stringToByteArray } from './util';
 import { getPlayerFactionPDA } from './factions';
@@ -55,6 +55,20 @@ export async function getPlayerMemberAccount(
     Buffer.from(JOIN_ORG_PREFIX, 'utf8'), 
     Buffer.from(name.padEnd(32, ' '), 'utf8')
   ], organizationProgramId);
+}
+
+/**
+ * Get player organization owner
+ */
+export async function getOrganizationOwner(
+  name: string,
+  connection: Connection,
+  organizationProgramId: PublicKey
+) {
+  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  // TODO: deserialize here
+  let info = await connection.getAccountInfo(playerOrgPda, "recent");
+  return new PublicKey(info.data.slice(81, 113));
 }
 
 /**
@@ -133,6 +147,59 @@ export async function initPlayerOrgInfo(
       programId: organizationProgramId,
       data: Buffer.from([0, ...longToByteArray(factionID), ...nameByteArray, 
             ...longToByteArray(maxPlayers), ...longToByteArray(taxRate), isPrivateNum])
+  });
+
+  const transaction = new Transaction().add(instruction);
+
+  return transaction;
+}
+
+/**
+ * Join a player organization
+ * 
+ * name: name of organization 
+ * factionID: factionID of organization 
+ * playerKey: player to join organization
+ * ownerKey: owner of organization - if set can create player's member account
+ */
+export async function joinPlayerOrganization(
+   name: string,
+   factionID: number,
+   playerKey: PublicKey,
+   ownerKey: PublicKey,
+   playerIsSigned: boolean,
+   ownerIsSigned: boolean,
+   connection: Connection,
+   organizationProgramId: PublicKey,
+   factionEnlstmentProgramId: PublicKey,
+) {
+
+  // Player faction account needed to confirm the player is in a specific faction
+  let playerFactionPda = await getPlayerFactionPDA(playerKey, factionEnlstmentProgramId);
+  
+  // Get name byte array and org/member pdas
+  let nameByteArray = getOrgNameBytes(name);
+  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  let [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
+  
+  // Get owner from on chain account
+  let ownerPubkey = await getOrganizationOwner(name, connection, organizationProgramId);
+  if (ownerPubkey.toBase58() != ownerKey.toBase58()) {
+    throw "Invalid Organization Owner" 
+  }
+
+  // Join Player Organization
+  let systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
+  const instruction = new TransactionInstruction({
+      keys: [{pubkey: playerKey, isSigner: playerIsSigned, isWritable: true},
+             {pubkey: playerFactionPda, isSigner: false, isWritable: true},
+             {pubkey: playerOrgPda, isSigner: false, isWritable: true},
+             {pubkey: playerMemberPda, isSigner: false, isWritable: true},
+             {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: true},
+             {pubkey: systemProgramPubKey, isSigner: false, isWritable: true},
+             {pubkey: ownerPubkey, isSigner: ownerIsSigned, isWritable: true}],
+      programId: organizationProgramId,
+      data: Buffer.from([2, ...longToByteArray(factionID), ...nameByteArray])
   });
 
   const transaction = new Transaction().add(instruction);
