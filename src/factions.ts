@@ -6,6 +6,12 @@ import { longToByteArray } from './util';
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
 
+export enum FactionType {
+  MUD = 0,
+  ONI = 1,
+  Ustur = 2,
+}
+
 /**
  * Get player faction PDA
  */
@@ -33,7 +39,7 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
  * Enlist player to faction
  */
 export async function enlistToFaction(
-  factionID: number,
+  factionID: FactionType,
   playerKey: PublicKey = null,
   programId: PublicKey = null,
 ): Promise<Transaction> {
