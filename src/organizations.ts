@@ -11,10 +11,8 @@ import { longToByteArray, stringToByteArray } from './util';
 import { getPlayerFactionPDA } from './factions';
 
 const MAX_ORG_NAME_LENGTH = 32;
-const ENLIST_INFO_SEED = "ENLIST_INFO";
-const FACTION_PREFIX = "FACTION_ENLISTMENT";
-const ORG_NAME_PREFIX = "ORG";
-const JOIN_ORG_PREFIX = "JOIN";
+const ORG_NAME_PREFIX = 'ORG';
+const JOIN_ORG_PREFIX = 'JOIN';
 
 /**
  * Convert organization name string to byte array
@@ -23,8 +21,8 @@ export function getOrgNameBytes(
   name: string
 ): any[] {
   if (name.length > MAX_ORG_NAME_LENGTH) {
-    console.log("Unable to create player org, length greater than", MAX_ORG_NAME_LENGTH);
-    throw "Unable to get org name bytes";
+    console.log('Unable to create player org, length greater than', MAX_ORG_NAME_LENGTH);
+    throw 'Unable to get org name bytes';
   }
   return stringToByteArray(name, MAX_ORG_NAME_LENGTH);
 }
@@ -65,8 +63,8 @@ export async function getOrganizationOwner(
   connection: Connection,
   organizationProgramId: PublicKey
 ): Promise<PublicKey> {
-  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
-  let info = await connection.getAccountInfo(playerOrgPda, "recent");
+  const [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  const info = await connection.getAccountInfo(playerOrgPda, 'recent');
   // TODO: deserialize here
   return new PublicKey(info.data.slice(81, 113));
 }
@@ -81,8 +79,8 @@ export async function initPlayerOrgInfo(
 ): Promise<Transaction> {
 
   // TODO: from pda - call instruction on program
-  let playerOrgInfoAccount = new Keypair();
-  console.log('Creating playerOrgInfoAccount with address ', playerOrgInfoAccount.publicKey.toBase58());
+  const playerOrgInfoAccount = new Keypair();
+  console.log('Creating playerOrgInfoAccount with address', playerOrgInfoAccount.publicKey.toBase58());
 
   // Get rent exempt amount of lamports for 3 u64 values
   let space = 3 * 8;
@@ -128,12 +126,12 @@ export async function initPlayerOrgInfo(
 ): Promise<Transaction> {
 
   // Player faction account needed to confirm the player is in a specific faction
-  let [playerFactionPda] = await getPlayerFactionPDA(payerKey, factionEnlstmentProgramId);
+  const [playerFactionPda] = await getPlayerFactionPDA(payerKey, factionEnlstmentProgramId);
 
   // Get name byte array and org pda
-  let nameByteArray = getOrgNameBytes(name);
-  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
-  let isPrivateNum = isPrivate ? 1 : 0;
+  const nameByteArray = getOrgNameBytes(name);
+  const [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  const isPrivateNum = isPrivate ? 1 : 0;
 
   // Create Player Organization
   let systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
@@ -171,8 +169,8 @@ export async function approvePlayer(
 ) {
 
   // Get org/member pdas
-  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
-  let [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
+  const [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  const [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
 
   // Approve Player
   const instruction = new TransactionInstruction({
@@ -212,12 +210,12 @@ export async function joinPlayerOrganization(
 ): Promise<Transaction> {
 
   // Player faction account needed to confirm the player is in a specific faction
-  let [playerFactionPda] = await getPlayerFactionPDA(playerKey, factionEnlstmentProgramId);
+  const [playerFactionPda] = await getPlayerFactionPDA(playerKey, factionEnlstmentProgramId);
   
   // Get name byte array and org/member pdas
-  let nameByteArray = getOrgNameBytes(name);
-  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
-  let [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
+  const nameByteArray = getOrgNameBytes(name);
+  const [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  const [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
   
   // Get owner from on chain account
   let ownerPubkey = await getOrganizationOwner(name, connection, organizationProgramId);
@@ -263,12 +261,12 @@ export async function leaveOrganization(
 ): Promise<Transaction> {
 
   // Get name byte array and org/member pdas
-  let nameByteArray = getOrgNameBytes(name);
-  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
-  let [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
+  const nameByteArray = getOrgNameBytes(name);
+  const [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  const [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
 
   // Get owner from on chain account
-  let ownerPubkey = await getOrganizationOwner(name, connection, organizationProgramId);
+  const ownerPubkey = await getOrganizationOwner(name, connection, organizationProgramId);
 
   // Leave Organization
   const instruction = new TransactionInstruction({
