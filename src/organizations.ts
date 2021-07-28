@@ -160,13 +160,16 @@ export async function initPlayerOrgInfo(
  * name: name of organization 
  * factionID: factionID of organization 
  * playerKey: player to join organization
- * ownerKey: owner of organization - if set can create player's member account
+ * playerIsSigned: if player joins themselves, player needs to sign 
+ * ownerIsSigned: if owner joins a player, owner needs to sign 
+ * connection: Solana Connection
+ * organizationProgramId: program Id for organizations
+ * factionEnlistmentProgramId: program Id for faction enlistment
  */
 export async function joinPlayerOrganization(
    name: string,
    factionID: number,
    playerKey: PublicKey,
-   ownerKey: PublicKey,
    playerIsSigned: boolean,
    ownerIsSigned: boolean,
    connection: Connection,
@@ -175,7 +178,7 @@ export async function joinPlayerOrganization(
 ) {
 
   // Player faction account needed to confirm the player is in a specific faction
-  let playerFactionPda = await getPlayerFactionPDA(playerKey, factionEnlstmentProgramId);
+  let [playerFactionPda] = await getPlayerFactionPDA(playerKey, factionEnlstmentProgramId);
   
   // Get name byte array and org/member pdas
   let nameByteArray = getOrgNameBytes(name);
@@ -184,9 +187,6 @@ export async function joinPlayerOrganization(
   
   // Get owner from on chain account
   let ownerPubkey = await getOrganizationOwner(name, connection, organizationProgramId);
-  if (ownerPubkey.toBase58() != ownerKey.toBase58()) {
-    throw "Invalid Organization Owner" 
-  }
 
   // Join Player Organization
   let systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
