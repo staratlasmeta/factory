@@ -83,7 +83,7 @@ export async function initOrganizationInfo(
   console.log('Creating playerOrgInfoAccount with address', playerOrgInfoAccount.publicKey.toBase58());
 
   // Get rent exempt amount of lamports for 3 u64 values
-  let space = 3 * 8;
+  const space = 3 * 8;
   const lamports = await connection.getMinimumBalanceForRentExemption(space);
 
   // Create playerOrgInfoAccount
@@ -134,14 +134,13 @@ export async function initOrganizationInfo(
   const isPrivateNum = isPrivate ? 1 : 0;
 
   // Create Player Organization
-  let systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
   const instruction = new TransactionInstruction({
       keys: [{pubkey: payerKey, isSigner: true, isWritable: true},
              {pubkey: playerFactionPda, isSigner: false, isWritable: false},
              {pubkey: playerOrgPda, isSigner: false, isWritable: true},
              {pubkey: orgInfoKey, isSigner: false, isWritable: true},
              {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
-             {pubkey: systemProgramPubKey, isSigner: false, isWritable: false}],
+             {pubkey: SystemProgram.programId, isSigner: false, isWritable: false}],
       programId: organizationProgramId,
       data: Buffer.from([0, ...longToByteArray(factionID), ...nameByteArray, 
             ...longToByteArray(maxPlayers), ...longToByteArray(taxRate), isPrivateNum])
@@ -218,17 +217,16 @@ export async function joinOrganization(
   const [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
   
   // Get owner from on chain account
-  let ownerPubkey = await getOrganizationOwner(name, connection, organizationProgramId);
+  const ownerPubkey = await getOrganizationOwner(name, connection, organizationProgramId);
 
   // Join Player Organization
-  let systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
   const instruction = new TransactionInstruction({
       keys: [{pubkey: playerKey, isSigner: playerIsSigned, isWritable: true},
              {pubkey: playerFactionPda, isSigner: false, isWritable: true},
              {pubkey: playerOrgPda, isSigner: false, isWritable: true},
              {pubkey: playerMemberPda, isSigner: false, isWritable: true},
              {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: true},
-             {pubkey: systemProgramPubKey, isSigner: false, isWritable: true},
+             {pubkey: SystemProgram.programId, isSigner: false, isWritable: true},
              {pubkey: ownerPubkey, isSigner: ownerIsSigned, isWritable: true}],
       programId: organizationProgramId,
       data: Buffer.from([2, ...longToByteArray(factionID), ...nameByteArray])
