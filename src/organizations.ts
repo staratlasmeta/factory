@@ -72,7 +72,7 @@ export async function getOrganizationOwner(
 /**
  * Initialize player organization info account
  */
-export async function initPlayerOrgInfo(
+export async function initOrganizationInfo(
    connection: Connection,
    playerKey: PublicKey,
    organizationProgramId: PublicKey
@@ -113,7 +113,7 @@ export async function initPlayerOrgInfo(
  * organizationProgramId: program Id for organizations
  * factionEnlistmentProgramId: program Id for faction enlistment
  */
- export async function createPlayerOrganization(
+ export async function createOrganization(
    name: string,
    factionID: number,
    maxPlayers: number,
@@ -198,7 +198,7 @@ export async function approvePlayer(
  * organizationProgramId: program Id for organizations
  * factionEnlistmentProgramId: program Id for faction enlistment
  */
-export async function joinPlayerOrganization(
+export async function joinOrganization(
   name: string,
   factionID: number,
   playerKey: PublicKey,
