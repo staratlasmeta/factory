@@ -64,10 +64,10 @@ export async function getOrganizationOwner(
   name: string,
   connection: Connection,
   organizationProgramId: PublicKey
-) {
+): Promise<PublicKey> {
   let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
-  // TODO: deserialize here
   let info = await connection.getAccountInfo(playerOrgPda, "recent");
+  // TODO: deserialize here
   return new PublicKey(info.data.slice(81, 113));
 }
 
@@ -151,6 +151,40 @@ export async function initPlayerOrgInfo(
 
   const transaction = new Transaction().add(instruction);
 
+  return transaction;
+}
+
+/**
+ * Approve a player to join an organization
+ * (for private orgs only)
+ * 
+ * name: name of organization 
+ * ownerKey: owner of organization
+ * playerKey: player to approve
+ * organizationProgramId: program Id for organizations
+ */
+export async function approvePlayer(
+  name: string,
+  ownerKey: PublicKey,
+  playerKey: PublicKey,
+  organizationProgramId: PublicKey,
+) {
+
+  // Get org/member pdas
+  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  let [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
+
+  // Approve Player
+  const instruction = new TransactionInstruction({
+      keys: [{pubkey: ownerKey, isSigner: true, isWritable: true},
+             {pubkey: playerOrgPda, isSigner: false, isWritable: true},
+             {pubkey: playerMemberPda, isSigner: false, isWritable: true}],
+      programId: organizationProgramId,
+      data: Buffer.from([1])
+  });
+
+  const transaction = new Transaction().add(instruction);
+  
   return transaction;
 }
 
