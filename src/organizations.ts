@@ -167,15 +167,15 @@ export async function initPlayerOrgInfo(
  * factionEnlistmentProgramId: program Id for faction enlistment
  */
 export async function joinPlayerOrganization(
-   name: string,
-   factionID: number,
-   playerKey: PublicKey,
-   playerIsSigned: boolean,
-   ownerIsSigned: boolean,
-   connection: Connection,
-   organizationProgramId: PublicKey,
-   factionEnlstmentProgramId: PublicKey,
-) {
+  name: string,
+  factionID: number,
+  playerKey: PublicKey,
+  playerIsSigned: boolean,
+  ownerIsSigned: boolean,
+  connection: Connection,
+  organizationProgramId: PublicKey,
+  factionEnlstmentProgramId: PublicKey,
+): Promise<Transaction> {
 
   // Player faction account needed to confirm the player is in a specific faction
   let [playerFactionPda] = await getPlayerFactionPDA(playerKey, factionEnlstmentProgramId);
@@ -202,6 +202,49 @@ export async function joinPlayerOrganization(
       data: Buffer.from([2, ...longToByteArray(factionID), ...nameByteArray])
   });
 
+  const transaction = new Transaction().add(instruction);
+
+  return transaction;
+}
+
+/**
+ * Leave an organization
+ * 
+ * name: name of organization 
+ * factionID: factionID of organization 
+ * playerKey: player to join organization
+ * playerIsSigned: if player joins themselves, player needs to sign 
+ * ownerIsSigned: if owner joins a player, owner needs to sign 
+ * connection: Solana Connection
+ * organizationProgramId: program Id for organizations
+ */
+export async function leaveOrganization(
+  name: string,
+  factionID: number,
+  playerKey: PublicKey,
+  playerIsSigned: boolean,
+  ownerIsSigned: boolean,
+  connection: Connection,
+  organizationProgramId: PublicKey
+): Promise<Transaction> {
+
+  // Get name byte array and org/member pdas
+  let nameByteArray = getOrgNameBytes(name);
+  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  let [playerMemberPda] = await getPlayerMemberAccount(name, playerKey, organizationProgramId);
+
+  // Get owner from on chain account
+  let ownerPubkey = await getOrganizationOwner(name, connection, organizationProgramId);
+
+  // Leave Organization
+  const instruction = new TransactionInstruction({
+      keys: [{pubkey: playerKey, isSigner: playerIsSigned, isWritable: true},
+             {pubkey: ownerPubkey, isSigner: ownerIsSigned, isWritable: true},
+             {pubkey: playerOrgPda, isSigner: false, isWritable: true},
+             {pubkey: playerMemberPda, isSigner: false, isWritable: true}],
+      programId: organizationProgramId,
+      data: Buffer.from([3, ...longToByteArray(factionID), ...nameByteArray])
+  });
   const transaction = new Transaction().add(instruction);
 
   return transaction;
