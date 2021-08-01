@@ -7,6 +7,7 @@ const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
 
 export enum FactionType {
+  Unenlisted = -1,
   MUD = 0,
   ONI = 1,
   Ustur = 2,
