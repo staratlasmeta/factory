@@ -1,5 +1,5 @@
 import {
-  PublicKey, 
+  PublicKey,
   SYSVAR_RENT_PUBKEY,
   SystemProgram,
   Transaction,
@@ -7,7 +7,11 @@ import {
   Keypair,
   Connection,
 } from '@solana/web3.js';
-import { longToByteArray, stringToByteArray } from './util';
+import {
+  longToByteArray,
+  stringToByteArray,
+  sendAndConfirmTransaction
+} from './util';
 import { getPlayerFactionPDA } from './factions';
 
 const MAX_ORG_NAME_LENGTH = 32;
@@ -82,45 +86,48 @@ export async function getOrganizationOwner(
   return new PublicKey(info.data.slice(81, 113));
 }
 
+
 /**
- * Initialize player organization info account
+ * Create initialize player organization info account instruction
  */
-export async function initOrganizationInfo(
+export async function initOrganizationInfoInstruction(
    payerKey: PublicKey,
    organizationProgramId: PublicKey
-): Promise<Transaction> {
+): Promise<TransactionInstruction> {
 
   const [playerOrgInfoPda] = await getOrgInfoAccount(organizationProgramId);
-  console.log('Creating playerOrgInfoPda with address', playerOrgInfoPda.toBase58());
-
-  // Create Player Organization Info Account
-  const instruction = new TransactionInstruction({
+  return new TransactionInstruction({
     keys: [{pubkey: payerKey, isSigner: true, isWritable: true},
            {pubkey: playerOrgInfoPda, isSigner: false, isWritable: true},
            {pubkey: SystemProgram.programId, isSigner: false, isWritable: false}],
     programId: organizationProgramId,
     data: Buffer.from([0])
   });
-
-  const transaction = new Transaction().add(instruction);
-
-  return transaction;
 }
 
 /**
- * Create a player organization
- * 
- * name: name of organization
- * factionID: faction this organization belongs to 
- * maxPlayers: max amount of approved players
- * taxRate: tax rate for organization
- * isPrivate: if set, requires owner to approve all players
- * payerKey: account to create organization from - signer + pays fees
- * orgInfoKey: account for organization info            ******** TODO: from PDA ********
- * organizationProgramId: program Id for organizations
- * factionEnlistmentProgramId: program Id for faction enlistment
+ * Initialize player organization info account
  */
- export async function createOrganization(
+ export async function initOrganizationInfo(
+  connection: Connection,
+  payerKeypair: Keypair,
+  organizationProgramId: PublicKey
+): Promise<string> {
+
+  const instruction = await initOrganizationInfoInstruction(payerKeypair.publicKey, organizationProgramId);
+  const transaction = new Transaction().add(instruction);
+  let txResult = await sendAndConfirmTransaction(
+    connection,
+    transaction,
+    payerKeypair
+  );
+  return txResult;
+}
+
+/**
+ * Create a player organization instruction
+ */
+ export async function createOrganizationInstruction(
    name: string,
    factionID: number,
    maxPlayers: number,
@@ -129,7 +136,7 @@ export async function initOrganizationInfo(
    payerKey: PublicKey,
    organizationProgramId: PublicKey,
    factionEnlstmentProgramId: PublicKey
-): Promise<Transaction> {
+): Promise<TransactionInstruction> {
 
   // Player faction account needed to confirm the player is in a specific faction
   const [playerFactionPda] = await getPlayerFactionPDA(payerKey, factionEnlstmentProgramId);
@@ -141,7 +148,7 @@ export async function initOrganizationInfo(
   const [playerOrgInfoPda] = await getOrgInfoAccount(organizationProgramId);
 
   // Create Player Organization
-  const instruction = new TransactionInstruction({
+  return new TransactionInstruction({
       keys: [{pubkey: payerKey, isSigner: true, isWritable: true},
              {pubkey: playerFactionPda, isSigner: false, isWritable: false},
              {pubkey: playerOrgPda, isSigner: false, isWritable: true},
@@ -152,10 +159,50 @@ export async function initOrganizationInfo(
       data: Buffer.from([1, ...longToByteArray(factionID), ...nameByteArray, 
             ...longToByteArray(maxPlayers), ...longToByteArray(taxRate), isPrivateNum])
   });
+}
 
+/**
+ * Create a player organization
+ * 
+ * Initialize player organization info account
+ * name: name of organization
+ * factionID: faction this organization belongs to 
+ * maxPlayers: max amount of approved players
+ * taxRate: tax rate for organization
+ * isPrivate: if set, requires owner to approve all players
+ * payerKey: account to create organization from - signer + pays fees
+ * organizationProgramId: program Id for organizations
+ * factionEnlistmentProgramId: program Id for faction enlistment
+ */
+ export async function createOrganization(
+  connection: Connection,
+  name: string,
+  factionID: number,
+  maxPlayers: number,
+  taxRate: number,
+  isPrivate: boolean,
+  payerKeypair: Keypair,
+  organizationProgramId: PublicKey,
+  factionEnlstmentProgramId: PublicKey
+): Promise<string> {
+
+  const instruction = await createOrganizationInstruction(
+    name,
+    factionID,
+    maxPlayers,
+    taxRate,
+    isPrivate,
+    payerKeypair.publicKey,
+    organizationProgramId,
+    factionEnlstmentProgramId
+  );
   const transaction = new Transaction().add(instruction);
-
-  return transaction;
+  let txResult = await sendAndConfirmTransaction(
+    connection,
+    transaction,
+    payerKeypair
+  );
+  return txResult;
 }
 
 /**
