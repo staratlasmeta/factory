@@ -1,7 +1,16 @@
 import {
-  PublicKey, SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction,
+  Connection,
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
+  Transaction,
+  TransactionInstruction,
 } from '@solana/web3.js';
-import { longToByteArray } from './util';
+import {
+  longToByteArray,
+  sendAndConfirmTransaction
+} from './util';
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
@@ -37,31 +46,47 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
 }
 
 /**
- * Enlist player to faction
+ * Create enlist player to faction transaction
  */
-export async function enlistToFaction(
+ export async function enlistToFactionInstruction(
   factionID: FactionType,
-  playerKey: PublicKey = null,
-  programId: PublicKey = null,
-): Promise<Transaction> {
+  playerKey: PublicKey,
+  programId: PublicKey,
+): Promise<TransactionInstruction> {
+
   const [playerFactionPDA] = await getPlayerFactionPDA(playerKey, programId);
   const [enlistInfoPDA] = await getEnlistInfoPDA(programId);
 
-  const systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
   // Create Associated Player Faction Account
-  const instruction = new TransactionInstruction({
+  return new TransactionInstruction({
     keys: [{ pubkey: playerKey, isSigner: true, isWritable: true },
       { pubkey: playerFactionPDA, isSigner: false, isWritable: true },
       { pubkey: enlistInfoPDA, isSigner: false, isWritable: true },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-      { pubkey: systemProgramPubKey, isSigner: false, isWritable: false }],
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }],
     programId,
     data: Buffer.from([1, ...longToByteArray(factionID)]),
   });
+}
 
+/**
+ * Enlist player to faction
+ */
+ export async function enlistToFaction(
+  connection: Connection,
+  factionID: FactionType,
+  playerKeypair: Keypair,
+  programId: PublicKey,
+): Promise<string> {
+
+  const instruction = await enlistToFactionInstruction(factionID, playerKeypair.publicKey, programId);
   const transaction = new Transaction().add(instruction);
-
-  return transaction;
+  let txResult = await sendAndConfirmTransaction(
+    connection,
+    transaction,
+    playerKeypair
+  );
+  return txResult;
 }
 
 /**
