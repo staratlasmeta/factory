@@ -7,7 +7,7 @@ export async function sendAndConfirmTransaction(
   transaction: Transaction,
   ...signers: Keypair[]
 ): Promise<string> {
-  let signature = "";
+  let signature = '';
   try {
       signature = await realSendAndConfirmTransaction(
           connection,

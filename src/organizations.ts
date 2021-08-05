@@ -116,7 +116,7 @@ export async function initOrganizationInfoInstruction(
 
   const instruction = await initOrganizationInfoInstruction(payerKeypair.publicKey, organizationProgramId);
   const transaction = new Transaction().add(instruction);
-  let txResult = await sendAndConfirmTransaction(
+  const txResult = await sendAndConfirmTransaction(
     connection,
     transaction,
     payerKeypair
@@ -197,7 +197,7 @@ export async function initOrganizationInfoInstruction(
     factionEnlstmentProgramId
   );
   const transaction = new Transaction().add(instruction);
-  let txResult = await sendAndConfirmTransaction(
+  const txResult = await sendAndConfirmTransaction(
     connection,
     transaction,
     payerKeypair
