@@ -11,6 +11,7 @@ import { longToByteArray, stringToByteArray } from './util';
 import { getPlayerFactionPDA } from './factions';
 
 const MAX_ORG_NAME_LENGTH = 32;
+const ORG_INFO_PREFIX = 'ORG_INFO';
 const ORG_NAME_PREFIX = 'ORG';
 const JOIN_ORG_PREFIX = 'JOIN';
 
@@ -25,6 +26,18 @@ export function getOrgNameBytes(
     throw 'Unable to get org name bytes';
   }
   return stringToByteArray(name, MAX_ORG_NAME_LENGTH);
+}
+
+/**
+ * Get the organization info account
+ */
+ export async function getOrgInfoAccount(
+  organizationProgramId: PublicKey
+): Promise<[PublicKey, number]> {
+  return await PublicKey.findProgramAddress([
+    Buffer.from(ORG_INFO_PREFIX, 'utf8'),
+    organizationProgramId.toBuffer(),
+  ], organizationProgramId);
 }
 
 /**
@@ -73,26 +86,20 @@ export async function getOrganizationOwner(
  * Initialize player organization info account
  */
 export async function initOrganizationInfo(
-   connection: Connection,
-   playerKey: PublicKey,
+   payerKey: PublicKey,
    organizationProgramId: PublicKey
 ): Promise<Transaction> {
 
-  // TODO: from pda - call instruction on program
-  const playerOrgInfoAccount = new Keypair();
-  console.log('Creating playerOrgInfoAccount with address', playerOrgInfoAccount.publicKey.toBase58());
+  const [playerOrgInfoPda] = await getOrgInfoAccount(organizationProgramId);
+  console.log('Creating playerOrgInfoPda with address', playerOrgInfoPda.toBase58());
 
-  // Get rent exempt amount of lamports for 3 u64 values
-  const space = 3 * 8;
-  const lamports = await connection.getMinimumBalanceForRentExemption(space);
-
-  // Create playerOrgInfoAccount
-  const instruction = SystemProgram.createAccount({
-    fromPubkey: playerKey,
-    newAccountPubkey: playerOrgInfoAccount.publicKey,
-    lamports,
-    space,
+  // Create Player Organization Info Account
+  const instruction = new TransactionInstruction({
+    keys: [{pubkey: payerKey, isSigner: true, isWritable: true},
+           {pubkey: playerOrgInfoPda, isSigner: false, isWritable: true},
+           {pubkey: SystemProgram.programId, isSigner: false, isWritable: false}],
     programId: organizationProgramId,
+    data: Buffer.from([0])
   });
 
   const transaction = new Transaction().add(instruction);
@@ -120,7 +127,6 @@ export async function initOrganizationInfo(
    taxRate: number,
    isPrivate: boolean,
    payerKey: PublicKey,
-   orgInfoKey: PublicKey,
    organizationProgramId: PublicKey,
    factionEnlstmentProgramId: PublicKey
 ): Promise<Transaction> {
@@ -128,21 +134,22 @@ export async function initOrganizationInfo(
   // Player faction account needed to confirm the player is in a specific faction
   const [playerFactionPda] = await getPlayerFactionPDA(payerKey, factionEnlstmentProgramId);
 
-  // Get name byte array and org pda
+  // Get name byte array and pdas
+  const isPrivateNum = isPrivate ? 1 : 0;
   const nameByteArray = getOrgNameBytes(name);
   const [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
-  const isPrivateNum = isPrivate ? 1 : 0;
+  const [playerOrgInfoPda] = await getOrgInfoAccount(organizationProgramId);
 
   // Create Player Organization
   const instruction = new TransactionInstruction({
       keys: [{pubkey: payerKey, isSigner: true, isWritable: true},
              {pubkey: playerFactionPda, isSigner: false, isWritable: false},
              {pubkey: playerOrgPda, isSigner: false, isWritable: true},
-             {pubkey: orgInfoKey, isSigner: false, isWritable: true},
+             {pubkey: playerOrgInfoPda, isSigner: false, isWritable: true},
              {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
              {pubkey: SystemProgram.programId, isSigner: false, isWritable: false}],
       programId: organizationProgramId,
-      data: Buffer.from([0, ...longToByteArray(factionID), ...nameByteArray, 
+      data: Buffer.from([1, ...longToByteArray(factionID), ...nameByteArray, 
             ...longToByteArray(maxPlayers), ...longToByteArray(taxRate), isPrivateNum])
   });
 
@@ -177,7 +184,7 @@ export async function approvePlayer(
              {pubkey: playerOrgPda, isSigner: false, isWritable: true},
              {pubkey: playerMemberPda, isSigner: false, isWritable: true}],
       programId: organizationProgramId,
-      data: Buffer.from([1])
+      data: Buffer.from([2])
   });
 
   const transaction = new Transaction().add(instruction);
@@ -229,7 +236,7 @@ export async function joinOrganization(
              {pubkey: SystemProgram.programId, isSigner: false, isWritable: true},
              {pubkey: ownerPubkey, isSigner: ownerIsSigned, isWritable: true}],
       programId: organizationProgramId,
-      data: Buffer.from([2, ...longToByteArray(factionID), ...nameByteArray])
+      data: Buffer.from([3, ...longToByteArray(factionID), ...nameByteArray])
   });
 
   const transaction = new Transaction().add(instruction);
@@ -273,7 +280,7 @@ export async function leaveOrganization(
              {pubkey: playerOrgPda, isSigner: false, isWritable: true},
              {pubkey: playerMemberPda, isSigner: false, isWritable: true}],
       programId: organizationProgramId,
-      data: Buffer.from([3, ...longToByteArray(factionID), ...nameByteArray])
+      data: Buffer.from([4, ...longToByteArray(factionID), ...nameByteArray])
   });
   const transaction = new Transaction().add(instruction);
 
