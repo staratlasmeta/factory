@@ -13,6 +13,7 @@ import {
   sendAndConfirmTransaction
 } from './util';
 import { getPlayerFactionPDA } from './factions';
+import { deserializeUnchecked } from 'borsh';
 
 const MAX_ORG_NAME_LENGTH = 32;
 const ORG_INFO_PREFIX = 'ORG_INFO';
@@ -443,4 +444,221 @@ export async function leaveOrganization(
     signerKeypair
   );
   return txResult;
+}
+
+export class PlayerOrgInfo {
+  mudOrgCount: number;
+  oniOrgCount: number;
+  usturOrgCount: number;
+
+  constructor(args: {
+    mudOrgCount: number;
+    oniOrgCount: number;
+    usturOrgCount: number;
+  }) {
+    this.mudOrgCount = args.mudOrgCount;
+    this.oniOrgCount = args.oniOrgCount;
+    this.usturOrgCount = args.usturOrgCount;
+  }
+}
+
+export class PlayerOrg {
+  orgId: number;
+  factionId: number;
+  taxRate: number;
+  maxPlayers: number;
+  playerCount: number;
+  approvedPlayerCount: number;
+  name: Buffer;
+  isPrivate: boolean;
+  ownerPubkey: PublicKey;
+
+  constructor(args: {
+    orgId: number;
+    factionId: number;
+    taxRate: number;
+    maxPlayers: number;
+    playerCount: number;
+    approvedPlayerCount: number;
+    name: Buffer;
+    isPrivate: boolean;
+    ownerPubkey: PublicKey;
+  }) {
+    this.orgId = args.orgId;
+    this.factionId = args.factionId;
+    this.taxRate = args.taxRate;
+    this.maxPlayers = args.maxPlayers;
+    this.playerCount = args.playerCount;
+    this.approvedPlayerCount = args.approvedPlayerCount;
+    this.name = args.name;
+    this.isPrivate = args.isPrivate;
+    this.ownerPubkey = args.ownerPubkey;
+  }
+}
+
+export class PlayerOrgMember {
+  memberIdPrimaryKey: number;
+  factionId: number;
+  orgPubkey: PublicKey;
+  isOwner: boolean;
+  ownerApproved: boolean;
+  memberApproved: boolean;
+  returnRentToOwner: boolean;
+
+  constructor(args: {
+    memberIdPrimaryKey: number;
+    factionId: number;
+    orgPubkey: PublicKey;
+    isOwner: boolean;
+    ownerApproved: boolean;
+    memberApproved: boolean;
+    returnRentToOwner: boolean;
+  }) {
+    this.memberIdPrimaryKey = args.memberIdPrimaryKey;
+    this.factionId = args.factionId;
+    this.orgPubkey = args.orgPubkey;
+    this.isOwner = args.isOwner;
+    this.ownerApproved = args.ownerApproved;
+    this.memberApproved = args.memberApproved;
+    this.returnRentToOwner = args.returnRentToOwner;
+  }
+}
+
+export class PlayerFaction {
+  playerId: number;
+  factionId: number;
+
+  constructor(args: {
+    playerId: number;
+    factionId: number;
+  }) {
+    this.playerId = args.playerId;
+    this.factionId = args.factionId;
+  }
+}
+
+export const SCHEMA = new Map<any, any>([
+  [
+    PlayerOrgInfo,
+    {
+      kind: 'struct',
+      fields: [
+        ['mudOrgCount', 'u64'],
+        ['oniOrgCount', 'u64'],
+        ['usturOrgCount', 'u64'],
+      ],
+    },
+  ],
+  [
+    PlayerOrg,
+    {
+      kind: 'struct',
+      fields: [
+        ['orgId', 'u64'],
+        ['factionId', 'u64'],
+        ['taxRate', 'u64'],
+        ['maxPlayers', 'u64'],
+        ['playerCount', 'u64'],
+        ['approvedPlayerCount', 'u64'],
+        ['name', [32]],
+        ['isPrivate', 'u8'],  //bool
+        ['ownerPubkey', 'pubkey'],
+      ],
+    },
+  ],
+  [
+    PlayerOrgMember,
+    {
+      kind: 'struct',
+      fields: [
+        ['memberIdPrimaryKey', 'u64'],
+        ['factionId', 'u64'],
+        ['orgPubkey', 'pubkey'],
+        ['isOwner', 'u8'],
+        ['ownerApproved', 'u8'],
+        ['memberApproved', 'u8'],
+        ['returnRentToOwner', 'u8'],
+      ],
+    },
+  ],
+  [
+    PlayerFaction,
+    {
+      kind: 'struct',
+      fields: [
+        ['playerId', 'u64'],
+        ['factionId', 'u64'],
+      ],
+    },
+  ],
+]);
+
+/**
+ * Get all player organizations
+ */
+ export async function getAllPlayerOrgs(
+  connection: Connection,
+  organizationProgramId: PublicKey
+ ) {
+
+  let players = await connection.getProgramAccounts(organizationProgramId);
+  for (var i=0; i < players.length; i++) {
+
+    // TODO: filter accounts based on size before query
+    if (players[i].account.data.length == 113) {
+      
+      const playerOrgData: PlayerOrg = deserializeUnchecked(
+        SCHEMA,
+        PlayerOrg,
+        players[i].account.data,
+      ) as PlayerOrg;
+
+      console.log(playerOrgData);
+    }
+  }
+}
+
+/**
+* Get all player members of an organization
+*/
+export async function getAllPlayerMembers(
+  connection: Connection,
+  organizationProgramId: PublicKey
+): Promise<void> {
+
+  let players = await connection.getProgramAccounts(organizationProgramId);
+  for (var i=0; i < players.length; i++) {
+    if (players[i].account.data.length == 52) {
+      const playerMemberData: PlayerOrgMember = deserializeUnchecked(
+        SCHEMA,
+        PlayerOrgMember,
+        players[i].account.data,
+      ) as PlayerOrgMember;
+
+      console.log(playerMemberData);
+    }
+  }
+}
+
+/**
+* Get player organization
+*
+*  TODO: clean up repeated code here
+*/
+export async function getPlayerOrg(
+  name: string,
+  connection: Connection,
+  organizationProgramId: PublicKey
+): Promise<void> {
+
+  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+
+  let info = await connection.getAccountInfo(playerOrgPda, 'recent');
+  const playerOrgData: PlayerOrg = deserializeUnchecked(
+    SCHEMA,
+    PlayerOrg,
+    info.data,
+  ) as PlayerOrg;
+
+  console.log(playerOrgData);
 }
