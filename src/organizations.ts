@@ -9,6 +9,7 @@ import {
 } from '@solana/web3.js';
 import {
   longToByteArray,
+  byteArrayToString,
   stringToByteArray,
   sendAndConfirmTransaction
 } from './util';
@@ -446,6 +447,13 @@ export async function leaveOrganization(
   return txResult;
 }
 
+
+/**
+ * Organization Models
+ * 
+ * TODO: move to separate file
+ */
+
 export class PlayerOrgInfo {
   mudOrgCount: number;
   oniOrgCount: number;
@@ -561,7 +569,7 @@ export const SCHEMA = new Map<any, any>([
         ['playerCount', 'u64'],
         ['approvedPlayerCount', 'u64'],
         ['name', [32]],
-        ['isPrivate', 'u8'],  //bool
+        ['isPrivate', 'u8'],
         ['ownerPubkey', 'pubkey'],
       ],
     },
@@ -595,16 +603,18 @@ export const SCHEMA = new Map<any, any>([
 
 /**
  * Get all player organizations
+ *
+ * TODO: remove console logs
+ * TODO: filter accounts based on size before query
  */
- export async function getAllPlayerOrgs(
+export async function getAllPlayerOrgs(
   connection: Connection,
   organizationProgramId: PublicKey
- ) {
+) {
 
   let players = await connection.getProgramAccounts(organizationProgramId);
   for (var i=0; i < players.length; i++) {
 
-    // TODO: filter accounts based on size before query
     if (players[i].account.data.length == 113) {
       
       const playerOrgData: PlayerOrg = deserializeUnchecked(
@@ -613,13 +623,19 @@ export const SCHEMA = new Map<any, any>([
         players[i].account.data,
       ) as PlayerOrg;
 
-      console.log(playerOrgData);
+      console.log('Saved ' + playerOrgData.isPrivate + ' organization ' + byteArrayToString(Array.from(playerOrgData.name)) + 
+        ' has orgID:' + playerOrgData.orgId + ' for faction ID ' +
+        playerOrgData.factionId + ' with address ' + players[i].pubkey.toBase58() + ' with a taxRate of ' +
+        playerOrgData.taxRate + '% and has ' + playerOrgData.approvedPlayerCount + ' approved out of ' + playerOrgData.maxPlayers + ' max players'
+      );
     }
   }
 }
 
 /**
 * Get all player members of an organization
+*
+*  TODO: remove console logs
 */
 export async function getAllPlayerMembers(
   connection: Connection,
@@ -635,7 +651,14 @@ export async function getAllPlayerMembers(
         players[i].account.data,
       ) as PlayerOrgMember;
 
-      console.log(playerMemberData);
+      console.log(players[i].pubkey.toBase58() + 
+        ' Player Member ID:' + playerMemberData.memberIdPrimaryKey + ' belongs to faction ID ' +
+        playerMemberData.factionId + ' for org: ' + playerMemberData.orgPubkey.toBase58()
+      );
+      console.log('    Is owner?', playerMemberData.isOwner);
+      console.log('    Owner approved?', playerMemberData.ownerApproved);
+      console.log('    Member approved?', playerMemberData.memberApproved);
+      console.log('    Return rent to owner?', playerMemberData.returnRentToOwner);
     }
   }
 }
@@ -643,7 +666,7 @@ export async function getAllPlayerMembers(
 /**
 * Get player organization
 *
-*  TODO: clean up repeated code here
+*  TODO: remove console logs
 */
 export async function getPlayerOrg(
   name: string,
@@ -660,5 +683,9 @@ export async function getPlayerOrg(
     info.data,
   ) as PlayerOrg;
 
-  console.log(playerOrgData);
+  console.log('Saved ' + playerOrgData.isPrivate + ' organization ' + byteArrayToString(Array.from(playerOrgData.name)) + 
+    ' has orgID:' + playerOrgData.orgId + ' for faction ID ' +
+    playerOrgData.factionId + ' with address ' + playerOrgPda.toBase58() + ' with a taxRate of ' +
+    playerOrgData.taxRate + '% and has ' + playerOrgData.approvedPlayerCount + ' approved out of ' + playerOrgData.maxPlayers + ' max players'
+  );
 }
