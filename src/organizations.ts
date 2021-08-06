@@ -612,20 +612,20 @@ export async function getAllPlayerOrgs(
   organizationProgramId: PublicKey
 ) {
 
-  let players = await connection.getProgramAccounts(organizationProgramId);
-  for (var i=0; i < players.length; i++) {
+  const orgs = await connection.getProgramAccounts(organizationProgramId);
+  for (let i=0; i < orgs.length; i++) {
 
-    if (players[i].account.data.length == 113) {
+    if (orgs[i].account.data.length == 113) {
       
       const playerOrgData: PlayerOrg = deserializeUnchecked(
         SCHEMA,
         PlayerOrg,
-        players[i].account.data,
+        orgs[i].account.data,
       ) as PlayerOrg;
 
       console.log('Saved ' + playerOrgData.isPrivate + ' organization ' + byteArrayToString(Array.from(playerOrgData.name)) + 
         ' has orgID:' + playerOrgData.orgId + ' for faction ID ' +
-        playerOrgData.factionId + ' with address ' + players[i].pubkey.toBase58() + ' with a taxRate of ' +
+        playerOrgData.factionId + ' with address ' + orgs[i].pubkey.toBase58() + ' with a taxRate of ' +
         playerOrgData.taxRate + '% and has ' + playerOrgData.approvedPlayerCount + ' approved out of ' + playerOrgData.maxPlayers + ' max players'
       );
     }
@@ -642,16 +642,16 @@ export async function getAllPlayerMembers(
   organizationProgramId: PublicKey
 ): Promise<void> {
 
-  let players = await connection.getProgramAccounts(organizationProgramId);
-  for (var i=0; i < players.length; i++) {
-    if (players[i].account.data.length == 52) {
+  const members = await connection.getProgramAccounts(organizationProgramId);
+  for (let i=0; i < members.length; i++) {
+    if (members[i].account.data.length == 52) {
       const playerMemberData: PlayerOrgMember = deserializeUnchecked(
         SCHEMA,
         PlayerOrgMember,
-        players[i].account.data,
+        members[i].account.data,
       ) as PlayerOrgMember;
 
-      console.log(players[i].pubkey.toBase58() + 
+      console.log(members[i].pubkey.toBase58() + 
         ' Player Member ID:' + playerMemberData.memberIdPrimaryKey + ' belongs to faction ID ' +
         playerMemberData.factionId + ' for org: ' + playerMemberData.orgPubkey.toBase58()
       );
@@ -674,9 +674,9 @@ export async function getPlayerOrg(
   organizationProgramId: PublicKey
 ): Promise<void> {
 
-  let [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
+  const [playerOrgPda] = await getOrganizationAccount(name, organizationProgramId);
 
-  let info = await connection.getAccountInfo(playerOrgPda, 'recent');
+  const info = await connection.getAccountInfo(playerOrgPda, 'recent');
   const playerOrgData: PlayerOrg = deserializeUnchecked(
     SCHEMA,
     PlayerOrg,

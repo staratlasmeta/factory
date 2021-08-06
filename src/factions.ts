@@ -81,7 +81,7 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
 
   const instruction = await enlistToFactionInstruction(factionID, playerKeypair.publicKey, programId);
   const transaction = new Transaction().add(instruction);
-  let txResult = await sendAndConfirmTransaction(
+  const txResult = await sendAndConfirmTransaction(
     connection,
     transaction,
     playerKeypair
