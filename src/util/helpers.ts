@@ -18,7 +18,7 @@ export function stringToByteArray(str: string, length: number): any[] {
   return byteArray;
 }
 
-export function byteArrayToLong(byteArray: number[]): number {
+export function byteArrayToLong(byteArray: Buffer): number {
   let value = 0;
   for (let i = byteArray.length - 1; i >= 0; i -= 1) {
     value = (value * 256) + byteArray[i];
