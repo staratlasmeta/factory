@@ -1,4 +1,5 @@
 import {
+  AccountInfo,
   Connection,
   Keypair,
   PublicKey,
@@ -8,6 +9,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import {
+  byteArrayToLong,
   longToByteArray,
   sendAndConfirmTransaction
 } from './util';
@@ -93,7 +95,9 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
  * Create enlist info account - saves faction player counts
  */
  export async function createEnlistInfoAccount(
-  playerKey: PublicKey = null,
+  connection: Connection,
+  payerKeypair: Keypair,
+  // playerKey: PublicKey = null,
   programId: PublicKey = null,
  ): Promise<Transaction> {
 
@@ -102,7 +106,7 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
 
   // Create Enlist Info Account
   const instruction = new TransactionInstruction({
-      keys: [{pubkey: playerKey, isSigner: true, isWritable: true},
+      keys: [{pubkey: payerKeypair.publicKey, isSigner: true, isWritable: true},
               {pubkey: enlistInfoPDA, isSigner: false, isWritable: true},
               {pubkey: systemProgramPubKey, isSigner: false, isWritable: false}],
       programId: programId,
@@ -110,6 +114,53 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
   });
 
   const transaction = new Transaction().add(instruction);
-  
+  const txResult = await sendAndConfirmTransaction(
+    connection,
+    transaction,
+    payerKeypair
+  );
+  //TODO: create function to send (ref lines 86:90)
   return transaction;
+}
+
+/**
+ * Get a player
+ */
+export async function getPlayer(
+  connection: Connection,
+  playerKey: PublicKey,
+  programID: PublicKey,
+): Promise<number[]> {
+  const [playerFactionPDA] = await getPlayerFactionPDA(playerKey, programID);
+
+  //TODO: error handling: check if no response
+  let info = await connection.getAccountInfo(playerFactionPDA);
+
+  //TODO: serialize/deserialize with Borsh
+  const playerID = byteArrayToLong(info.data.slice(0, 7));
+  const factionID = byteArrayToLong(info.data.slice(8, 15));
+
+  return [playerID, factionID]
+}
+
+
+/**
+ * Get all players
+ * 
+ * TODO: return: array of arrays containing playerID & factionID
+ * to be refactored to Borsh
+ */
+export async function getAllPlayers(
+  connection: Connection,
+  programID: PublicKey, // Faction enlistment program ID
+): Promise<string[]> {
+  let players = await connection.getProgramAccounts(programID);
+  let playerAccounts = []
+  for (var i=0; i < players.length; i++) {
+    if (players[i].account.data.length == 16) {
+      playerAccounts.push([players[i].pubkey.toBase58(), byteArrayToLong(players[i].account.data.slice(8,15))])
+    }
+  }
+
+  return playerAccounts
 }
