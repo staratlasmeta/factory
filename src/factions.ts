@@ -40,7 +40,9 @@ export async function getPlayerFactionPDA(
 /**
  * Get enlist info PDA
  */
-async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, number]> {
+export async function getEnlistInfoPDA(
+  programId: PublicKey
+): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddress([
     Buffer.from(ENLIST_INFO_SEED, 'utf8'),
     programId.toBuffer()
@@ -52,16 +54,17 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
  */
  export async function enlistToFactionInstruction(
   factionID: FactionType,
-  playerKey: PublicKey,
+  playerPublicKey: PublicKey,
   programId: PublicKey,
 ): Promise<TransactionInstruction> {
 
-  const [playerFactionPDA] = await getPlayerFactionPDA(playerKey, programId);
+  // console.log(playerKey.toBase58())
+  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
   const [enlistInfoPDA] = await getEnlistInfoPDA(programId);
 
   // Create Associated Player Faction Account
   return new TransactionInstruction({
-    keys: [{ pubkey: playerKey, isSigner: true, isWritable: true },
+    keys: [{ pubkey: playerPublicKey, isSigner: true, isWritable: true },
       { pubkey: playerFactionPDA, isSigner: false, isWritable: true },
       { pubkey: enlistInfoPDA, isSigner: false, isWritable: true },
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
@@ -81,6 +84,7 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
   programId: PublicKey,
 ): Promise<string> {
 
+  console.log(playerKeypair)
   const instruction = await enlistToFactionInstruction(factionID, playerKeypair.publicKey, programId);
   const transaction = new Transaction().add(instruction);
   const txResult = await sendAndConfirmTransaction(
@@ -88,6 +92,7 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
     transaction,
     playerKeypair
   );
+  console.log("Enlisted!" + playerKeypair.publicKey)
   return txResult;
 }
 
@@ -97,7 +102,6 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
  export async function createEnlistInfoAccount(
   connection: Connection,
   payerKeypair: Keypair,
-  // playerKey: PublicKey = null,
   programId: PublicKey = null,
  ): Promise<Transaction> {
 
@@ -128,10 +132,10 @@ async function getEnlistInfoPDA(programId: PublicKey): Promise<[PublicKey, numbe
  */
 export async function getPlayer(
   connection: Connection,
-  playerKey: PublicKey,
+  playerPublicKey: PublicKey,
   programID: PublicKey,
 ): Promise<number[]> {
-  const [playerFactionPDA] = await getPlayerFactionPDA(playerKey, programID);
+  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programID);
 
   //TODO: error handling: check if no response
   let info = await connection.getAccountInfo(playerFactionPDA);
@@ -140,6 +144,7 @@ export async function getPlayer(
   const playerID = byteArrayToLong(info.data.slice(0, 7));
   const factionID = byteArrayToLong(info.data.slice(8, 15));
 
+  console.log("playerID: " + playerID + ", factionID: " + factionID)
   return [playerID, factionID]
 }
 
@@ -158,9 +163,10 @@ export async function getAllPlayers(
   let playerAccounts = []
   for (var i=0; i < players.length; i++) {
     if (players[i].account.data.length == 16) {
-      playerAccounts.push([players[i].pubkey.toBase58(), byteArrayToLong(players[i].account.data.slice(8,15))])
+      playerAccounts.push([players[i].pubkey.toBase58(), byteArrayToLong(players[i].account.data.slice(0, 7)), byteArrayToLong(players[i].account.data.slice(8,15))])
     }
   }
 
+  console.log(playerAccounts)
   return playerAccounts
 }
