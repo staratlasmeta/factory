@@ -92,7 +92,6 @@ export async function getEnlistInfoPDA(
     transaction,
     playerKeypair
   );
-  console.log("Enlisted!" + playerKeypair.publicKey)
   return txResult;
 }
 
@@ -138,13 +137,13 @@ export async function getPlayer(
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programID);
 
   //TODO: error handling: check if no response
-  let info = await connection.getAccountInfo(playerFactionPDA);
+  const info = await connection.getAccountInfo(playerFactionPDA);
 
   //TODO: serialize/deserialize with Borsh
   const playerID = byteArrayToLong(info.data.slice(0, 7));
   const factionID = byteArrayToLong(info.data.slice(8, 15));
 
-  console.log("playerID: " + playerID + ", factionID: " + factionID)
+  console.log('playerID: ' + playerID + ', factionID: ' + factionID)
   return [playerID, factionID]
 }
 
@@ -159,9 +158,9 @@ export async function getAllPlayers(
   connection: Connection,
   programID: PublicKey, // Faction enlistment program ID
 ): Promise<string[]> {
-  let players = await connection.getProgramAccounts(programID);
-  let playerAccounts = []
-  for (var i=0; i < players.length; i++) {
+  const players = await connection.getProgramAccounts(programID);
+  const playerAccounts = []
+  for (let i=0; i < players.length; i++) {
     if (players[i].account.data.length == 16) {
       playerAccounts.push([players[i].pubkey.toBase58(), byteArrayToLong(players[i].account.data.slice(0, 7)), byteArrayToLong(players[i].account.data.slice(8,15))])
     }
