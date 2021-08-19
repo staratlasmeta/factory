@@ -13,6 +13,7 @@ import {
   longToByteArray,
   sendAndConfirmTransaction
 } from './util';
+import { deserializeUnchecked } from 'borsh';
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
@@ -192,14 +193,15 @@ export async function getPlayer(
   //TODO: error handling: check if no response
   const info = await connection.getAccountInfo(playerFactionPDA);
 
-  //TODO: serialize/deserialize with Borsh
-  const playerID = byteArrayToLong(info.data.slice(0, 7));
-  const factionID = byteArrayToLong(info.data.slice(8, 15));
+  const playerFaction = deserializeUnchecked(
+    FACTION_SCHEMA,
+    PlayerFaction,
+    info.data,
+  ) as PlayerFaction;
 
-  console.log('playerID: ' + playerID + ', factionID: ' + factionID)
-  return [playerID, factionID]
+  console.log('playerID: ' + playerFaction.playerId + ', factionID: ' + FactionType[playerFaction.factionId]);
+  return [playerFaction.playerId, playerFaction.factionId]
 }
-
 
 /**
  * Get all players
@@ -212,13 +214,20 @@ export async function getAllPlayers(
   programID: PublicKey, // Faction enlistment program ID
 ): Promise<string[]> {
   const players = await connection.getProgramAccounts(programID);
-  const playerAccounts = []
+  const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
     if (players[i].account.data.length == 16) {
-      playerAccounts.push([players[i].pubkey.toBase58(), byteArrayToLong(players[i].account.data.slice(0, 7)), byteArrayToLong(players[i].account.data.slice(8,15))])
+
+      const playerFaction = deserializeUnchecked(
+        FACTION_SCHEMA,
+        PlayerFaction,
+        players[i].account.data,
+      ) as PlayerFaction;
+
+      playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId]);
     }
   }
 
-  console.log(playerAccounts)
-  return playerAccounts
+  console.log(playerAccounts);
+  return playerAccounts;
 }
