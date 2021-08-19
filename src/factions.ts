@@ -50,6 +50,61 @@ export async function getEnlistInfoPDA(
 }
 
 /**
+ * Faction Enlistment Models
+ */
+export class EnlistInfo {
+  mudPlayerCount: number;
+  oniPlayerCount: number;
+  usturPlayerCount: number;
+
+  constructor(args: {
+    mudPlayerCount: number;
+    oniPlayerCount: number;
+    usturPlayerCount: number;
+  }) {
+    this.mudPlayerCount = args.mudPlayerCount;
+    this.oniPlayerCount = args.oniPlayerCount;
+    this.usturPlayerCount = args.usturPlayerCount;
+  }
+}
+export class PlayerFaction {
+  playerId: number;
+  factionId: number;
+
+  constructor(args: {
+    playerId: number;
+    factionId: number;
+  }) {
+    this.playerId = args.playerId;
+    this.factionId = args.factionId;
+  }
+}
+
+export const FACTION_SCHEMA = new Map<any, any>([
+  [
+    EnlistInfo,
+    {
+      kind: 'struct',
+      fields: [
+        ['mudPlayerCount', 'u64'],
+        ['oniPlayerCount', 'u64'],
+        ['usturPlayerCount', 'u64'],
+      ],
+    },
+  ],
+  [
+    PlayerFaction,
+    {
+      kind: 'struct',
+      fields: [
+        ['playerId', 'u64'],
+        ['factionId', 'u64'],
+      ],
+    },
+  ],
+]);
+
+/**
  * Create enlist player to faction transaction
  */
  export async function enlistToFactionInstruction(
@@ -58,7 +113,6 @@ export async function getEnlistInfoPDA(
   programId: PublicKey,
 ): Promise<TransactionInstruction> {
 
-  // console.log(playerKey.toBase58())
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
   const [enlistInfoPDA] = await getEnlistInfoPDA(programId);
 
@@ -84,7 +138,6 @@ export async function getEnlistInfoPDA(
   programId: PublicKey,
 ): Promise<string> {
 
-  console.log(playerKeypair)
   const instruction = await enlistToFactionInstruction(factionID, playerKeypair.publicKey, programId);
   const transaction = new Transaction().add(instruction);
   const txResult = await sendAndConfirmTransaction(

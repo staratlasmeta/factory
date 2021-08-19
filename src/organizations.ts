@@ -13,7 +13,7 @@ import {
   stringToByteArray,
   sendAndConfirmTransaction
 } from './util';
-import { getPlayerFactionPDA } from './factions';
+import { getPlayerFactionPDA, FactionType, PlayerFaction } from './factions';
 import { deserializeUnchecked } from 'borsh';
 
 const MAX_ORG_NAME_LENGTH = 32;
@@ -532,20 +532,7 @@ export class PlayerOrgMember {
   }
 }
 
-export class PlayerFaction {
-  playerId: number;
-  factionId: number;
-
-  constructor(args: {
-    playerId: number;
-    factionId: number;
-  }) {
-    this.playerId = args.playerId;
-    this.factionId = args.factionId;
-  }
-}
-
-export const SCHEMA = new Map<any, any>([
+export const ORG_SCHEMA = new Map<any, any>([
   [
     PlayerOrgInfo,
     {
@@ -618,7 +605,7 @@ export async function getAllPlayerOrgs(
     if (orgs[i].account.data.length == 113) {
       
       const playerOrgData: PlayerOrg = deserializeUnchecked(
-        SCHEMA,
+        ORG_SCHEMA,
         PlayerOrg,
         orgs[i].account.data,
       ) as PlayerOrg;
@@ -646,7 +633,7 @@ export async function getAllPlayerMembers(
   for (let i=0; i < members.length; i++) {
     if (members[i].account.data.length == 52) {
       const playerMemberData: PlayerOrgMember = deserializeUnchecked(
-        SCHEMA,
+        ORG_SCHEMA,
         PlayerOrgMember,
         members[i].account.data,
       ) as PlayerOrgMember;
@@ -678,7 +665,7 @@ export async function getPlayerOrg(
 
   const info = await connection.getAccountInfo(playerOrgPda, 'recent');
   const playerOrgData: PlayerOrg = deserializeUnchecked(
-    SCHEMA,
+    ORG_SCHEMA,
     PlayerOrg,
     info.data,
   ) as PlayerOrg;
