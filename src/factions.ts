@@ -129,25 +129,6 @@ export const FACTION_SCHEMA = new Map<any, any>([
   });
 }
 
-/**
- * Enlist player to faction
- */
- export async function enlistToFaction(
-  connection: Connection,
-  factionID: FactionType,
-  playerKeypair: Keypair,
-  programId: PublicKey,
-): Promise<string> {
-
-  const instruction = await enlistToFactionInstruction(factionID, playerKeypair.publicKey, programId);
-  const transaction = new Transaction().add(instruction);
-  const txResult = await sendAndConfirmTransaction(
-    connection,
-    transaction,
-    playerKeypair
-  );
-  return txResult;
-}
 
 /**
  * Create enlist info account - saves faction player counts
@@ -171,12 +152,6 @@ export const FACTION_SCHEMA = new Map<any, any>([
   });
 
   const transaction = new Transaction().add(instruction);
-  const txResult = await sendAndConfirmTransaction(
-    connection,
-    transaction,
-    payerKeypair
-  );
-  //TODO: create function to send (ref lines 86:90)
   return transaction;
 }
 
@@ -199,15 +174,11 @@ export async function getPlayer(
     info.data,
   ) as PlayerFaction;
 
-  console.log('playerID: ' + playerFaction.playerId + ', factionID: ' + FactionType[playerFaction.factionId]);
   return [playerFaction.playerId, playerFaction.factionId]
 }
 
 /**
  * Get all players
- * 
- * TODO: return: array of arrays containing playerID & factionID
- * to be refactored to Borsh
  */
 export async function getAllPlayers(
   connection: Connection,
@@ -228,6 +199,5 @@ export async function getAllPlayers(
     }
   }
 
-  console.log(playerAccounts);
   return playerAccounts;
 }
