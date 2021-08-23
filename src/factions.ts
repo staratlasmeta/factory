@@ -134,7 +134,6 @@ export const FACTION_SCHEMA = new Map<any, any>([
  * Create enlist info account - saves faction player counts
  */
  export async function createEnlistInfoAccount(
-  connection: Connection,
   payerKeypair: Keypair,
   programId: PublicKey = null,
  ): Promise<Transaction> {
