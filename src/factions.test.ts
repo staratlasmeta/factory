@@ -12,20 +12,20 @@ import {
 
 import { byteArrayToLong } from './util';
 
-let programId = new PublicKey('11111111111111111111111111111111')
-let playerKey = new PublicKey('11111111111111111111111111111111')
+let programId = new PublicKey('7xFaGmxg62o9MNBrkXS9MAVoAUMXLyrxtBZqdd1eRk1b')
+let playerKey = new PublicKey('9Zu5fUZY7GYBAiEeRPfBsKMtohUGBn9SUpmgXTLcmSD4')
 let payerAccount = new Keypair()
 
 test('Should return a player faction PDA as a public key which is not on the ed25519 curve', () => {
     return getPlayerFactionPDA(playerKey, programId).then(response => {
-        console.log(response[0].toString())
         expect(PublicKey.isOnCurve(response[0].toBytes())).toBeFalsy()
+        expect(response[0].toString()).toEqual('AGo8tMdVVLfwyZcBVJCE1FrJgc3v2BrWPhoMA61jDbkq')
     })
 })
 
 test('Should return an enlist info PDA as a public key which is not on the ed25519 curve', () => {
     return getEnlistInfoPDA(programId).then(response => {
-        console.log(response[0].toString())
+        expect(response[0].toString()).toEqual('76wLar7UnGK5jFjZZiNSvbT75cYNJdA8SEusMUgdHUV7')
         expect(PublicKey.isOnCurve(response[0].toBytes())).toBeFalsy()
     })
 })
@@ -51,7 +51,7 @@ test('Should return a transaction with 5 keys, a programId, and data as cargo', 
 test('Should return a transaction which can be used to create an enlist info acount', () => {
     return createEnlistInfoAccount(payerAccount, programId).then(response => {
         expect(response.instructions[0].keys.length).toBe(3)
-        expect(response.instructions[0].keys[1].pubkey.toString()).toEqual('71Vs7GhM94NCFJJHApcW3feu8WsVAk2GqDgABAUwh31e')
+        expect(response.instructions[0].keys[1].pubkey.toString()).toEqual('76wLar7UnGK5jFjZZiNSvbT75cYNJdA8SEusMUgdHUV7')
         expect(response.instructions[0].programId).toBeInstanceOf(PublicKey)
     })
 })
