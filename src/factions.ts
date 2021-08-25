@@ -188,7 +188,7 @@ export async function getAllPlayers(
   const players = await connection.getProgramAccounts(programID);
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
-    if (players[i].account.data.length == 16) {
+    if (players[i].account.data.length == 9) {
 
       const playerFaction = deserializeUnchecked(
         FACTION_SCHEMA,
