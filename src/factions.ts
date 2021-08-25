@@ -8,11 +8,13 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
+
 import {
   byteArrayToLong,
   longToByteArray,
   sendAndConfirmTransaction
 } from './util';
+
 import { deserializeUnchecked } from 'borsh';
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
@@ -99,7 +101,7 @@ export const FACTION_SCHEMA = new Map<any, any>([
       kind: 'struct',
       fields: [
         ['playerId', 'u64'],
-        ['factionId', 'u64'],
+        ['factionId', 'u8'],
       ],
     },
   ],
