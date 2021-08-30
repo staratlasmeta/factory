@@ -1,7 +1,10 @@
 import {
   AccountInfo,
   Connection,
+  GetProgramAccountsConfig,
+  GetProgramAccountsFilter,
   Keypair,
+  MemcmpFilter,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
@@ -99,7 +102,7 @@ export const FACTION_SCHEMA = new Map<any, any>([
       kind: 'struct',
       fields: [
         ['playerId', 'u64'],
-        ['factionId', 'u64'],
+        ['factionId', 'u8'],
       ],
     },
   ],
@@ -125,7 +128,7 @@ export const FACTION_SCHEMA = new Map<any, any>([
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }],
     programId,
-    data: Buffer.from([1, ...longToByteArray(factionID)]),
+    data: Buffer.from([1, factionID]),
   });
 }
 
@@ -186,8 +189,9 @@ export async function getAllPlayers(
   const players = await connection.getProgramAccounts(programID);
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
-    if (players[i].account.data.length == 16) {
+    if (players[i].account.data.length == 9) {
 
+      console.log('account: ', players[i].account.data)
       const playerFaction = deserializeUnchecked(
         FACTION_SCHEMA,
         PlayerFaction,
@@ -199,4 +203,58 @@ export async function getAllPlayers(
   }
 
   return playerAccounts;
+}
+
+/**
+ * Helper function to switch case string inputs for faction filter
+ */
+export async function convertFactionStringToNum(
+  factionName: String
+): Promise<number> {
+  switch (factionName.toLowerCase()) {
+    case 'mud':
+      return FactionType.MUD;
+    case 'oni':
+      return FactionType.ONI;
+    case 'ustur':
+      return FactionType.Ustur;
+    default:
+      return FactionType.Unenlisted;
+      
+  }
+}
+
+/**
+ * Get all players of a specified faction
+ */
+export async function getPlayersOfFaction(
+  connection: Connection,
+  factionID: FactionType,
+  programId: PublicKey
+): Promise<string[]> {
+  var accountFilter = { memcmp: {bytes: (factionID + 1).toString(), offset: 8}}
+  if (typeof factionID === 'string'){
+    console.log('Converted ID is: ', (await convertFactionStringToNum(factionID) + 1).toString())
+    const factionNum = await convertFactionStringToNum(factionID) + 1
+    console.log(factionNum)
+    var accountFilter = { memcmp: {bytes: factionNum.toString(), offset: 8}}
+  }
+  console.log("Filtering for: ", accountFilter)
+  const programAccountConfig = {filters: [accountFilter]}
+  const players = await connection.getProgramAccounts(programId, programAccountConfig);
+  const playerAccounts = [];
+  for (let i=0; i < players.length; i++) {
+    if (players[i].account.data.length == 9) {
+
+      const playerFaction = deserializeUnchecked(
+        FACTION_SCHEMA,
+        PlayerFaction,
+        players[i].account.data,
+      ) as PlayerFaction;
+
+      playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId])
+    }
+  }
+    
+    return playerAccounts
 }
