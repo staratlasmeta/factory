@@ -1,10 +1,7 @@
 import {
   AccountInfo,
   Connection,
-  GetProgramAccountsConfig,
-  GetProgramAccountsFilter,
   Keypair,
-  MemcmpFilter,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
@@ -216,12 +213,10 @@ export async function getPlayersOfFaction(
 ): Promise<string[]> {
   var accountFilter = { memcmp: {bytes: (factionID + 1).toString(), offset: 8}}
   if (typeof factionID === 'string'){
-    console.log('Converted ID is: ', (await convertFactionStringToNum(factionID) + 1).toString())
     const factionNum = await convertFactionStringToNum(factionID) + 1
     console.log(factionNum)
     var accountFilter = { memcmp: {bytes: factionNum.toString(), offset: 8}}
   }
-  console.log("Filtering for: ", accountFilter)
   const programAccountConfig = {filters: [accountFilter]}
   const players = await connection.getProgramAccounts(programId, programAccountConfig);
   const playerAccounts = [];

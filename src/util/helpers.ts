@@ -1,4 +1,4 @@
-import { FactionType} from "..";
+import { FactionType} from '..';
 
 export function byteArrayToString(array: number[]): string {
   return String.fromCharCode(...array);
@@ -42,7 +42,7 @@ export function longToByteArray(long: number): number[] {
  * Helper function to switch case string inputs for faction filter
  */
 export async function convertFactionStringToNum(
-  factionName: String
+  factionName: string
 ): Promise<number> {
   switch (factionName.toLowerCase()) {
     case 'mud':
