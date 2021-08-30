@@ -8,13 +8,11 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js';
-
 import {
   byteArrayToLong,
   longToByteArray,
   sendAndConfirmTransaction
 } from './util';
-
 import { deserializeUnchecked } from 'borsh';
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
@@ -189,7 +187,6 @@ export async function getAllPlayers(
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
     if (players[i].account.data.length == 9) {
-
       const playerFaction = deserializeUnchecked(
         FACTION_SCHEMA,
         PlayerFaction,
