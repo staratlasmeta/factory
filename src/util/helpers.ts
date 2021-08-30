@@ -1,3 +1,5 @@
+import { FactionType} from "..";
+
 export function byteArrayToString(array: number[]): string {
   return String.fromCharCode(...array);
 }
@@ -34,4 +36,23 @@ export function longToByteArray(long: number): number[] {
     long = (long - byte) / 256;
   }
   return byteArray;
+}
+
+/**
+ * Helper function to switch case string inputs for faction filter
+ */
+export async function convertFactionStringToNum(
+  factionName: String
+): Promise<number> {
+  switch (factionName.toLowerCase()) {
+    case 'mud':
+      return FactionType.MUD;
+    case 'oni':
+      return FactionType.ONI;
+    case 'ustur':
+      return FactionType.Ustur;
+    default:
+      return FactionType.Unenlisted;
+      
+  }
 }

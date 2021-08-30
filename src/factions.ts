@@ -14,7 +14,8 @@ import {
 import {
   byteArrayToLong,
   longToByteArray,
-  sendAndConfirmTransaction
+  sendAndConfirmTransaction,
+  convertFactionStringToNum,
 } from './util';
 import { deserializeUnchecked } from 'borsh';
 
@@ -203,25 +204,6 @@ export async function getAllPlayers(
   }
 
   return playerAccounts;
-}
-
-/**
- * Helper function to switch case string inputs for faction filter
- */
-export async function convertFactionStringToNum(
-  factionName: String
-): Promise<number> {
-  switch (factionName.toLowerCase()) {
-    case 'mud':
-      return FactionType.MUD;
-    case 'oni':
-      return FactionType.ONI;
-    case 'ustur':
-      return FactionType.Ustur;
-    default:
-      return FactionType.Unenlisted;
-      
-  }
 }
 
 /**
