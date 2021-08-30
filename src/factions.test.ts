@@ -12,9 +12,9 @@ import {
 
 import { byteArrayToLong } from './util';
 
-let programId = new PublicKey('7xFaGmxg62o9MNBrkXS9MAVoAUMXLyrxtBZqdd1eRk1b')
-let playerKey = new PublicKey('9Zu5fUZY7GYBAiEeRPfBsKMtohUGBn9SUpmgXTLcmSD4')
-let payerAccount = new Keypair()
+const programId = new PublicKey('7xFaGmxg62o9MNBrkXS9MAVoAUMXLyrxtBZqdd1eRk1b')
+const playerKey = new PublicKey('9Zu5fUZY7GYBAiEeRPfBsKMtohUGBn9SUpmgXTLcmSD4')
+const payerAccount = new Keypair()
 
 test('Should return a player faction PDA as a public key which is not on the ed25519 curve', () => {
     return getPlayerFactionPDA(playerKey, programId).then(response => {
@@ -35,7 +35,7 @@ const factionIdList = [[0, 0], [1, 1], [2, 2]]
 describe('Should return an instruction that can be used to enlist a player in a desired function by carrying faction ID in instruction data', () => {
     test.each(factionIdList)('returns $expected when $a passed as factionId', (a, expected) => {
         return enlistToFactionInstruction(a, playerKey, programId).then(response => {
-            let data = byteArrayToLong(response.data.slice(1,2))
+            const data = byteArrayToLong(response.data.slice(1,2))
             expect(data).toEqual(expected)
         })
     })
