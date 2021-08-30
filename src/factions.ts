@@ -208,14 +208,16 @@ export async function getAllPlayers(
  */
 export async function getPlayersOfFaction(
   connection: Connection,
-  factionID: FactionType,
+  factionID: any,
   programId: PublicKey
 ): Promise<string[]> {
-  var accountFilter = { memcmp: {bytes: (factionID + 1).toString(), offset: 8}}
+  let accountFilter = null
   if (typeof factionID === 'string'){
     const factionNum = await convertFactionStringToNum(factionID) + 1
-    console.log(factionNum)
-    var accountFilter = { memcmp: {bytes: factionNum.toString(), offset: 8}}
+    accountFilter = { memcmp: {bytes: factionNum.toString(), offset: 8}}
+  }
+  else {
+    accountFilter = { memcmp: {bytes: (factionID + 1).toString(), offset: 8}}
   }
   const programAccountConfig = {filters: [accountFilter]}
   const players = await connection.getProgramAccounts(programId, programAccountConfig);
