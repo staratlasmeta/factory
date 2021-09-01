@@ -189,7 +189,6 @@ export async function getAllPlayers(
   programID: PublicKey, // Faction enlistment program ID
 ): Promise<PlayerFaction[]> {
   const players = await connection.getProgramAccounts(programID);
-  console.log('Current player count: ', players.length)
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
     if (players[i].account.data.length == 9) {
@@ -206,8 +205,6 @@ export async function getAllPlayers(
         factionId: playerFaction.factionId
       }
 
-      // console.log(players[i].account.data)
-      // playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId]);
       playerAccounts.push(playerFactionData)
     }
   }
@@ -252,7 +249,6 @@ export async function getPlayersOfFaction(
         factionId: playerFaction.factionId
       }
       playerAccounts.push(playerFactionData)
-      // playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId])
     }
   }
     
