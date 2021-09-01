@@ -11,11 +11,11 @@ import {
   convertFactionStringToNum,
 } from './util';
 import { deserializeUnchecked } from 'borsh';
+import bs58 from 'bs58';
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
 
-const bs58 = require('bs58')
 
 export enum FactionType {
   Unenlisted = -1,
@@ -217,9 +217,9 @@ export async function getPlayersOfFaction(
   else {
     factionNum = factionID.toString()
   }
-  let rawBytes = Buffer.from('0' + factionNum, 'hex')
-  let filterBytes = bs58.encode(rawBytes)
-  let accountFilter = { memcmp: {bytes: filterBytes, offset: 8}}
+  const rawBytes = Buffer.from('0' + factionNum, 'hex')
+  const filterBytes = bs58.encode(rawBytes)
+  const accountFilter = { memcmp: {bytes: filterBytes, offset: 8}}
   const programAccountConfig = {filters: [accountFilter]}
   const players = await connection.getProgramAccounts(programId, programAccountConfig);
   const playerAccounts = [];
