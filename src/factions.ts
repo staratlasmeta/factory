@@ -1,5 +1,4 @@
 import {
-  AccountInfo,
   Connection,
   Keypair,
   PublicKey,
@@ -9,14 +8,14 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import {
-  byteArrayToLong,
-  longToByteArray,
-  sendAndConfirmTransaction
+  convertFactionStringToNum,
 } from './util';
 import { deserializeUnchecked } from 'borsh';
+import bs58 from 'bs58';
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
+
 
 export enum FactionType {
   Unenlisted = -1,
@@ -99,7 +98,7 @@ export const FACTION_SCHEMA = new Map<any, any>([
       kind: 'struct',
       fields: [
         ['playerId', 'u64'],
-        ['factionId', 'u64'],
+        ['factionId', 'u8'],
       ],
     },
   ],
@@ -125,7 +124,7 @@ export const FACTION_SCHEMA = new Map<any, any>([
       { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }],
     programId,
-    data: Buffer.from([1, ...longToByteArray(factionID)]),
+    data: Buffer.from([1, factionID]),
   });
 }
 
@@ -182,11 +181,11 @@ export async function getPlayer(
 export async function getAllPlayers(
   connection: Connection,
   programID: PublicKey, // Faction enlistment program ID
-): Promise<string[]> {
+): Promise<PlayerFaction[]> {
   const players = await connection.getProgramAccounts(programID);
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
-    if (players[i].account.data.length == 16) {
+    if (players[i].account.data.length == 9) {
 
       const playerFaction = deserializeUnchecked(
         FACTION_SCHEMA,
@@ -194,9 +193,48 @@ export async function getAllPlayers(
         players[i].account.data,
       ) as PlayerFaction;
 
+      console.log(players[i].account.data)
       playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId]);
     }
   }
 
   return playerAccounts;
+}
+
+/**
+ * Get all players of a specified faction
+ */
+export async function getPlayersOfFaction(
+  connection: Connection,
+  factionID: any,
+  programId: PublicKey
+): Promise<PlayerFaction[]> {
+  let factionNum = null
+  if (typeof factionID === 'string'){
+    const numFromFactionString = await convertFactionStringToNum(factionID)
+    factionNum = await numFromFactionString.toString()
+  }
+  else {
+    factionNum = factionID.toString()
+  }
+  const rawBytes = Buffer.from('0' + factionNum, 'hex')
+  const filterBytes = bs58.encode(rawBytes)
+  const accountFilter = { memcmp: {bytes: filterBytes, offset: 8}}
+  const programAccountConfig = {filters: [accountFilter]}
+  const players = await connection.getProgramAccounts(programId, programAccountConfig);
+  const playerAccounts = [];
+  for (let i=0; i < players.length; i++) {
+    if (players[i].account.data.length == 9) {
+
+      const playerFaction = deserializeUnchecked(
+        FACTION_SCHEMA,
+        PlayerFaction,
+        players[i].account.data,
+      ) as PlayerFaction;
+
+      playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId])
+    }
+  }
+    
+    return playerAccounts;
 }
