@@ -104,6 +104,12 @@ export const FACTION_SCHEMA = new Map<any, any>([
   ],
 ]);
 
+type PlayerFactionData = {
+  factionPubkey: PublicKey,
+  factionId: number,
+  playerId: number,
+}
+
 /**
  * Create enlist player to faction transaction
  */
@@ -183,6 +189,7 @@ export async function getAllPlayers(
   programID: PublicKey, // Faction enlistment program ID
 ): Promise<PlayerFaction[]> {
   const players = await connection.getProgramAccounts(programID);
+  console.log('Current player count: ', players.length)
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
     if (players[i].account.data.length == 9) {
@@ -193,8 +200,15 @@ export async function getAllPlayers(
         players[i].account.data,
       ) as PlayerFaction;
 
-      console.log(players[i].account.data)
-      playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId]);
+      const playerFactionData: PlayerFactionData = {
+        factionPubkey: players[i].pubkey,
+        playerId: playerFaction.playerId,
+        factionId: playerFaction.factionId
+      }
+
+      // console.log(players[i].account.data)
+      // playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId]);
+      playerAccounts.push(playerFactionData)
     }
   }
 
@@ -212,7 +226,7 @@ export async function getPlayersOfFaction(
   let factionNum = null
   if (typeof factionID === 'string'){
     const numFromFactionString = await convertFactionStringToNum(factionID)
-    factionNum = await numFromFactionString.toString()
+    factionNum = numFromFactionString.toString()
   }
   else {
     factionNum = factionID.toString()
@@ -232,7 +246,13 @@ export async function getPlayersOfFaction(
         players[i].account.data,
       ) as PlayerFaction;
 
-      playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId])
+      const playerFactionData: PlayerFactionData = {
+        factionPubkey: players[i].pubkey,
+        playerId: playerFaction.playerId,
+        factionId: playerFaction.factionId
+      }
+      playerAccounts.push(playerFactionData)
+      // playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId])
     }
   }
     
