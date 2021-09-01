@@ -1,5 +1,4 @@
 import {
-  AccountInfo,
   Connection,
   Keypair,
   PublicKey,
@@ -9,15 +8,14 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 import {
-  byteArrayToLong,
-  longToByteArray,
-  sendAndConfirmTransaction,
   convertFactionStringToNum,
 } from './util';
 import { deserializeUnchecked } from 'borsh';
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
+
+const bs58 = require('bs58')
 
 export enum FactionType {
   Unenlisted = -1,
@@ -183,19 +181,19 @@ export async function getPlayer(
 export async function getAllPlayers(
   connection: Connection,
   programID: PublicKey, // Faction enlistment program ID
-): Promise<string[]> {
+): Promise<PlayerFaction[]> {
   const players = await connection.getProgramAccounts(programID);
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
     if (players[i].account.data.length == 9) {
 
-      console.log('account: ', players[i].account.data)
       const playerFaction = deserializeUnchecked(
         FACTION_SCHEMA,
         PlayerFaction,
         players[i].account.data,
       ) as PlayerFaction;
 
+      console.log(players[i].account.data)
       playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId]);
     }
   }
@@ -210,15 +208,18 @@ export async function getPlayersOfFaction(
   connection: Connection,
   factionID: any,
   programId: PublicKey
-): Promise<string[]> {
-  let accountFilter = null
+): Promise<PlayerFaction[]> {
+  let factionNum = null
   if (typeof factionID === 'string'){
-    const factionNum = await convertFactionStringToNum(factionID) + 1
-    accountFilter = { memcmp: {bytes: factionNum.toString(), offset: 8}}
+    const numFromFactionString = await convertFactionStringToNum(factionID)
+    factionNum = await numFromFactionString.toString()
   }
   else {
-    accountFilter = { memcmp: {bytes: (factionID + 1).toString(), offset: 8}}
+    factionNum = factionID.toString()
   }
+  let rawBytes = Buffer.from('0' + factionNum, 'hex')
+  let filterBytes = bs58.encode(rawBytes)
+  let accountFilter = { memcmp: {bytes: filterBytes, offset: 8}}
   const programAccountConfig = {filters: [accountFilter]}
   const players = await connection.getProgramAccounts(programId, programAccountConfig);
   const playerAccounts = [];
@@ -235,5 +236,5 @@ export async function getPlayersOfFaction(
     }
   }
     
-    return playerAccounts
+    return playerAccounts;
 }
