@@ -187,7 +187,7 @@ export async function getPlayer(
 export async function getAllPlayers(
   connection: Connection,
   programID: PublicKey, // Faction enlistment program ID
-): Promise<PlayerFaction[]> {
+): Promise<PlayerFactionData[]> {
   const players = await connection.getProgramAccounts(programID);
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
@@ -219,7 +219,7 @@ export async function getPlayersOfFaction(
   connection: Connection,
   factionID: any,
   programId: PublicKey
-): Promise<PlayerFaction[]> {
+): Promise<PlayerFactionData[]> {
   let factionNum = null
   if (typeof factionID === 'string'){
     const numFromFactionString = await convertFactionStringToNum(factionID)
