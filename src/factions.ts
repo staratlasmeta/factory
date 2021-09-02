@@ -104,6 +104,12 @@ export const FACTION_SCHEMA = new Map<any, any>([
   ],
 ]);
 
+type PlayerFactionData = {
+  factionPubkey: PublicKey,
+  factionId: number,
+  playerId: number,
+}
+
 /**
  * Create enlist player to faction transaction
  */
@@ -181,7 +187,7 @@ export async function getPlayer(
 export async function getAllPlayers(
   connection: Connection,
   programID: PublicKey, // Faction enlistment program ID
-): Promise<PlayerFaction[]> {
+): Promise<PlayerFactionData[]> {
   const players = await connection.getProgramAccounts(programID);
   const playerAccounts = [];
   for (let i=0; i < players.length; i++) {
@@ -193,8 +199,13 @@ export async function getAllPlayers(
         players[i].account.data,
       ) as PlayerFaction;
 
-      console.log(players[i].account.data)
-      playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId]);
+      const playerFactionData: PlayerFactionData = {
+        factionPubkey: players[i].pubkey,
+        playerId: playerFaction.playerId,
+        factionId: playerFaction.factionId
+      }
+
+      playerAccounts.push(playerFactionData)
     }
   }
 
@@ -208,11 +219,11 @@ export async function getPlayersOfFaction(
   connection: Connection,
   factionID: any,
   programId: PublicKey
-): Promise<PlayerFaction[]> {
+): Promise<PlayerFactionData[]> {
   let factionNum = null
   if (typeof factionID === 'string'){
     const numFromFactionString = await convertFactionStringToNum(factionID)
-    factionNum = await numFromFactionString.toString()
+    factionNum = numFromFactionString.toString()
   }
   else {
     factionNum = factionID.toString()
@@ -232,7 +243,12 @@ export async function getPlayersOfFaction(
         players[i].account.data,
       ) as PlayerFaction;
 
-      playerAccounts.push([players[i].pubkey.toBase58(), playerFaction.playerId, playerFaction.factionId])
+      const playerFactionData: PlayerFactionData = {
+        factionPubkey: players[i].pubkey,
+        playerId: playerFaction.playerId,
+        factionId: playerFaction.factionId
+      }
+      playerAccounts.push(playerFactionData)
     }
   }
     
