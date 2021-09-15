@@ -55,7 +55,7 @@ export async function enlistToFaction(
 export async function getPlayer(
   provider: Provider,
   playerPublicKey: web3.PublicKey
-): Promise<Object> {
+): Promise<unknown> {
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey);
   const program = new Program(<Idl>idl, programId, provider);
   return await program.account.playerFactionData.fetch(playerFactionPDA);
@@ -77,7 +77,7 @@ export async function getAllPlayers(
 export async function getPlayersOfFaction(
   provider: Provider,
   factionID: FactionType
-): Promise<Object[]> {
+): Promise<unknown[]> {
   
   const program = new Program(<Idl>idl, programId, provider);
   const players = await program.account.playerFactionData.all();
