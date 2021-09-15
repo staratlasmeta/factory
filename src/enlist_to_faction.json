@@ -16,11 +16,6 @@
           "isSigner": true
         },
         {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -54,8 +49,8 @@
             "type": "publicKey"
           },
           {
-            "name": "enlistAtTimestamp",
-            "type": "u64"
+            "name": "enlistedAtTimestamp",
+            "type": "i64"
           },
           {
             "name": "factionId",
@@ -69,7 +64,11 @@
       }
     }
   ],
-  "metadata": {
-    "address": "MUGtJfcx6GAphTPwL5DseEpTcGQySGxQ11U3EXqJswU"
-  }
+  "errors": [
+    {
+      "code": 300,
+      "name": "FactionTypeError",
+      "msg": "Faction ID must be 0, 1, or 2."
+    }
+  ]
 }
