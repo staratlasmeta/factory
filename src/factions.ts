@@ -12,10 +12,17 @@ import {
 } from './util';
 import { deserializeUnchecked } from 'borsh';
 import bs58 from 'bs58';
+import {
+  Program,
+  web3,
+} from '@project-serum/anchor';
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 const ENLIST_INFO_SEED = 'ENLIST_INFO';
 
+const idl = JSON.parse(require('fs').readFileSync('../../star-atlas-programs/sol-programs/enlist-to-faction/target/idl/enlist_to_faction.json'));
+const programId = new web3.PublicKey('MUGtJfcx6GAphTPwL5DseEpTcGQySGxQ11U3EXqJswU');
+const program = new Program(idl, programId);
 
 export enum FactionType {
   Unenlisted = -1,
@@ -111,52 +118,32 @@ type PlayerFactionData = {
 }
 
 /**
- * Create enlist player to faction transaction
+ *  Create enlist player to faction transaction
  */
- export async function enlistToFactionInstruction(
+export async function enlistToFaction(
   factionID: FactionType,
   playerPublicKey: PublicKey,
   programId: PublicKey,
 ): Promise<TransactionInstruction> {
+  const [playerFactionPda, bump] = await web3.PublicKey.findProgramAddress(
+    [
+      Buffer.from(FACTION_PREFIX, 'utf-8'),
+      playerPublicKey.toBuffer()
+    ],
+    programId
+  )
 
-  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
-  const [enlistInfoPDA] = await getEnlistInfoPDA(programId);
-
-  // Create Associated Player Faction Account
-  return new TransactionInstruction({
-    keys: [{ pubkey: playerPublicKey, isSigner: true, isWritable: true },
-      { pubkey: playerFactionPDA, isSigner: false, isWritable: true },
-      { pubkey: enlistInfoPDA, isSigner: false, isWritable: true },
-      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }],
-    programId,
-    data: Buffer.from([1, factionID]),
+  const tx = await program.instruction.processEnlistPlayer(bump, factionID {
+    accounts: {
+      playerFactionAccount: playerFactionPda,
+      playerAccount: playerPublicKey,
+      systemProgram: SystemProgram.programId,
+      clock: web3.SYSVAR_CLOCK_PUBKEY,
+    },
+    signers: [],
   });
-}
-
-
-/**
- * Create enlist info account - saves faction player counts
- */
- export async function createEnlistInfoAccount(
-  payerKeypair: Keypair,
-  programId: PublicKey = null,
- ): Promise<Transaction> {
-
-  const [enlistInfoPDA] = await getEnlistInfoPDA(programId);
-  const systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
-
-  // Create Enlist Info Account
-  const instruction = new TransactionInstruction({
-      keys: [{pubkey: payerKeypair.publicKey, isSigner: true, isWritable: true},
-              {pubkey: enlistInfoPDA, isSigner: false, isWritable: true},
-              {pubkey: systemProgramPubKey, isSigner: false, isWritable: false}],
-      programId: programId,
-      data: Buffer.from([0])
-  });
-
-  const transaction = new Transaction().add(instruction);
-  return transaction;
+  
+  return tx
 }
 
 /**
