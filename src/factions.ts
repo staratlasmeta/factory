@@ -41,7 +41,6 @@ export async function enlistToFaction(
     accounts: {
       playerFactionAccount: playerFactionPda,
       playerAccount: playerPublicKey,
-      rent: web3.SYSVAR_RENT_PUBKEY,
       systemProgram: web3.SystemProgram.programId,
       clock: web3.SYSVAR_CLOCK_PUBKEY,
     },
