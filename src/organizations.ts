@@ -135,8 +135,7 @@ export async function initOrganizationInfoInstruction(
    taxRate: number,
    isPrivate: boolean,
    payerKey: PublicKey,
-   organizationProgramId: PublicKey,
-   factionEnlstmentProgramId: PublicKey
+   organizationProgramId: PublicKey
 ): Promise<TransactionInstruction> {
 
   // Player faction account needed to confirm the player is in a specific faction
@@ -173,7 +172,6 @@ export async function initOrganizationInfoInstruction(
  * isPrivate: if set, requires owner to approve all players
  * payerKey: account to create organization from - signer + pays fees
  * organizationProgramId: program Id for organizations
- * factionEnlistmentProgramId: program Id for faction enlistment
  */
  export async function createOrganization(
   connection: Connection,
@@ -183,8 +181,7 @@ export async function initOrganizationInfoInstruction(
   taxRate: number,
   isPrivate: boolean,
   payerKeypair: Keypair,
-  organizationProgramId: PublicKey,
-  factionEnlstmentProgramId: PublicKey
+  organizationProgramId: PublicKey
 ): Promise<string> {
 
   const instruction = await createOrganizationInstruction(
@@ -194,8 +191,7 @@ export async function initOrganizationInfoInstruction(
     taxRate,
     isPrivate,
     payerKeypair.publicKey,
-    organizationProgramId,
-    factionEnlstmentProgramId
+    organizationProgramId
   );
   const transaction = new Transaction().add(instruction);
   const txResult = await sendAndConfirmTransaction(
@@ -272,8 +268,7 @@ export async function joinOrganizationInstruction(
   ownerKey: PublicKey,
   playerIsSigned: boolean,
   ownerIsSigned: boolean,
-  organizationProgramId: PublicKey,
-  factionEnlstmentProgramId: PublicKey,
+  organizationProgramId: PublicKey
 ): Promise<TransactionInstruction> {
 
   // Player faction account needed to confirm the player is in a specific faction
@@ -308,7 +303,6 @@ export async function joinOrganizationInstruction(
  * ownerIsSigned: if owner joins a player, owner needs to sign 
  * connection: Solana Connection
  * organizationProgramId: program Id for organizations
- * factionEnlistmentProgramId: program Id for faction enlistment
  */
  export async function joinOrganization(
   connection: Connection,
@@ -318,8 +312,7 @@ export async function joinOrganizationInstruction(
   ownerKeypair: Keypair = null,
   playerIsSigned: boolean,
   ownerIsSigned: boolean,
-  organizationProgramId: PublicKey,
-  factionEnlstmentProgramId: PublicKey,
+  organizationProgramId: PublicKey
 ): Promise<string> {
 
   // Get owner from on chain account & confirm matches argument if passed in
@@ -335,8 +328,7 @@ export async function joinOrganizationInstruction(
     ownerPubkey,
     playerIsSigned,
     ownerIsSigned,
-    organizationProgramId,
-    factionEnlstmentProgramId
+    organizationProgramId
   );
   
   // Player OR Organization Owner can join a player to the organization
