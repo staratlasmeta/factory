@@ -13,7 +13,7 @@ import {
   stringToByteArray,
   sendAndConfirmTransaction
 } from './util';
-import { getPlayerFactionPDA, FactionType, PlayerFaction } from './factions';
+import { getPlayerFactionPDA } from './factions';
 import { deserializeUnchecked } from 'borsh';
 
 const MAX_ORG_NAME_LENGTH = 32;
@@ -140,7 +140,7 @@ export async function initOrganizationInfoInstruction(
 ): Promise<TransactionInstruction> {
 
   // Player faction account needed to confirm the player is in a specific faction
-  const [playerFactionPda] = await getPlayerFactionPDA(payerKey, factionEnlstmentProgramId);
+  const [playerFactionPda] = await getPlayerFactionPDA(payerKey);
 
   // Get name byte array and pdas
   const isPrivateNum = isPrivate ? 1 : 0;
@@ -277,7 +277,7 @@ export async function joinOrganizationInstruction(
 ): Promise<TransactionInstruction> {
 
   // Player faction account needed to confirm the player is in a specific faction
-  const [playerFactionPda] = await getPlayerFactionPDA(playerKey, factionEnlstmentProgramId);
+  const [playerFactionPda] = await getPlayerFactionPDA(playerKey);
   
   // Get name byte array and org/member pdas
   const nameByteArray = getOrgNameBytes(name);
@@ -575,17 +575,7 @@ export const ORG_SCHEMA = new Map<any, any>([
         ['returnRentToOwner', 'u8'],
       ],
     },
-  ],
-  [
-    PlayerFaction,
-    {
-      kind: 'struct',
-      fields: [
-        ['playerId', 'u64'],
-        ['factionId', 'u64'],
-      ],
-    },
-  ],
+  ]
 ]);
 
 /**

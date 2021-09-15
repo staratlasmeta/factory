@@ -1,0 +1,75 @@
+{
+  "version": "0.0.0",
+  "name": "enlist_to_faction",
+  "instructions": [
+    {
+      "name": "processEnlistPlayer",
+      "accounts": [
+        {
+          "name": "playerFactionAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "playerAccount",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
+          "name": "factionId",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "PlayerFactionData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "enlistAtTimestamp",
+            "type": "u64"
+          },
+          {
+            "name": "factionId",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "MUGtJfcx6GAphTPwL5DseEpTcGQySGxQ11U3EXqJswU"
+  }
+}
