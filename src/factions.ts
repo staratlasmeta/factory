@@ -1,21 +1,15 @@
 import {
-  Connection,
-  Keypair,
-  PublicKey,
-  SystemProgram,
-  SYSVAR_RENT_PUBKEY,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js';
-import {
-  convertFactionStringToNum,
-} from './util';
-import { deserializeUnchecked } from 'borsh';
-import bs58 from 'bs58';
+  Idl,
+  Program,
+  ProgramAccount,
+  Provider,
+  web3
+} from '@project-serum/anchor';
+import * as idl from './enlist_to_faction.json';
+
+const programId = new web3.PublicKey('MUGtJfcx6GAphTPwL5DseEpTcGQySGxQ11U3EXqJswU');
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
-const ENLIST_INFO_SEED = 'ENLIST_INFO';
-
 
 export enum FactionType {
   Unenlisted = -1,
@@ -24,233 +18,72 @@ export enum FactionType {
   Ustur = 2,
 }
 
-/**
- * Get player faction PDA
- */
 export async function getPlayerFactionPDA(
-  playerPublicKey: PublicKey, programId: PublicKey,
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress([
+  playerPublicKey: web3.PublicKey
+): Promise<[web3.PublicKey, number]> {
+  return web3.PublicKey.findProgramAddress([
     Buffer.from(FACTION_PREFIX, 'utf8'),
-    programId.toBuffer(),
     playerPublicKey.toBuffer(),
   ], programId);
 }
 
 /**
- * Get enlist info PDA
+ *  Create enlist player to faction transaction
  */
-export async function getEnlistInfoPDA(
-  programId: PublicKey
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress([
-    Buffer.from(ENLIST_INFO_SEED, 'utf8'),
-    programId.toBuffer()
-  ], programId);
-}
-
-/**
- * Faction Enlistment Models
- */
-export class EnlistInfo {
-  mudPlayerCount: number;
-  oniPlayerCount: number;
-  usturPlayerCount: number;
-
-  constructor(args: {
-    mudPlayerCount: number;
-    oniPlayerCount: number;
-    usturPlayerCount: number;
-  }) {
-    this.mudPlayerCount = args.mudPlayerCount;
-    this.oniPlayerCount = args.oniPlayerCount;
-    this.usturPlayerCount = args.usturPlayerCount;
-  }
-}
-export class PlayerFaction {
-  playerId: number;
-  factionId: number;
-
-  constructor(args: {
-    playerId: number;
-    factionId: number;
-  }) {
-    this.playerId = args.playerId;
-    this.factionId = args.factionId;
-  }
-}
-
-export const FACTION_SCHEMA = new Map<any, any>([
-  [
-    EnlistInfo,
-    {
-      kind: 'struct',
-      fields: [
-        ['mudPlayerCount', 'u64'],
-        ['oniPlayerCount', 'u64'],
-        ['usturPlayerCount', 'u64'],
-      ],
-    },
-  ],
-  [
-    PlayerFaction,
-    {
-      kind: 'struct',
-      fields: [
-        ['playerId', 'u64'],
-        ['factionId', 'u8'],
-      ],
-    },
-  ],
-]);
-
-type PlayerFactionData = {
-  factionPubkey: PublicKey,
-  factionId: number,
-  playerId: number,
-}
-
-/**
- * Create enlist player to faction transaction
- */
- export async function enlistToFactionInstruction(
+export async function enlistToFaction(
   factionID: FactionType,
-  playerPublicKey: PublicKey,
-  programId: PublicKey,
-): Promise<TransactionInstruction> {
+  playerPublicKey: web3.PublicKey
+): Promise<web3.TransactionInstruction> {
+  const [playerFactionPda, bump] = await getPlayerFactionPDA(playerPublicKey);
 
-  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
-  const [enlistInfoPDA] = await getEnlistInfoPDA(programId);
-
-  // Create Associated Player Faction Account
-  return new TransactionInstruction({
-    keys: [{ pubkey: playerPublicKey, isSigner: true, isWritable: true },
-      { pubkey: playerFactionPDA, isSigner: false, isWritable: true },
-      { pubkey: enlistInfoPDA, isSigner: false, isWritable: true },
-      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
-      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }],
-    programId,
-    data: Buffer.from([1, factionID]),
+  const program = new Program(<Idl>idl, programId);
+  const tx = await program.instruction.processEnlistPlayer(bump, factionID, {
+    accounts: {
+      playerFactionAccount: playerFactionPda,
+      playerAccount: playerPublicKey,
+      systemProgram: web3.SystemProgram.programId,
+      clock: web3.SYSVAR_CLOCK_PUBKEY,
+    },
   });
-}
-
-
-/**
- * Create enlist info account - saves faction player counts
- */
- export async function createEnlistInfoAccount(
-  payerKeypair: Keypair,
-  programId: PublicKey = null,
- ): Promise<Transaction> {
-
-  const [enlistInfoPDA] = await getEnlistInfoPDA(programId);
-  const systemProgramPubKey = new PublicKey('11111111111111111111111111111111');
-
-  // Create Enlist Info Account
-  const instruction = new TransactionInstruction({
-      keys: [{pubkey: payerKeypair.publicKey, isSigner: true, isWritable: true},
-              {pubkey: enlistInfoPDA, isSigner: false, isWritable: true},
-              {pubkey: systemProgramPubKey, isSigner: false, isWritable: false}],
-      programId: programId,
-      data: Buffer.from([0])
-  });
-
-  const transaction = new Transaction().add(instruction);
-  return transaction;
+  
+  return tx;
 }
 
 /**
- * Get a player
+ * Get a player's faction information
  */
 export async function getPlayer(
-  connection: Connection,
-  playerPublicKey: PublicKey,
-  programID: PublicKey,
-): Promise<number[]> {
-  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programID);
-
-  //TODO: error handling: check if no response
-  const info = await connection.getAccountInfo(playerFactionPDA);
-
-  const playerFaction = deserializeUnchecked(
-    FACTION_SCHEMA,
-    PlayerFaction,
-    info.data,
-  ) as PlayerFaction;
-
-  return [playerFaction.playerId, playerFaction.factionId]
+  provider: Provider,
+  playerPublicKey: web3.PublicKey
+): Promise<unknown> {
+  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey);
+  const program = new Program(<Idl>idl, programId, provider);
+  return await program.account.playerFactionData.fetch(playerFactionPDA);
 }
 
 /**
  * Get all players
  */
 export async function getAllPlayers(
-  connection: Connection,
-  programID: PublicKey, // Faction enlistment program ID
-): Promise<PlayerFactionData[]> {
-  const players = await connection.getProgramAccounts(programID);
-  const playerAccounts = [];
-  for (let i=0; i < players.length; i++) {
-    if (players[i].account.data.length == 9) {
-
-      const playerFaction = deserializeUnchecked(
-        FACTION_SCHEMA,
-        PlayerFaction,
-        players[i].account.data,
-      ) as PlayerFaction;
-
-      const playerFactionData: PlayerFactionData = {
-        factionPubkey: players[i].pubkey,
-        playerId: playerFaction.playerId,
-        factionId: playerFaction.factionId
-      }
-
-      playerAccounts.push(playerFactionData)
-    }
-  }
-
-  return playerAccounts;
+  provider: Provider
+): Promise<ProgramAccount[]> {
+  const program = new Program(<Idl>idl, programId, provider);
+  return await program.account.playerFactionData.all();
 }
 
 /**
  * Get all players of a specified faction
  */
 export async function getPlayersOfFaction(
-  connection: Connection,
-  factionID: any,
-  programId: PublicKey
-): Promise<PlayerFactionData[]> {
-  let factionNum = null
-  if (typeof factionID === 'string'){
-    const numFromFactionString = await convertFactionStringToNum(factionID)
-    factionNum = numFromFactionString.toString()
-  }
-  else {
-    factionNum = factionID.toString()
-  }
-  const rawBytes = Buffer.from('0' + factionNum, 'hex')
-  const filterBytes = bs58.encode(rawBytes)
-  const accountFilter = { memcmp: {bytes: filterBytes, offset: 8}}
-  const programAccountConfig = {filters: [accountFilter]}
-  const players = await connection.getProgramAccounts(programId, programAccountConfig);
-  const playerAccounts = [];
-  for (let i=0; i < players.length; i++) {
-    if (players[i].account.data.length == 9) {
+  provider: Provider,
+  factionID: FactionType
+): Promise<unknown[]> {
+  
+  const program = new Program(<Idl>idl, programId, provider);
+  const players = await program.account.playerFactionData.all();
+  
+  const filtered = players
+    .filter(player => player.account.factionId == factionID);
 
-      const playerFaction = deserializeUnchecked(
-        FACTION_SCHEMA,
-        PlayerFaction,
-        players[i].account.data,
-      ) as PlayerFaction;
-
-      const playerFactionData: PlayerFactionData = {
-        factionPubkey: players[i].pubkey,
-        playerId: playerFaction.playerId,
-        factionId: playerFaction.factionId
-      }
-      playerAccounts.push(playerFactionData)
-    }
-  }
-    
-    return playerAccounts;
+  return filtered;
 }
