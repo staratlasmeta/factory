@@ -59,6 +59,15 @@
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u64",
+                5
+              ]
+            }
           }
         ]
       }
@@ -70,5 +79,8 @@
       "name": "FactionTypeError",
       "msg": "Faction ID must be 0, 1, or 2."
     }
-  ]
+  ],
+  "metadata": {
+    "address": "MUGtJfcx6GAphTPwL5DseEpTcGQySGxQ11U3EXqJswU"
+  }
 }
