@@ -7,8 +7,6 @@ import {
 } from '@project-serum/anchor';
 import * as idl from './enlist_to_faction.json';
 
-const programId = new web3.PublicKey('MUGtJfcx6GAphTPwL5DseEpTcGQySGxQ11U3EXqJswU');
-
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 
 export enum FactionType {
@@ -18,8 +16,17 @@ export enum FactionType {
   Ustur = 2,
 }
 
+interface PlayerFaction {
+  owner: web3.PublicKey;
+  enlistedAtTimestamp: number;
+  factionId: number;
+  bump: number;
+  padding: Buffer;
+}
+
 export async function getPlayerFactionPDA(
-  playerPublicKey: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
   return web3.PublicKey.findProgramAddress([
     Buffer.from(FACTION_PREFIX, 'utf8'),
@@ -32,9 +39,10 @@ export async function getPlayerFactionPDA(
  */
 export async function enlistToFaction(
   factionID: FactionType,
-  playerPublicKey: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [playerFactionPda, bump] = await getPlayerFactionPDA(playerPublicKey);
+  const [playerFactionPda, bump] = await getPlayerFactionPDA(playerPublicKey, programId);
 
   const program = new Program(<Idl>idl, programId);
   const tx = await program.instruction.processEnlistPlayer(bump, factionID, {
@@ -54,18 +62,21 @@ export async function enlistToFaction(
  */
 export async function getPlayer(
   provider: Provider,
-  playerPublicKey: web3.PublicKey
-): Promise<unknown> {
-  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey);
+  playerPublicKey: web3.PublicKey,
+  programId: web3.PublicKey
+): Promise<PlayerFaction> {
+  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
   const program = new Program(<Idl>idl, programId, provider);
-  return await program.account.playerFactionData.fetch(playerFactionPDA);
+  const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
+  return <PlayerFaction>obj;
 }
 
 /**
  * Get all players
  */
 export async function getAllPlayers(
-  provider: Provider
+  provider: Provider,
+  programId: web3.PublicKey
 ): Promise<ProgramAccount[]> {
   const program = new Program(<Idl>idl, programId, provider);
   return await program.account.playerFactionData.all();
@@ -76,14 +87,16 @@ export async function getAllPlayers(
  */
 export async function getPlayersOfFaction(
   provider: Provider,
-  factionID: FactionType
-): Promise<unknown[]> {
+  factionID: FactionType,
+  programId: web3.PublicKey
+): Promise<PlayerFaction[]> {
   
   const program = new Program(<Idl>idl, programId, provider);
   const players = await program.account.playerFactionData.all();
   
   const filtered = players
-    .filter(player => player.account.factionId == factionID);
+    .map(player => <PlayerFaction>player.account)
+    .filter(player => player.factionId == factionID);
 
   return filtered;
 }

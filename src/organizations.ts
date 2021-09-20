@@ -135,11 +135,12 @@ export async function initOrganizationInfoInstruction(
    taxRate: number,
    isPrivate: boolean,
    payerKey: PublicKey,
-   organizationProgramId: PublicKey
+   organizationProgramId: PublicKey,
+   factionEnlistmentProgramId: PublicKey
 ): Promise<TransactionInstruction> {
 
   // Player faction account needed to confirm the player is in a specific faction
-  const [playerFactionPda] = await getPlayerFactionPDA(payerKey);
+  const [playerFactionPda] = await getPlayerFactionPDA(payerKey, factionEnlistmentProgramId);
 
   // Get name byte array and pdas
   const isPrivateNum = isPrivate ? 1 : 0;
@@ -181,7 +182,8 @@ export async function initOrganizationInfoInstruction(
   taxRate: number,
   isPrivate: boolean,
   payerKeypair: Keypair,
-  organizationProgramId: PublicKey
+  organizationProgramId: PublicKey,
+  factionEnlistmentProgramId: PublicKey
 ): Promise<string> {
 
   const instruction = await createOrganizationInstruction(
@@ -191,7 +193,8 @@ export async function initOrganizationInfoInstruction(
     taxRate,
     isPrivate,
     payerKeypair.publicKey,
-    organizationProgramId
+    organizationProgramId,
+    factionEnlistmentProgramId
   );
   const transaction = new Transaction().add(instruction);
   const txResult = await sendAndConfirmTransaction(
@@ -268,11 +271,12 @@ export async function joinOrganizationInstruction(
   ownerKey: PublicKey,
   playerIsSigned: boolean,
   ownerIsSigned: boolean,
-  organizationProgramId: PublicKey
+  organizationProgramId: PublicKey,
+  factionEnlistmentProgramId: PublicKey
 ): Promise<TransactionInstruction> {
 
   // Player faction account needed to confirm the player is in a specific faction
-  const [playerFactionPda] = await getPlayerFactionPDA(playerKey);
+  const [playerFactionPda] = await getPlayerFactionPDA(playerKey, factionEnlistmentProgramId);
   
   // Get name byte array and org/member pdas
   const nameByteArray = getOrgNameBytes(name);
@@ -312,7 +316,8 @@ export async function joinOrganizationInstruction(
   ownerKeypair: Keypair = null,
   playerIsSigned: boolean,
   ownerIsSigned: boolean,
-  organizationProgramId: PublicKey
+  organizationProgramId: PublicKey,
+  factionEnlistmentProgramId: PublicKey
 ): Promise<string> {
 
   // Get owner from on chain account & confirm matches argument if passed in
@@ -328,7 +333,8 @@ export async function joinOrganizationInstruction(
     ownerPubkey,
     playerIsSigned,
     ownerIsSigned,
-    organizationProgramId
+    organizationProgramId,
+    factionEnlistmentProgramId
   );
   
   // Player OR Organization Owner can join a player to the organization
