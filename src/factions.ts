@@ -1,7 +1,6 @@
 import {
   Idl,
   Program,
-  ProgramAccount,
   Provider,
   web3
 } from '@project-serum/anchor';
@@ -61,12 +60,16 @@ export async function enlistToFaction(
  * Get a player's faction information
  */
 export async function getPlayer(
-  provider: Provider,
+  connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<PlayerFaction> {
-  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
+
+  // Wallet not required to query player faction account
+  const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+  
+  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
   return <PlayerFaction>obj;
 }
@@ -75,26 +78,36 @@ export async function getPlayer(
  * Get all players
  */
 export async function getAllPlayers(
-  provider: Provider,
+  connection: web3.Connection,
   programId: web3.PublicKey
-): Promise<ProgramAccount[]> {
+): Promise<PlayerFaction[]> {
+
+  // Wallet not required to query player faction accounts
+  const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  return await program.account.playerFactionData.all();
+  const programAccounts = await program.account.playerFactionData.all();
+  
+  const players = programAccounts
+    .map(player => <PlayerFaction>player.account);
+  
+  return players;
 }
 
 /**
  * Get all players of a specified faction
  */
 export async function getPlayersOfFaction(
-  provider: Provider,
+  connection: web3.Connection,
   factionID: FactionType,
   programId: web3.PublicKey
 ): Promise<PlayerFaction[]> {
   
+  // Wallet not required to query player faction accounts
+  const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const players = await program.account.playerFactionData.all();
+  const programAccounts = await program.account.playerFactionData.all();
   
-  const filtered = players
+  const filtered = programAccounts
     .map(player => <PlayerFaction>player.account)
     .filter(player => player.factionId == factionID);
 
