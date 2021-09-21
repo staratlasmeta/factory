@@ -131,6 +131,7 @@ export async function getPlayerFactionPDA(
  *  Create enlist player to faction transaction
  */
 export async function enlistToFaction(
+  connection: web3.Connection,
   factionID: FactionType,
   playerPublicKey: web3.PublicKey,
   programId: web3.PublicKey
@@ -138,7 +139,8 @@ export async function enlistToFaction(
   const [playerFactionPda, bump] = await getPlayerFactionPDA(playerPublicKey, programId);
 
   const idl = getIDL(programId);
-  const program = new Program(<Idl>idl, programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
   const tx = await program.instruction.processEnlistPlayer(bump, factionID, {
     accounts: {
       playerFactionAccount: playerFactionPda,
