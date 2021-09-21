@@ -4,7 +4,93 @@ import {
   Provider,
   web3
 } from '@project-serum/anchor';
-import * as idl from './enlist_to_faction.json';
+
+const baseIdl = {
+  "version": "0.0.0",
+  "name": "enlist_to_faction",
+  "instructions": [
+    {
+      "name": "processEnlistPlayer",
+      "accounts": [
+        {
+          "name": "playerFactionAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "playerAccount",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
+          "name": "factionId",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "PlayerFactionData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "enlistedAtTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "factionId",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u64",
+                5
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 300,
+      "name": "FactionTypeError",
+      "msg": "Faction ID must be 0, 1, or 2."
+    }
+  ],
+  "metadata": {
+    "address": ""
+  }
+};
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 
@@ -21,6 +107,14 @@ interface PlayerFaction {
   factionId: number;
   bump: number;
   padding: Buffer;
+}
+
+export function getIDL(
+  programId: web3.PublicKey,
+): any {
+  const _tmp = baseIdl;
+  _tmp['metadata']['address'] = programId.toBase58();
+  return _tmp;
 }
 
 export async function getPlayerFactionPDA(
@@ -43,6 +137,7 @@ export async function enlistToFaction(
 ): Promise<web3.TransactionInstruction> {
   const [playerFactionPda, bump] = await getPlayerFactionPDA(playerPublicKey, programId);
 
+  const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId);
   const tx = await program.instruction.processEnlistPlayer(bump, factionID, {
     accounts: {
@@ -67,6 +162,7 @@ export async function getPlayer(
 
   // Wallet not required to query player faction account
   const provider = new Provider(connection, null, null);
+  const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
@@ -84,6 +180,7 @@ export async function getAllPlayers(
 
   // Wallet not required to query player faction accounts
   const provider = new Provider(connection, null, null);
+  const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
   
@@ -104,6 +201,7 @@ export async function getPlayersOfFaction(
   
   // Wallet not required to query player faction accounts
   const provider = new Provider(connection, null, null);
+  const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
   
