@@ -6,72 +6,72 @@ import {
 } from '@project-serum/anchor';
 
 const baseIdl = {
-  "version": "0.0.0",
-  "name": "enlist_to_faction",
-  "instructions": [
+  'version': '0.0.0',
+  'name': 'enlist_to_faction',
+  'instructions': [
     {
-      "name": "processEnlistPlayer",
-      "accounts": [
+      'name': 'processEnlistPlayer',
+      'accounts': [
         {
-          "name": "playerFactionAccount",
-          "isMut": true,
-          "isSigner": false
+          'name': 'playerFactionAccount',
+          'isMut': true,
+          'isSigner': false
         },
         {
-          "name": "playerAccount",
-          "isMut": false,
-          "isSigner": true
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
         },
         {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
         },
         {
-          "name": "clock",
-          "isMut": false,
-          "isSigner": false
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
         }
       ],
-      "args": [
+      'args': [
         {
-          "name": "bump",
-          "type": "u8"
+          'name': 'bump',
+          'type': 'u8'
         },
         {
-          "name": "factionId",
-          "type": "u8"
+          'name': 'factionId',
+          'type': 'u8'
         }
       ]
     }
   ],
-  "accounts": [
+  'accounts': [
     {
-      "name": "PlayerFactionData",
-      "type": {
-        "kind": "struct",
-        "fields": [
+      'name': 'PlayerFactionData',
+      'type': {
+        'kind': 'struct',
+        'fields': [
           {
-            "name": "owner",
-            "type": "publicKey"
+            'name': 'owner',
+            'type': 'publicKey'
           },
           {
-            "name": "enlistedAtTimestamp",
-            "type": "i64"
+            'name': 'enlistedAtTimestamp',
+            'type': 'i64'
           },
           {
-            "name": "factionId",
-            "type": "u8"
+            'name': 'factionId',
+            'type': 'u8'
           },
           {
-            "name": "bump",
-            "type": "u8"
+            'name': 'bump',
+            'type': 'u8'
           },
           {
-            "name": "padding",
-            "type": {
-              "array": [
-                "u64",
+            'name': 'padding',
+            'type': {
+              'array': [
+                'u64',
                 5
               ]
             }
@@ -80,15 +80,15 @@ const baseIdl = {
       }
     }
   ],
-  "errors": [
+  'errors': [
     {
-      "code": 300,
-      "name": "FactionTypeError",
-      "msg": "Faction ID must be 0, 1, or 2."
+      'code': 300,
+      'name': 'FactionTypeError',
+      'msg': 'Faction ID must be 0, 1, or 2.'
     }
   ],
-  "metadata": {
-    "address": ""
+  'metadata': {
+    'address': ''
   }
 };
 
