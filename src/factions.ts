@@ -101,7 +101,7 @@ export enum FactionType {
   Ustur = 2,
 }
 
-interface PlayerFaction {
+export interface PlayerFaction {
   owner: web3.PublicKey;
   enlistedAtTimestamp: number;
   factionId: number;
@@ -128,7 +128,7 @@ export async function getPlayerFactionPDA(
 }
 
 /**
- *  Create enlist player to faction transaction
+ *  Create transaction instruction which can be used to enlist a player to a faction.
  */
 export async function enlistToFaction(
   connection: web3.Connection,
@@ -141,7 +141,7 @@ export async function enlistToFaction(
   const idl = getIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const tx = await program.instruction.processEnlistPlayer(bump, factionID, {
+  const txInstruction = await program.instruction.processEnlistPlayer(bump, factionID, {
     accounts: {
       playerFactionAccount: playerFactionPda,
       playerAccount: playerPublicKey,
@@ -150,7 +150,7 @@ export async function enlistToFaction(
     },
   });
   
-  return tx;
+  return txInstruction;
 }
 
 /**
