@@ -2,7 +2,7 @@ import {
   Provider,
     web3
 } from '@project-serum/anchor'
-import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { ASSOCIATED_TOKEN_PROGRAM_ID, MintLayout, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 
 export async function getAtaForMint(
   mint: web3.PublicKey,
@@ -18,19 +18,28 @@ export async function getAtaForMint(
 
 export async function createATokenAccount(
   mint: web3.PublicKey,
-  playerPublicKey: web3.PublicKey
-): Promise<[web3.Keypair]> {
+  playerPublicKey: web3.PublicKey,
+  provider: Provider
+): Promise<web3.PublicKey> {
   const [aTokenAccount] = await getAtaForMint(mint, playerPublicKey);
   const tx = new web3.Transaction();
-  tx.add()
+  tx.add(await createAssociatedTokenAccountInstruction(
+    aTokenAccount,
+    playerPublicKey,
+    playerPublicKey,
+    mint
+  ));
+  const txid = await provider.send(tx);
+  console.log('Created Token Account: ', txid);
+  return aTokenAccount
 }
 
-function createAssociatedTokenAccountInstruction(
+export async function createAssociatedTokenAccountInstruction(
   associatedTokenAccount: web3.PublicKey,
   payer: web3.PublicKey,
   walletAddress: web3.PublicKey,
   splTokenMintAddress: web3.PublicKey
-): Promise<[web3.TransactionInstruction]> {
+): Promise<web3.TransactionInstruction> {
   const keys = [
     {
       pubkey: payer,
@@ -100,11 +109,40 @@ export async function mintTokens(
 }
 
 export async function createMint(
-  account: web3.PublicKey,
+  fromPubkey: web3.PublicKey,
+  mintAuthority: web3.PublicKey,
+  freezeAuthority: web3.PublicKey,
   provider: Provider,
   decimals: number,
 ): Promise<web3.PublicKey> {
+  const account = web3.Keypair.generate();
   const tx = new web3.Transaction();
+
+  const lamps = await provider.connection.getMinimumBalanceForRentExemption(MintLayout.span);
+
+  let createAccountInstruction = web3.SystemProgram.createAccount({
+    fromPubkey: fromPubkey,
+    newAccountPubkey: account.publicKey,
+    lamports:  lamps,
+    space: MintLayout.span,
+    programId: TOKEN_PROGRAM_ID,
+  });
+
+  tx.add(createAccountInstruction);
+
+  let initialInstruction = Token.createInitMintInstruction(
+    TOKEN_PROGRAM_ID,
+    account.publicKey,
+    decimals,
+    mintAuthority,
+    freezeAuthority,
+  );
+  tx.add(initialInstruction);
+
+  const txid = await provider.send(tx, [account]);
+  console.log('Created mint: ', txid);
+
+  return account.publicKey
 
 
 }
