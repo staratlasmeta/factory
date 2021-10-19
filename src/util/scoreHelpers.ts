@@ -14,7 +14,7 @@ export async function getAtaForMint(
     mint.toBuffer()],
     ASSOCIATED_TOKEN_PROGRAM_ID,
   );
-};
+}
 
 export async function createATokenAccount(
   mint: web3.PublicKey,
@@ -77,7 +77,7 @@ export async function createAssociatedTokenAccountInstruction(
       isWritable: false,
     },
   ];
-  let txInstruction = new web3.TransactionInstruction(
+  const txInstruction = new web3.TransactionInstruction(
     {
       keys: keys,
       programId: ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -120,7 +120,7 @@ export async function createMint(
 
   const lamps = await provider.connection.getMinimumBalanceForRentExemption(MintLayout.span);
 
-  let createAccountInstruction = web3.SystemProgram.createAccount({
+  const createAccountInstruction = web3.SystemProgram.createAccount({
     fromPubkey: fromPubkey,
     newAccountPubkey: account.publicKey,
     lamports:  lamps,
@@ -130,7 +130,7 @@ export async function createMint(
 
   tx.add(createAccountInstruction);
 
-  let initialInstruction = Token.createInitMintInstruction(
+  const initialInstruction = Token.createInitMintInstruction(
     TOKEN_PROGRAM_ID,
     account.publicKey,
     decimals,
