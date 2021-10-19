@@ -546,7 +546,7 @@ export async function getScoreEscrowAccount(
     resourceMint: web3.PublicKey,
     user: web3.PublicKey):
     Promise<[web3.PublicKey, number]> {
-        let seeds = [
+        const seeds = [
             Buffer.from('SCORE_ESCROW'),
             user.toBuffer(),
             shipMint.toBuffer()
