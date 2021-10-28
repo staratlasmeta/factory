@@ -1,528 +1,19 @@
 import {
-    BN,
-    Idl,
-    Program,
-    Provider,
-    web3
+  BN,
+  Idl,
+  Program,
+  Provider,
+  web3
 } from '@project-serum/anchor'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { baseIdl } from './util/scoreIdl'
 
-const baseIdl: unknown = {
-  'version': '0.0.0',
-  'name': 'score',
-  'instructions': [
-    {
-      'name': 'processInitializeScoreVars',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': false,
-          'isSigner': true
-        },
-        {
-          'name': 'scoreVarsAccount',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        }
-      ],
-      'args': [
-        {
-          'name': 'bump',
-          'type': 'u8'
-        }
-      ]
-    },
-    {
-      'name': 'processInitialDeposit',
-      'accounts': [
-        {
-          'name': 'playerAccount',
-          'isMut': false,
-          'isSigner': true
-        },
-        {
-          'name': 'shipStakingAccount',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'clock',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'shipMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'shipTokenAccountSource',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'shipTokenAccountEscrow',
-          'isMut': true,
-          'isSigner': false
-        }
-      ],
-      'args': [
-        {
-          'name': 'bump',
-          'type': 'u8'
-        },
-        {
-          'name': 'shipQuantity',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'processRefuel',
-      'accounts': [
-        {
-          'name': 'playerAccount',
-          'isMut': false,
-          'isSigner': true
-        },
-        {
-          'name': 'shipStakingAccount',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'clock',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'shipMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'fuelMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'fuelTokenAccountSource',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'fuelTokenAccountEscrow',
-          'isMut': true,
-          'isSigner': false
-        }
-      ],
-      'args': [
-        {
-          'name': 'fuelQuantity',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'processRefeed',
-      'accounts': [
-        {
-          'name': 'playerAccount',
-          'isMut': false,
-          'isSigner': true
-        },
-        {
-          'name': 'shipStakingAccount',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'clock',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'shipMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'foodMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'foodTokenAccountSource',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'foodTokenAccountEscrow',
-          'isMut': true,
-          'isSigner': false
-        }
-      ],
-      'args': [
-        {
-          'name': 'foodQuantity',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'processRearm',
-      'accounts': [
-        {
-          'name': 'playerAccount',
-          'isMut': false,
-          'isSigner': true
-        },
-        {
-          'name': 'shipStakingAccount',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'clock',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'shipMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'armsMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'armsTokenAccountSource',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'armsTokenAccountEscrow',
-          'isMut': true,
-          'isSigner': false
-        }
-      ],
-      'args': [
-        {
-          'name': 'armsQuantity',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'processRepair',
-      'accounts': [
-        {
-          'name': 'playerAccount',
-          'isMut': false,
-          'isSigner': true
-        },
-        {
-          'name': 'shipStakingAccount',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'clock',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'shipMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'toolkitMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'toolkitTokenAccountSource',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'toolkitTokenAccountEscrow',
-          'isMut': true,
-          'isSigner': false
-        }
-      ],
-      'args': [
-        {
-          'name': 'toolkitQuantity',
-          'type': 'u64'
-        }
-      ]
-    }
-  ],
-  'accounts': [
-    {
-      'name': 'ShipStaking',
-      'type': {
-        'kind': 'struct',
-        'fields': [
-          {
-            'name': 'owner',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'shipMint',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'shipQuantityInEscrow',
-            'type': 'u64'
-          },
-          {
-            'name': 'fuelQuantityInEscrow',
-            'type': 'u64'
-          },
-          {
-            'name': 'foodQuantityInEscrow',
-            'type': 'u64'
-          },
-          {
-            'name': 'armsQuantityInEscrow',
-            'type': 'u64'
-          },
-          {
-            'name': 'toolkitQuantityInEscrow',
-            'type': 'u64'
-          },
-          {
-            'name': 'fuelCurrentCapacity',
-            'type': 'u64'
-          },
-          {
-            'name': 'foodCurrentCapacity',
-            'type': 'u64'
-          },
-          {
-            'name': 'armsCurrentCapacity',
-            'type': 'u64'
-          },
-          {
-            'name': 'toolkitCurrentCapacity',
-            'type': 'u64'
-          },
-          {
-            'name': 'stakedAtTimestamp',
-            'type': 'i64'
-          },
-          {
-            'name': 'fueledAtTimestamp',
-            'type': 'i64'
-          },
-          {
-            'name': 'fedAtTimestamp',
-            'type': 'i64'
-          },
-          {
-            'name': 'armedAtTimestamp',
-            'type': 'i64'
-          },
-          {
-            'name': 'repairedAtTimestamp',
-            'type': 'i64'
-          },
-          {
-            'name': 'totalTimeStaked',
-            'type': 'u64'
-          }
-        ]
-      }
-    },
-    {
-      'name': 'ScoreVars',
-      'type': {
-        'kind': 'struct',
-        'fields': [
-          {
-            'name': 'updateAuthority',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'fuelBurnRate',
-            'type': 'u16'
-          },
-          {
-            'name': 'foodBurnRate',
-            'type': 'u16'
-          },
-          {
-            'name': 'armsBurnRate',
-            'type': 'u16'
-          },
-          {
-            'name': 'toolkitBurnRate',
-            'type': 'u16'
-          },
-          {
-            'name': 'pearceX4RewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'opalJetRewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'pearceX5RewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'opalJetjetRewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'vzusOpodRewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'filmbulByosRewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'calicoCompaktRewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'ogrikaThripidRewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'calicoGuardianRewardRate',
-            'type': 'u64'
-          },
-          {
-            'name': 'padding',
-            'type': {
-              'array': [
-                'u64',
-                64
-              ]
-            }
-          }
-        ]
-      }
-    }
-  ],
-  'metadata': {
-    'address': '' 
-  }
-}
-
+/**
+ * Returns the base IDL for the SCORE program following as generated by Anchor with provided program ID appended to metadata.
+ * 
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - The base IDL object
+ */
 export function getIDL(
   programId: web3.PublicKey,
 ): unknown {
@@ -531,48 +22,80 @@ export function getIDL(
   return _tmp;
 }
 
+/**
+ * Returns the program address and bump seed for a SCORE variables account.
+ * 
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - [Program Public key, bump seed] 
+ */
 export async function getScoreVarsAccount(
-    programId: web3.PublicKey
+  programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
-    return web3.PublicKey.findProgramAddress([
-        Buffer.from('SCORE_VARS')],
-        programId,
-        );
+  return web3.PublicKey.findProgramAddress([
+    Buffer.from('SCORE_VARS')],
+    programId,
+  );
 }
 
+/**
+ * Returns the public key and bump seed for a user's SCORE escrow account.
+ * 
+ * @param programId - Deployed program ID for the SCORE program
+ * @param shipMint - Ship mint address
+ * @param resourceMint - Mint address for the desired R4 resource
+ * @param user - User's public key
+ * @returns - [Escrow account public key, bump seed]
+ */
 export async function getScoreEscrowAccount(
-    programId: web3.PublicKey,
-    shipMint: web3.PublicKey,
-    resourceMint: web3.PublicKey,
-    user: web3.PublicKey):
-    Promise<[web3.PublicKey, number]> {
-        const seeds = [
-            Buffer.from('SCORE_ESCROW'),
-            user.toBuffer(),
-            shipMint.toBuffer()
-        ];
-        if (resourceMint !== null) {
-            seeds.push(resourceMint.toBuffer());
-        }
-        return web3.PublicKey.findProgramAddress(
-            seeds,
-            programId
-        );
-    }
+  programId: web3.PublicKey,
+  shipMint: web3.PublicKey,
+  resourceMint: web3.PublicKey,
+  user: web3.PublicKey):
+  Promise<[web3.PublicKey, number]> {
+  const seeds = [
+    Buffer.from('SCORE_ESCROW'),
+    user.toBuffer(),
+    shipMint.toBuffer()
+  ];
+  if (resourceMint !== null) {
+    seeds.push(resourceMint.toBuffer());
+  }
+  return web3.PublicKey.findProgramAddress(
+    seeds,
+    programId
+  );
+}
 
+/**
+ * Returns the SCORE escrow authority account
+ * 
+ * @param programId - Deployed program ID for the SCORE program
+ * @param shipMint - Ship mint address
+ * @param user - User's public key
+ * @returns - [Authority account public key, bump seed]
+ */
 export async function getScoreAuthEscrowAccount(
-    programId: web3.PublicKey,
-    shipMint: web3.PublicKey,
-    user: web3.PublicKey):
-    Promise<[web3.PublicKey, number]> {
-        return web3.PublicKey.findProgramAddress([
-            Buffer.from('SCORE_ESCROW_AUTHORITY'),
-            shipMint.toBuffer(),
-            user.toBuffer()],
-            programId,
-        );
-    }
+  programId: web3.PublicKey,
+  shipMint: web3.PublicKey,
+  user: web3.PublicKey
+):
+  Promise<[web3.PublicKey, number]> {
+  return web3.PublicKey.findProgramAddress([
+    Buffer.from('SCORE_ESCROW_AUTHORITY'),
+    shipMint.toBuffer(),
+    user.toBuffer()],
+    programId,
+  );
+}
 
+/**
+ * Returns a user's ship staking account
+ * 
+ * @param programId - Deployed program ID for the SCORE program
+ * @param assetMint - Mint address for the desired resource
+ * @param user - User's public key
+ * @returns - [Staking account public key, bump seed]
+ */
 export async function getShipStakingAccount(
   programId: web3.PublicKey,
   assetMint: web3.PublicKey,
@@ -585,231 +108,277 @@ export async function getShipStakingAccount(
     programId,
   );
 }
+
 /**
- * Initialize SCORE variables
+ * Provides a transaction instruction which can be used to initialize the SCORE variables account.
+ * 
+ * @param connection - web3.Connection object
+ * @param updateAuthority - SCORE escrow authority public key
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - TransactionInstruction object
  */
-
 export async function initializeScoreVarsInstruction(
-    updateAuthority: web3.PublicKey,
-    connection: web3.Connection,
-    programId: web3.PublicKey
+  updateAuthority: web3.PublicKey,
+  connection: web3.Connection,
+  programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-    const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
+  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
-    const idl = getIDL(programId);
-    const provider = new Provider(connection, null, null);
-    const program = new Program(<Idl>idl, programId, provider);
-    const txInstruction = await program.instruction.processInitializeScoreVars(
-        scoreVarsBump,
-        {
-            accounts: {
-                updateAuthorityAccount: updateAuthority,
-                scoreVarsAccount: scoreVarsAccount,
-                systemProgram: web3.SystemProgram.programId
-            }
-        }
-    )
-    return txInstruction
+  const idl = getIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const txInstruction = await program.instruction.processInitializeScoreVars(
+    scoreVarsBump,
+    {
+      accounts: {
+        updateAuthorityAccount: updateAuthority,
+        scoreVarsAccount: scoreVarsAccount,
+        systemProgram: web3.SystemProgram.programId
+      }
+    }
+  )
+  return txInstruction
 }
 
 /**
- * Create Initial Deposit instruction
+ * Provides a transaction instruction which can be used to deposit a specified quantity of ships to a player's ship staking account.
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param shipQuantity - Quantity to deposit as u64
+ * @param shipMint - Ship mint address
+ * @param shipTokenAccount - Token account for the ship resource being deposited
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns = TransactionInstruction object
  */
 export async function initialDepositInstruction(
-    playerPublicKey: web3.PublicKey,
-    shipQuantity: number,
-    connection: web3.Connection,
-    shipMint: web3.PublicKey,
-    shipTokenAccount: web3.PublicKey,
-    programId: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
+  shipQuantity: number,
+  connection: web3.Connection,
+  shipMint: web3.PublicKey,
+  shipTokenAccount: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-    const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey);
-    const [shipEscrow] = await getScoreEscrowAccount(programId, shipMint, null, playerPublicKey)
-    const [shipStakingAccount, shipStakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+  const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey);
+  const [shipEscrow] = await getScoreEscrowAccount(programId, shipMint, null, playerPublicKey)
+  const [shipStakingAccount, shipStakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
 
-    const idl = getIDL(programId);
-    const provider = new Provider(connection, null, null);
-    const program = new Program(<Idl>idl, programId, provider);
-    const txInstruction = await program.instruction.processInitialDeposit(
-        shipStakingBump,
-        new BN(shipQuantity),
-        {
-            accounts: {
-                playerAccount: playerPublicKey,
-                shipStakingAccount: shipStakingAccount,
-                escrowAuthority: escrowAuthority,
-                systemProgram: web3.SystemProgram.programId,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                clock: web3.SYSVAR_CLOCK_PUBKEY,
-                rent: web3.SYSVAR_RENT_PUBKEY,
-                shipMint: shipMint,
-                shipTokenAccountSource: shipTokenAccount,
-                shipTokenAccountEscrow: shipEscrow
-            }
-        }
-    )
-    return txInstruction
+  const idl = getIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const txInstruction = await program.instruction.processInitialDeposit(
+    shipStakingBump,
+    new BN(shipQuantity),
+    {
+      accounts: {
+        playerAccount: playerPublicKey,
+        shipStakingAccount: shipStakingAccount,
+        escrowAuthority: escrowAuthority,
+        systemProgram: web3.SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        shipMint: shipMint,
+        shipTokenAccountSource: shipTokenAccount,
+        shipTokenAccountEscrow: shipEscrow
+      }
+    }
+  )
+  return txInstruction
 }
 
 /**
- * Create instruction to process refuel
+ * Provides a transaction instruction which can be used to transfer fuel resources to a player's fuel escrow account.
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param fuelQuantity - Fuel resource quantity as u64
+ * @param shipMint - Ship mint address
+ * @param fuelMint - Fuel resource mint address
+ * @param fuelTokenAccount - Token account for the fuel resource being deposited
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - TransactionInstruction object
  */
-
-export async function processrefuelinstruction(
-    playerPublicKey: web3.PublicKey,
-    fuelQuantity: number,
-    connection: web3.Connection,
-    shipMint: web3.PublicKey,
-    fuelMint: web3.PublicKey,
-    fuelTokenAccount: web3.PublicKey,
-    programId: web3.PublicKey
+export async function processRefuelInstruction(
+  playerPublicKey: web3.PublicKey,
+  fuelQuantity: number,
+  connection: web3.Connection,
+  shipMint: web3.PublicKey,
+  fuelMint: web3.PublicKey,
+  fuelTokenAccount: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-    const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey)
-    const [fuelEscrow] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey)
-    const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
+  const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey)
+  const [fuelEscrow] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey)
+  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
 
-    const idl = getIDL(programId);
-    const provider = new Provider(connection, null, null);
-    const program = new Program(<Idl>idl, programId, provider);
-    const txInstruction = await program.instruction.processRefuel(
-        new BN(fuelQuantity),
-        {
-            accounts: {
-                playerAccount: playerPublicKey,
-                shipStakingAccount: shipStakingAccount,
-                escrowAuthority: escrowAuthority,
-                systemProgram: web3.SystemProgram.programId,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                clock: web3.SYSVAR_CLOCK_PUBKEY,
-                rent: web3.SYSVAR_RENT_PUBKEY,
-                shipMint: shipMint,
-                fuelMint: fuelMint,
-                fuelTokenAccountSource: fuelTokenAccount,
-                fuelTokenAccountEscrow: fuelEscrow,
-            }
-        }
-    )
-    return txInstruction
+  const idl = getIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const txInstruction = await program.instruction.processRefuel(
+    new BN(fuelQuantity),
+    {
+      accounts: {
+        playerAccount: playerPublicKey,
+        shipStakingAccount: shipStakingAccount,
+        escrowAuthority: escrowAuthority,
+        systemProgram: web3.SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        shipMint: shipMint,
+        fuelMint: fuelMint,
+        fuelTokenAccountSource: fuelTokenAccount,
+        fuelTokenAccountEscrow: fuelEscrow,
+      }
+    }
+  )
+  return txInstruction
 }
 
 /**
- * Create instruction to process refeed
+ * Provides a transaction instruction which can be used to transfer food resources to a player's food escrow account.
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param foodQuantity - Food resource quantity as u64
+ * @param shipMint - Ship mint address
+ * @param foodMint - Food resource mint address
+ * @param foodTokenAccount - Token account for the food resource being deposited
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - TransactionInstruction object
  */
-
 export async function processRefeedInstruction(
-    playerPublicKey: web3.PublicKey,
-    foodQuantity: number,
-    connection: web3.Connection,
-    shipMint: web3.PublicKey,
-    foodMint: web3.PublicKey,
-    foodTokenAccount: web3.PublicKey,
-    programId: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
+  foodQuantity: number,
+  connection: web3.Connection,
+  shipMint: web3.PublicKey,
+  foodMint: web3.PublicKey,
+  foodTokenAccount: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-    const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey)
-    const [foodEscrow] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey)
-    const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
+  const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey)
+  const [foodEscrow] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey)
+  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
 
-    const idl = getIDL(programId);
-    const provider = new Provider(connection, null, null);
-    const program = new Program(<Idl>idl, programId, provider);
-    const txInstruction = await program.instruction.processRefuel(
-        new BN(foodQuantity),
-        {
-            accounts: {
-                playerAccount: playerPublicKey,
-                shipStakingAccount: shipStakingAccount,
-                escrowAuthority: escrowAuthority,
-                systemProgram: web3.SystemProgram.programId,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                clock: web3.SYSVAR_CLOCK_PUBKEY,
-                rent: web3.SYSVAR_RENT_PUBKEY,
-                shipMint: shipMint,
-                foodMint: foodMint,
-                fuelTokenAccountSource: foodTokenAccount,
-                fuelTokenAccountEscrow: foodEscrow,
-            }
-        }
-    )
-    return txInstruction
+  const idl = getIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const txInstruction = await program.instruction.processRefuel(
+    new BN(foodQuantity),
+    {
+      accounts: {
+        playerAccount: playerPublicKey,
+        shipStakingAccount: shipStakingAccount,
+        escrowAuthority: escrowAuthority,
+        systemProgram: web3.SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        shipMint: shipMint,
+        foodMint: foodMint,
+        fuelTokenAccountSource: foodTokenAccount,
+        fuelTokenAccountEscrow: foodEscrow,
+      }
+    }
+  )
+  return txInstruction
 }
 
 /**
- * Create instruction to process repair
+ * Provides a transaction instruction which can be used to transfer toolkit resources to a player's toolkit escrow account.
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param toolkitQuantity - Toolkit resource quantity as u64
+ * @param shipMint - Ship mint address
+ * @param toolkitMint - Toolkit resource mint address
+ * @param toolkitTokenAccount - Token account for the toolkit resource being deposited
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - TransactionInstruction object
  */
-
 export async function processRepairInstruction(
-    playerPublicKey: web3.PublicKey,
-    toolkitQuantity: number,
-    connection: web3.Connection,
-    shipMint: web3.PublicKey,
-    toolkitMint: web3.PublicKey,
-    toolkitTokenAccount: web3.PublicKey,
-    programId: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
+  toolkitQuantity: number,
+  connection: web3.Connection,
+  shipMint: web3.PublicKey,
+  toolkitMint: web3.PublicKey,
+  toolkitTokenAccount: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-    const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey)
-    const [toolkitEscrow] = await getScoreEscrowAccount(programId, shipMint, toolkitMint, playerPublicKey)
-    const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
+  const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey)
+  const [toolkitEscrow] = await getScoreEscrowAccount(programId, shipMint, toolkitMint, playerPublicKey)
+  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
 
-    const idl = getIDL(programId);
-    const provider = new Provider(connection, null, null);
-    const program = new Program(<Idl>idl, programId, provider);
-    const txInstruction = await program.instruction.processRefuel(
-        new BN(toolkitQuantity),
-        {
-            accounts: {
-                playerAccount: playerPublicKey,
-                shipStakingAccount: shipStakingAccount,
-                escrowAuthority: escrowAuthority,
-                systemProgram: web3.SystemProgram.programId,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                clock: web3.SYSVAR_CLOCK_PUBKEY,
-                rent: web3.SYSVAR_RENT_PUBKEY,
-                shipMint: shipMint,
-                toolkitMint: toolkitMint,
-                toolkitTokenAccountSource: toolkitTokenAccount,
-                toolkitTokenAccountEscrow: toolkitEscrow,
-            }
-        }
-    )
-    return txInstruction
+  const idl = getIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const txInstruction = await program.instruction.processRefuel(
+    new BN(toolkitQuantity),
+    {
+      accounts: {
+        playerAccount: playerPublicKey,
+        shipStakingAccount: shipStakingAccount,
+        escrowAuthority: escrowAuthority,
+        systemProgram: web3.SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        shipMint: shipMint,
+        toolkitMint: toolkitMint,
+        toolkitTokenAccountSource: toolkitTokenAccount,
+        toolkitTokenAccountEscrow: toolkitEscrow,
+      }
+    }
+  )
+  return txInstruction
 }
 
 /**
- * Create instruction to process rearm
+ * Provides a transaction instruction which can be used to transfer arms resources to a player's arms escrow account.
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param armsQuantity - Arms resource quantity as u64
+ * @param shipMint - Ship mint address
+ * @param armsMint - Arms resource mint address
+ * @param armsTokenAccount - Token account for the arms resources being deposited
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - TransactionInstruction object
  */
 export async function processRearmInstruction(
-    playerPublicKey: web3.PublicKey,
-    armsQuantity: number,
-    connection: web3.Connection,
-    shipMint: web3.PublicKey,
-    armsMint: web3.PublicKey,
-    armsTokenAccount: web3.PublicKey,
-    programId: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
+  armsQuantity: number,
+  connection: web3.Connection,
+  shipMint: web3.PublicKey,
+  armsMint: web3.PublicKey,
+  armsTokenAccount: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-    const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey)
-    const [armsEscrow] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey)
-    const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
+  const [escrowAuthority] = await getScoreAuthEscrowAccount(programId, shipMint, playerPublicKey)
+  const [armsEscrow] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey)
+  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
 
-    const idl = getIDL(programId);
-    const provider = new Provider(connection, null, null);
-    const program = new Program(<Idl>idl, programId, provider);
-    const txInstruction = await program.instruction.processRefuel(
-        new BN(armsQuantity),
-        {
-            accounts: {
-                playerAccount: playerPublicKey,
-                shipStakingAccount: shipStakingAccount,
-                escrowAuthority: escrowAuthority,
-                systemProgram: web3.SystemProgram.programId,
-                tokenProgram: TOKEN_PROGRAM_ID,
-                clock: web3.SYSVAR_CLOCK_PUBKEY,
-                rent: web3.SYSVAR_RENT_PUBKEY,
-                shipMint: shipMint,
-                armsMint: armsMint,
-                armsTokenAccountSource: armsTokenAccount,
-                armsTokenAccountEscrow: armsEscrow,
-            }
-        }
-    )
-    return txInstruction
+  const idl = getIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const txInstruction = await program.instruction.processRefuel(
+    new BN(armsQuantity),
+    {
+      accounts: {
+        playerAccount: playerPublicKey,
+        shipStakingAccount: shipStakingAccount,
+        escrowAuthority: escrowAuthority,
+        systemProgram: web3.SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        shipMint: shipMint,
+        armsMint: armsMint,
+        armsTokenAccountSource: armsTokenAccount,
+        armsTokenAccountEscrow: armsEscrow,
+      }
+    }
+  )
+  return txInstruction
 }
