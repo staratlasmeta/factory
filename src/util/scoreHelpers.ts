@@ -11,7 +11,6 @@ import { strict as assert } from 'assert';
  * 
  * @param mint - Asset mint
  * @param buyer 
- * @returns 
  */
 export async function getAtaForMint(
   mint: web3.PublicKey,
@@ -32,7 +31,6 @@ export async function getAtaForMint(
  * @param mint - Asset mint to create token account for
  * @param payer (Optional - if not provided, defaults to provider wallet)
  * @param owner (Optional - if not provided, defaults to provider wallet)
- * @returns 
  */
 export async function createATokenAccount(
   provider: Provider,
@@ -62,7 +60,6 @@ export async function createATokenAccount(
  * @param payer 
  * @param owner 
  * @param mint - Asset mint to create token account for
- * @returns 
  */
 export async function createAssociatedTokenAccountInstruction(
   payer: web3.PublicKey,
@@ -210,7 +207,7 @@ export async function confirmTokenBalance(
   tokenAccount: web3.PublicKey,
   expectedQuantity: number
 ) {
-  const tokenData = await provider.connection.getAccountInfo(tokenAccount, "recent");
+  const tokenData = await provider.connection.getAccountInfo(tokenAccount, 'recent');
   const tokenAmount = byteArrayToLong(tokenData.data.slice(64, 72));
 
   assert(tokenAmount == expectedQuantity);

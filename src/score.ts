@@ -5,13 +5,12 @@ import {
   Provider,
   web3
 } from '@project-serum/anchor'
-import { idlAddress } from '@project-serum/anchor/dist/idl';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { SystemProgram, SYSVAR_RENT_PUBKEY } from '@solana/web3.js';
 import { getPlayerFactionPDA } from '.';
 import { baseIdl } from './util/scoreIdl'
 
-const factionProgramIdStr = "FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe"
+const factionProgramIdStr = 'FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe'
 const factionProgramId = new web3.PublicKey(factionProgramIdStr);
 
 /**
@@ -48,7 +47,7 @@ export async function getScoreVarsAccount(
 /**
  * Returns the public key and bump seed for the SCORE variables authority account.
  * 
- * @param programId 
+ * @param programId - Deployed program ID for the SCORE program
  * @returns - [Authority's Public key, bump seed]
  */
 export async function getScoreVarsAuthAccount(
@@ -65,8 +64,8 @@ export async function getScoreVarsAuthAccount(
 /**
  * Returns the public key and bump seed for the SCORE variables ship account associated with the provided ship mint.
  * 
- * @param programId 
- * @param shipMint 
+ * @param programId - Deployed program ID for the SCORE program
+ * @param shipMint - Ship mint address
  * @returns - [Ship account public key, bump seed]
  */
 export async function getScoreVarsShipAccount(
@@ -160,7 +159,7 @@ export async function getShipStakingAccount(
 /**
  * Returns the public key and bump seed for the SCORE treasury token account.
  * 
- * @param programId 
+ * @param programId - Deployed program ID for the SCORE program
  * @returns - [Treasury's Public key, bump seed]
  */
 export async function getScoreTreasuryTokenAccount(
@@ -198,7 +197,6 @@ export async function getScoreTreasuryAuthAccount(
  * @param connection - web3.Connection object
  * @param updateAuthorityAccount - SCORE escrow authority public key
  * @param programId - Deployed program ID for the SCORE program
- * @returns - TransactionInstruction object
  */
 export async function initializeScoreVarsInstruction(
   connection: web3.Connection,
@@ -223,18 +221,26 @@ export async function initializeScoreVarsInstruction(
   return ix
 }
 
+/**
+ * Sets update authority in Score variables account and creates ATLAS treasury token account
+ * 
+ * @param connection - web3.Connection object
+ * @param updateAuthorityAccount - Desired authority public key
+ * @param atlasMint - ATLAS mint address
+ * @param programId - Deployed program ID for the SCORE program
+ */
 export async function initializeAuthorityInstruction(
-  connection: web3.Connection, // should we pass in a provider?
+  connection: web3.Connection, 
   updateAuthorityAccount: web3.PublicKey,
-  treasuryTokenAccount: web3.PublicKey, // do we want to pass this in or "find" it here?
-  treasuryAuthorityAccount: web3.PublicKey, // same as above
-  atlasMint: web3.PublicKey, // getter for atlas mint?
+  atlasMint: web3.PublicKey, 
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
+  const [treasuryTokenAccount] = await getScoreTreasuryTokenAccount(programId);
+  const [treasuryAuthorityAccount] = await getScoreTreasuryAuthAccount(programId);
   const [scoreVarsAuthAccount, scoreVarsAuthBump] = await getScoreVarsAuthAccount(programId);
 
   const ix = await program.instruction.processInitializeAuthority(
@@ -259,7 +265,7 @@ export async function initializeAuthorityInstruction(
 /**
  * Initiates Score variables account for a provided ship mint.
  * 
- * @param connection 
+ * @param connection - web3.Connection object
  * @param updateAuthorityAccount 
  * @param shipMint - Ship mint address
  * @param fuelMaxReserve - Max fuel in units
@@ -272,7 +278,6 @@ export async function initializeAuthorityInstruction(
  * @param secondsToBurnToolkit 
  * @param rewardRatePerSecond - Atlas rewarded per second
  * @param programId - Deployed Score program ID
- * @returns 
  */
 export async function registerShipInstruction(
   connection: web3.Connection,
@@ -330,7 +335,6 @@ export async function registerShipInstruction(
  * @param shipMint - Ship mint address
  * @param shipTokenAccount - Token account for the ship resource being deposited
  * @param programId - Deployed program ID for the SCORE program
- * @returns = TransactionInstruction object
  */
 export async function initialDepositInstruction(
   connection: web3.Connection,
@@ -382,7 +386,6 @@ export async function initialDepositInstruction(
  * @param armsMint - Arms resource mint address
  * @param armsTokenAccount - Token account for the arms resources being deposited
  * @param programId - Deployed program ID for the SCORE program
- * @returns - TransactionInstruction object
  */
 export async function rearmInstruction(
   connection: web3.Connection,
@@ -433,7 +436,6 @@ export async function rearmInstruction(
  * @param foodMint - Food resource mint address
  * @param foodTokenAccount - Token account for the food resource being deposited
  * @param programId - Deployed program ID for the SCORE program
- * @returns - TransactionInstruction object
  */
 export async function refeedInstruction(
   connection: web3.Connection,
@@ -484,7 +486,6 @@ export async function refeedInstruction(
  * @param fuelMint - Fuel resource mint address
  * @param fuelTokenAccount - Token account for the fuel resource being deposited
  * @param programId - Deployed program ID for the SCORE program
- * @returns - TransactionInstruction object
  */
 export async function refuelInstruction(
   connection: web3.Connection,
@@ -536,7 +537,6 @@ export async function refuelInstruction(
  * @param toolkitTokenAccount - Token account for the toolkit resource being deposited
  * @param toolkitTokenAccountBurn - Burn account which tokens are transfered to when used
  * @param programId - Deployed program ID for the SCORE program
- * @returns - TransactionInstruction object
  */
 export async function repairInstruction(
   connection: web3.Connection,
