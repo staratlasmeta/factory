@@ -38,20 +38,24 @@ export async function createATokenAccount(
   payer?: web3.PublicKey,
   owner?: web3.PublicKey
 ): Promise<web3.PublicKey> {
-  const [aTokenAccount] = await getAtaForMint(mint, provider.wallet.publicKey);
 
-  payer = payer || provider.wallet.publicKey
-  owner = owner || provider.wallet.publicKey
+  payer = payer || provider.wallet.publicKey;
+  owner = owner || provider.wallet.publicKey;
 
+  const [associatedTokenAccount] = await getAtaForMint(mint, owner);
   const tx = new web3.Transaction();
-  tx.add(await createAssociatedTokenAccountInstruction(
+  const ix = await createAssociatedTokenAccountInstruction(
+    associatedTokenAccount,
     payer,
     owner,
     mint
-  ));
+  );
+  tx.add(ix);
   const txid = await provider.send(tx);
+  
   console.log('Created Token Account: ', txid);
-  return aTokenAccount
+
+  return associatedTokenAccount;
 }
 
 /**
@@ -62,11 +66,11 @@ export async function createATokenAccount(
  * @param mint - Asset mint to create token account for
  */
 export async function createAssociatedTokenAccountInstruction(
+  associatedTokenAccount: web3.PublicKey,
   payer: web3.PublicKey,
   owner: web3.PublicKey,
   mint: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [associatedTokenAccount] = await getAtaForMint(mint, payer);
 
   const keys = [
     {
@@ -113,7 +117,7 @@ export async function createAssociatedTokenAccountInstruction(
     }
   );
 
-  return txInstruction
+  return txInstruction;
 }
 
 /**
@@ -121,26 +125,26 @@ export async function createAssociatedTokenAccountInstruction(
  * 
  * @param provider
  * @param mint - Asset mint
- * @param associatedTokenAccount - Account for minted tokens to be deposited into
+ * @param destinationTokenAccount - Account for minted tokens to be deposited into
  * @param amount - Desired number of tokens to be minted
  * @param mintAuthority - Publickey of mint authority
  */
 export async function mintTokens(
   provider: Provider,
   mint: web3.PublicKey,
-  associatedTokenAccount: web3.PublicKey,
+  destinationTokenAccount: web3.PublicKey,
   amount: number,
   mintAuthority?: web3.PublicKey,
 ): Promise<web3.TransactionSignature> {
   const tx = new web3.Transaction();
 
-  mintAuthority = mintAuthority || provider.wallet.publicKey
+  mintAuthority = mintAuthority || provider.wallet.publicKey;
 
   tx.add(Token.createMintToInstruction(
     TOKEN_PROGRAM_ID,
     mint,
-    associatedTokenAccount,
-    provider.wallet.publicKey,
+    destinationTokenAccount,
+    mintAuthority,
     [],
     amount,
   ));
@@ -165,8 +169,8 @@ export async function createMint(
 
   const lamps = await provider.connection.getMinimumBalanceForRentExemption(MintLayout.span);
 
-  mintAuthority = mintAuthority || provider.wallet.publicKey
-  freezeAuthority = freezeAuthority || provider.wallet.publicKey
+  mintAuthority = mintAuthority || provider.wallet.publicKey;
+  freezeAuthority = freezeAuthority || provider.wallet.publicKey;
 
   const createAccountInstruction = web3.SystemProgram.createAccount({
     fromPubkey: provider.wallet.publicKey,
@@ -190,9 +194,7 @@ export async function createMint(
   const txid = await provider.send(tx, [account]);
   console.log('Created mint: ', txid);
 
-  return account.publicKey
-
-
+  return account.publicKey;
 }
 
 /**
@@ -210,5 +212,6 @@ export async function confirmTokenBalance(
   const tokenData = await provider.connection.getAccountInfo(tokenAccount, 'recent');
   const tokenAmount = byteArrayToLong(tokenData.data.slice(64, 72));
 
-  assert(tokenAmount == expectedQuantity);
+  assert(tokenAmount == expectedQuantity, 
+    `On-chain Token amount of ${tokenAmount} does not match expected amount ${expectedQuantity}`);
 }
