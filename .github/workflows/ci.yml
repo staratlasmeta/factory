@@ -2,7 +2,7 @@ name: Star Atlas Factory Health Checks
 
 on:
   pull_request:
-    branches: [ main, stable ]
+    branches: [ main, develop ]
 
 jobs:
   build:
