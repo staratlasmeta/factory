@@ -174,7 +174,7 @@ export async function getScoreTreasuryAuthAccount(
 }
 
 /**
- * Sets Score variables account and creates ATLAS treasury token account
+ * Initializes Score variables account and creates ATLAS treasury token account
  * 
  * @param connection - web3.Connection object
  * @param updateAuthorityAccount - Desired authority public key
