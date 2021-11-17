@@ -5,7 +5,6 @@ import {
   Provider,
   web3
 } from '@project-serum/anchor'
-import { idlAddress } from '@project-serum/anchor/dist/idl';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { SystemProgram } from '@solana/web3.js';
 import { getPlayerFactionPDA } from '.';
