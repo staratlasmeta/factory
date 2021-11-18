@@ -565,7 +565,7 @@ export async function settleInstruction(
 ): Promise<web3.TransactionInstruction> {
   const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
   const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAuthAccount] = await getScoreVarsAuthAccount(programId);
+  const [scoreVarsAccount] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId); 
   const provider = new Provider(connection, null, null);
@@ -576,7 +576,7 @@ export async function settleInstruction(
         updateAuthorityAccount: updateAuthorityAccount,
         shipStakingAccount: shipStakingAccount,
         scoreVarsShipAccount: scoreVarsShipAccount,
-        scoreVarsAuthAccount: scoreVarsAuthAccount,
+        scoreVarsAccount: scoreVarsAccount,
       }
     }
   );
