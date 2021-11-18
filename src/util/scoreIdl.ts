@@ -479,6 +479,73 @@ export const baseIdl: unknown = {
             'type': 'u64'
           }
         ]
+      },
+      {
+        'name': 'processSettle',
+        'accounts': [
+          {
+            'name': 'updateAuthorityAccount',
+            'isMut': false,
+            'isSigner': true
+          },
+          {
+            'name': 'shipStakingAccount',
+            'isMut': true,
+            'isSigner': false
+          },
+          {
+            'name': 'scoreVarsShipAccount',
+            'isMut': false,
+            'isSigner': false
+          },
+          {
+            'name': 'scoreVarsAuthAccount',
+            'isMut': false,
+            'isSigner': false
+          }
+        ],
+        'args': []
+      },
+      {
+        'name': 'processHarvest',
+        'accounts': [
+          {
+            'name': 'playerAccount',
+            'isMut': false,
+            'isSigner': true
+          },
+          {
+            'name': 'shipStakingAccount',
+            'isMut': true,
+            'isSigner': false
+          },
+          {
+            'name': 'scoreVarsShipAccount',
+            'isMut': false,
+            'isSigner': false
+          },
+          {
+            'name': 'playerAtlasTokenAccount',
+            'isMut': true,
+            'isSigner': false
+          },
+          {
+            'name': 'treasuryTokenAccount',
+            'isMut': true,
+            'isSigner': false
+          },
+          {
+            'name': 'treasuryAuthorityAccount',
+            'isMut': false,
+            'isSigner': false
+          },
+          {
+            'name': 'tokenProgram',
+            'isMut': false,
+            'isSigner': false
+          }
+        ],
+        'args': []
       }
     ],
     'accounts': [
@@ -564,7 +631,11 @@ export const baseIdl: unknown = {
               'type': 'u64'
             },
             {
-              'name': 'totalRewardPaid',
+              'name': 'pendingRewards',
+              'type': 'u64'
+            },
+            {
+              'name': 'totalRewardsPaid',
               'type': 'u64'
             }
           ]
@@ -674,6 +745,11 @@ export const baseIdl: unknown = {
         'code': 306,
         'name': 'ResourceAmountTooSmall',
         'msg': 'Resource Amount Too Small, would add 0 seconds to capacity'
+      },
+      {
+        'code': 307,
+        'name': 'InvalidScoreVarsAccount',
+        'msg': 'Invalid ScoreVars account for ship Staking Account given'
       }
     ],
     'metadata': {

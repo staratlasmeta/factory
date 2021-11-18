@@ -218,7 +218,7 @@ export async function initializeAuthorityInstruction(
  * Initiates Score variables account for a provided ship mint.
  * 
  * @param connection - web3.Connection object
- * @param updateAuthorityAccount 
+ * @param updateAuthorityAccount - valid authority public key 
  * @param shipMint - Ship mint address
  * @param fuelMaxReserve - Max fuel in units
  * @param foodMaxReserve - Max food in units
@@ -521,6 +521,81 @@ export async function repairInstruction(
         toolkitMint: toolkitMint,
         toolkitTokenAccountSource: toolkitTokenAccount,
         toolkitTokenAccountBurn: toolkitTokenAccountBurn,
+      }
+    }
+  );
+  return ix;
+}
+
+/**
+ * Returns an instruction that can be used to update the amount of ATLAS in a player's pending rewards and update staked time paid
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param updateAuthorityAccount - valid authority public key
+ * @param shipMint - Ship mint address
+ * @param programId - Deployed program ID for the SCORE program
+ */
+export async function settleInstruction(
+  connection: web3.Connection,
+  playerPublicKey: web3.PublicKey,
+  updateAuthorityAccount: web3.PublicKey,
+  shipMint: web3.PublicKey,
+  programId: web3.PublicKey
+): Promise<web3.TransactionInstruction> {
+  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
+  const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
+  const [scoreVarsAuthAccount] = await getScoreVarsAuthAccount(programId);
+
+  const idl = getScoreIDL(programId); 
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const ix = await program.instruction.processSettle(
+    {
+      accounts: {
+        updateAuthorityAccount: updateAuthorityAccount,
+        shipStakingAccount: shipStakingAccount,
+        scoreVarsShipAccount: scoreVarsShipAccount,
+        scoreVarsAuthAccount: scoreVarsAuthAccount,
+      }
+    }
+  );
+  return ix;
+}
+
+/**
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param playerAtlasTokenAccount - Player's atlas token account public key TODO: can replace with getAtaForMint once we have ATLAS mint address
+ * @param shipMint - Ship mint address
+ * @param programId - Deployed program ID for the SCORE program
+ */
+export async function harvestInstruction(
+  connection: web3.Connection,
+  playerPublicKey: web3.PublicKey,
+  playerAtlasTokenAccount: web3.PublicKey,
+  shipMint: web3.PublicKey,
+  programId: web3.PublicKey
+): Promise<web3.TransactionInstruction> {
+  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
+  const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
+  const [treasuryTokenAccount] = await getScoreTreasuryTokenAccount(programId);
+  const [treasuryAuthorityAccount] = await getScoreTreasuryAuthAccount(programId);
+
+  const idl = getScoreIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const ix = await program.instruction.processHarvest(
+    {
+      accounts: {
+        playerAccount: playerPublicKey,
+        shipStakingAccount: shipStakingAccount,
+        scoreVarsShipAccount: scoreVarsShipAccount,
+        playerAtlasTokenAccount: playerAtlasTokenAccount,
+        treasuryTokenAccount: treasuryTokenAccount,
+        treasuryAuthorityAccount: treasuryAuthorityAccount,
+        tokenProgram: TOKEN_PROGRAM_ID
       }
     }
   );
