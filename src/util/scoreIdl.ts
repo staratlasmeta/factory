@@ -1,4 +1,3 @@
-
 export const baseIdl: unknown = {
   'version': '0.0.0',
   'name': 'score',
@@ -764,6 +763,7 @@ export const baseIdl: unknown = {
           }
         ]
       },
+    },
       {
         'name': 'processSettle',
         'accounts': [
@@ -831,7 +831,6 @@ export const baseIdl: unknown = {
         ],
         'args': []
       }
-    }
   ],
   'errors': [
     {
