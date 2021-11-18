@@ -763,6 +763,73 @@ export const baseIdl: unknown = {
             'type': 'u16'
           }
         ]
+      },
+      {
+        'name': 'processSettle',
+        'accounts': [
+          {
+            'name': 'updateAuthorityAccount',
+            'isMut': false,
+            'isSigner': true
+          },
+          {
+            'name': 'shipStakingAccount',
+            'isMut': true,
+            'isSigner': false
+          },
+          {
+            'name': 'scoreVarsShipAccount',
+            'isMut': false,
+            'isSigner': false
+          },
+          {
+            'name': 'scoreVarsAuthAccount',
+            'isMut': false,
+            'isSigner': false
+          }
+        ],
+        'args': []
+      },
+      {
+        'name': 'processHarvest',
+        'accounts': [
+          {
+            'name': 'playerAccount',
+            'isMut': false,
+            'isSigner': true
+          },
+          {
+            'name': 'shipStakingAccount',
+            'isMut': true,
+            'isSigner': false
+          },
+          {
+            'name': 'scoreVarsShipAccount',
+            'isMut': false,
+            'isSigner': false
+          },
+          {
+            'name': 'playerAtlasTokenAccount',
+            'isMut': true,
+            'isSigner': false
+          },
+          {
+            'name': 'treasuryTokenAccount',
+            'isMut': true,
+            'isSigner': false
+          },
+          {
+            'name': 'treasuryAuthorityAccount',
+            'isMut': false,
+            'isSigner': false
+          },
+          {
+            'name': 'tokenProgram',
+            'isMut': false,
+            'isSigner': false
+          }
+        ],
+        'args': []
       }
     }
   ],
