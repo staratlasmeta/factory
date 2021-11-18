@@ -1,4 +1,3 @@
-
 export const baseIdl: unknown = {
   'version': '0.0.0',
   'name': 'score',

@@ -1,8 +1,8 @@
-name: Star Atlas Factory Health Checks
+name: 👩‍⚕️ Star Atlas Factory Health Checks 👨‍⚕️️
 
 on:
   pull_request:
-    branches: [ main, stable ]
+    branches: [ main, develop ]
 
 jobs:
   build:
@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 14.16.1 ]
+        node-version: [ 16.11.1 ]
 
     steps:
     - uses: actions/checkout@v2
