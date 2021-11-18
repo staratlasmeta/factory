@@ -762,7 +762,7 @@ export const baseIdl: unknown = {
             'type': 'u16'
           }
         ]
-      }
+      },
     }
   ],
   'errors': [
