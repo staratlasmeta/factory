@@ -34,40 +34,72 @@ const factionProgramId = new web3.PublicKey('FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5Cg
  * pendingRewards - Rewards in ATLAS to be paid to user on next harvest
  * totalRewardsPaid - Rewards paid in ATLAS in base units (8 decimals)
  */
-export interface ShipStakingAccountInfo {
+export interface ShipStakingInfo {
   owner: web3.PublicKey;
   factionId: number;
   shipMint: web3.PublicKey;
-  shipQuantityInEscrow: number;
-  fuelQuantityInEscrow: number;
-  foodQuantityInEscrow: number;
-  armsQuantityInEscrow: number;
-  fuelCurrentCapacity: number;
-  foodCurrentCapacity: number;
-  armsCurrentCapacity: number;
-  healthCurrentCapacity: number;
-  stakedAtTimestamp: number;
-  fueledAtTimestamp: number;
-  fedAtTimestamp: number;
-  armedAtTimestamp: number;
-  repairedAtTimestamp: number;
-  currentCapacityTimestamp: number;
-  totalTimeStaked: number;
-  pendingRewards: number;
-  totalRewardsPaid: number;
+  shipQuantityInEscrow: BN;
+  fuelQuantityInEscrow: BN;
+  foodQuantityInEscrow: BN;
+  armsQuantityInEscrow: BN;
+  fuelCurrentCapacity: BN;
+  foodCurrentCapacity: BN;
+  armsCurrentCapacity: BN;
+  healthCurrentCapacity: BN;
+  stakedAtTimestamp: BN;
+  fueledAtTimestamp: BN;
+  fedAtTimestamp: BN;
+  armedAtTimestamp: BN;
+  repairedAtTimestamp: BN;
+  currentCapacityTimestamp: BN;
+  totalTimeStaked: BN;
+  pendingRewards: BN;
+  totalRewardsPaid: BN;
 }
 
+/**
+ * shipMint: Ship mint address
+ * rewardRatePerSecond - ATLAS rewarded per second staked
+ * fuelMaxReserve - Maximum number of fuel in units
+ * foodMaxReserve - Maximum number of food in units
+ * armsMaxReserve - Maximum number of arms in units
+ * toolkitMaxReserve - Maximum number of toolkits in units
+ * secondsToBurnOneFuel - Seconds to burn one unit of fuel
+ * secondsToBurnOneFood - Seconds to burn one unit of food
+ * secondsToBurnOneArms - Seconds to burn one unit of arms
+ * secondsToBurnOneToolkit - Seconds to burn one unit of toolkits
+ */
 export interface ScoreVarsShipInfo {
   shipMint: web3.PublicKey;
-  rewardRatePerSecond: number;
-  fuelMaxReserve: number;
-  foodMaxReserve: number;
-  armsMaxReserve: number;
-  toolkitMaxReserve: number;
-  secondsToBurnOneFuel: number;
-  secondsToBurnOneFood: number;
-  secondsToBurnOneArms: number;
-  secondsToBurnOneToolkit: number;
+  rewardRatePerSecond: BN;
+  fuelMaxReserve: BN;
+  foodMaxReserve: BN;
+  armsMaxReserve: BN;
+  toolkitMaxReserve: BN;
+  secondsToBurnOneFuel: BN;
+  secondsToBurnOneFood: BN;
+  secondsToBurnOneArms: BN;
+  secondsToBurnOneToolkit: BN;
+}
+
+/**
+ * 
+ * updateAuthorityMaster - Public key for master update authority
+ * updateAuthority1 - Public key for alternate update authority
+ * updateAuthority2 - Public key for alternate update authority
+ * fuelMint - Public key for fuel mint
+ * foodMint - Public key for food mint
+ * armsMint - Public key for arms mint
+ * toolkitMint - Public key for toolkit mint
+ */
+export interface ScoreVarsInfo {
+  updateAuthorityMaster: web3.PublicKey;
+  updateAuthority1: web3.PublicKey;
+  updateAuthority2: web3.PublicKey;
+  fuelMint: web3.PublicKey;
+  foodMint: web3.PublicKey;
+  armsMint: web3.PublicKey;
+  toolkitMint: web3.PublicKey;
 }
 
 /**
@@ -197,20 +229,38 @@ export async function getShipStakingAccount(
 }
 
 /**
- * Get the current ship staking account info for a player and ship mint.
+ * Returns the current SCORE variables info.
+ * 
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the SCORE program
+ */
+export async function getScoreVarsInfo(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+): Promise<ScoreVarsInfo> {
+  const provider = new Provider(connection, null, null);
+  const idl = getScoreIDL(programId);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const [scoreVarsAccount] = await getScoreVarsAccount(programId);
+  const obj = await program.account.scoreVars.fetch(scoreVarsAccount);
+  return <ScoreVarsInfo>obj;
+}
+
+/**
+ * Returns the current ship staking account info for a player and ship mint.
  * 
  * @param connection - web3.Connection object
  * @param programId - Deployed program ID for the SCORE program
  * @param shipMint - ship mint address
  * @param playerPublicKey - Player's public key
- * @returns 
  */
 export async function getShipStakingAccountInfo(
   connection: web3.Connection,
   programId: web3.PublicKey,
   shipMint: web3.PublicKey,
   playerPublicKey: web3.PublicKey
-): Promise<ShipStakingAccountInfo> {
+): Promise<ShipStakingInfo> {
 
   const provider = new Provider(connection, null, null);
   const idl = getScoreIDL(programId);
@@ -218,9 +268,16 @@ export async function getShipStakingAccountInfo(
 
   const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
   const obj = await program.account.shipStaking.fetch(shipStakingAccount);
-  return <ShipStakingAccountInfo>obj;
+  return <ShipStakingInfo>obj;
 }
 
+/**
+ * Returns the current SCORE variables info for a designated ship mint.
+ * 
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the SCORE program
+ * @param shipMint - Ship mint address
+ */
 export async function getScoreVarsShipInfo(
   connection: web3.Connection,
   programId: web3.PublicKey,
