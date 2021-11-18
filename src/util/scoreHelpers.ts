@@ -200,9 +200,9 @@ export async function createMint(
 /**
  * Asserts that the balance of a token account matches the provided expected quantity
  * 
- * @param provider 
+ * @param provider - Connection/wallet context 
  * @param tokenAccount - Public key of account to be confirmed
- * @param expectedQuantity 
+ * @param expectedQuantity - Expected number of tokens in account
  */
 export async function confirmTokenBalance(
   provider: Provider,
@@ -214,4 +214,32 @@ export async function confirmTokenBalance(
 
   assert(tokenAmount == expectedQuantity, 
     `On-chain Token amount of ${tokenAmount} does not match expected amount ${expectedQuantity}`);
+}
+
+/**
+ * Transfers tokens between designated wallets and retursn a transaction signature.
+ * 
+ * @param provider - Connection/wallet context 
+ * @param fromWallet - Source account 
+ * @param toWallet - Destination account 
+ * @param amount - Number of tokens to transfer
+ */
+export async function sendTokens(
+  provider: Provider, // Keep provider or add connection and pass in owner?
+  fromWallet: web3.PublicKey,
+  toWallet: web3.PublicKey,
+  amount: number
+): Promise<web3.TransactionSignature> {
+  const tx = new web3.Transaction();
+  tx.add(Token.createTransferInstruction(
+    TOKEN_PROGRAM_ID,
+    fromWallet,
+    toWallet,
+    provider.wallet.publicKey,
+    [],
+    amount,
+  ))
+
+  const txid = await provider.send(tx);
+  return txid
 }
