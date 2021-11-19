@@ -585,6 +585,265 @@ export const baseIdl: unknown = {
         }
       ],
       'args': []
+    },
+    {
+      'name': 'processWithdrawFuel',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelTokenAccountReturn',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelMint',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'withdrawAmount',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'processWithdrawFood',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'foodTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'foodTokenAccountReturn',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'foodMint',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'withdrawAmount',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'processWithdrawArms',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'armsTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'armsTokenAccountReturn',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'armsMint',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'withdrawAmount',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'processWithdrawShip',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'playerAtlasTokenAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipTokenAccountReturn',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'toolkitTokenAccountSource',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'treasuryTokenAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'treasuryAuthorityAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
     }
   ],
   'accounts': [
@@ -810,6 +1069,11 @@ export const baseIdl: unknown = {
       'code': 308,
       'name': 'InvalidScoreVarsAccount',
       'msg': 'Invalid ScoreVars account for ship Staking Account given'
+    },
+    {
+      'code': 309,
+      'name': 'InvalidResourceWithdraw',
+      'msg': 'Invalid Resource Withdraw, nothing to withdraw'
     }
   ],
   'metadata': {
