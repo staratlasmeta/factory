@@ -291,6 +291,26 @@ export const baseIdl: unknown = {
       ],
       'args': [
         {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
           'name': 'fuelQuantity',
           'type': 'u64'
         }
@@ -366,6 +386,26 @@ export const baseIdl: unknown = {
         }
       ],
       'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
         {
           'name': 'foodQuantity',
           'type': 'u64'
@@ -443,6 +483,26 @@ export const baseIdl: unknown = {
       ],
       'args': [
         {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
           'name': 'armsQuantity',
           'type': 'u64'
         }
@@ -498,21 +558,28 @@ export const baseIdl: unknown = {
         },
         {
           'name': 'toolkitMint',
-          'isMut': false,
+          'isMut': true,
           'isSigner': false
         },
         {
           'name': 'toolkitTokenAccountSource',
           'isMut': true,
           'isSigner': false
-        },
-        {
-          'name': 'toolkitTokenAccountBurn',
-          'isMut': true,
-          'isSigner': false
         }
       ],
       'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
         {
           'name': 'toolkitQuantity',
           'type': 'u64'
@@ -1021,7 +1088,7 @@ export const baseIdl: unknown = {
             'type': 'u16'
           }
         ]
-      },
+      }
     }
   ],
   'errors': [
