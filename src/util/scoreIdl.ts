@@ -211,7 +211,19 @@ export const baseIdl: unknown = {
       ],
       'args': [
         {
-          'name': 'bump',
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
           'type': 'u8'
         },
         {
@@ -590,6 +602,11 @@ export const baseIdl: unknown = {
       'name': 'processSettle',
       'accounts': [
         {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
           'name': 'updateAuthorityAccount',
           'isMut': false,
           'isSigner': true
@@ -608,9 +625,27 @@ export const baseIdl: unknown = {
           'name': 'scoreVarsAccount',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        }
+      ]
     },
     {
       'name': 'processHarvest',
@@ -649,9 +684,31 @@ export const baseIdl: unknown = {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryAuthBump',
+          'type': 'u8'
+        }
+      ]
     },
     {
       'name': 'processWithdrawFuel',
@@ -705,9 +762,34 @@ export const baseIdl: unknown = {
           'name': 'clock',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
         }
       ],
       'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
         {
           'name': 'withdrawAmount',
           'type': 'u64'
@@ -766,9 +848,34 @@ export const baseIdl: unknown = {
           'name': 'clock',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
         }
       ],
       'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
         {
           'name': 'withdrawAmount',
           'type': 'u64'
@@ -827,9 +934,34 @@ export const baseIdl: unknown = {
           'name': 'clock',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
         }
       ],
       'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
         {
           'name': 'withdrawAmount',
           'type': 'u64'
@@ -1141,6 +1273,11 @@ export const baseIdl: unknown = {
       'code': 309,
       'name': 'InvalidResourceWithdraw',
       'msg': 'Invalid Resource Withdraw, nothing to withdraw'
+    },
+    {
+      'code': 310,
+      'name': 'InvalidShipStakingOwner',
+      'msg': 'Invalid Ship Staking Owner'
     }
   ],
   'metadata': {

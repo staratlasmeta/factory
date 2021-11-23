@@ -463,17 +463,20 @@ export async function initialDepositInstruction(
   shipTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [escrowAuthority] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
-  const [shipEscrow] = await getScoreEscrowAccount(programId, shipMint, null, playerPublicKey);
-  const [shipStakingAccount, shipStakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
-  const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
+  const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
+  const [shipEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, null, playerPublicKey);
+  const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+  const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, factionProgramId);
 
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processInitialDeposit(
-    shipStakingBump,
+    stakingBump,
+    scoreVarsShipBump,
+    escrowAuthBump,
+    escrowBump,
     new BN(shipQuantity),
     {
       accounts: {
@@ -733,20 +736,25 @@ export async function settleInstruction(
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
-  const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount] = await getScoreVarsAccount(programId);
+  const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+  const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
+  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId); 
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processSettle(
+    stakingBump,
+    scoreVarsBump,
+    scoreVarsShipBump,
     {
       accounts: {
+        playerAccount: playerPublicKey,
         updateAuthorityAccount: updateAuthorityAccount,
         shipStakingAccount: shipStakingAccount,
         scoreVarsShipAccount: scoreVarsShipAccount,
         scoreVarsAccount: scoreVarsAccount,
+        shipMint: shipMint,
       }
     }
   );
@@ -768,15 +776,19 @@ export async function harvestInstruction(
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
-  const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
-  const [treasuryTokenAccount] = await getScoreTreasuryTokenAccount(programId);
-  const [treasuryAuthorityAccount] = await getScoreTreasuryAuthAccount(programId);
+  const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+  const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
+  const [treasuryTokenAccount, treasuryBump] = await getScoreTreasuryTokenAccount(programId);
+  const [treasuryAuthorityAccount, treasuryAuthBump] = await getScoreTreasuryAuthAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processHarvest(
+    stakingBump,
+    scoreVarsShipBump,
+    treasuryBump,
+    treasuryAuthBump,
     {
       accounts: {
         playerAccount: playerPublicKey,
@@ -785,7 +797,8 @@ export async function harvestInstruction(
         playerAtlasTokenAccount: playerAtlasTokenAccount,
         treasuryTokenAccount: treasuryTokenAccount,
         treasuryAuthorityAccount: treasuryAuthorityAccount,
-        tokenProgram: TOKEN_PROGRAM_ID
+        tokenProgram: TOKEN_PROGRAM_ID,
+        shipMint: shipMint,
       }
     }
   );
@@ -811,16 +824,21 @@ export async function harvestInstruction(
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [escrowAuthority] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
-  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
-  const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount] = await getScoreVarsAccount(programId);
-  const [fuelEscrow] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey);
+  const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
+  const [fuelEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey);
+  const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+  const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
+  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processWithdrawFuel(
+    stakingBump,
+    scoreVarsBump,
+    scoreVarsShipBump,
+    escrowAuthBump,
+    escrowBump,
     new BN(withdrawAmount),
     {
       accounts: {
@@ -834,6 +852,7 @@ export async function harvestInstruction(
         escrowAuthority: escrowAuthority,
         tokenProgram: TOKEN_PROGRAM_ID,
         clock: web3.SYSVAR_CLOCK_PUBKEY,
+        shipMint: shipMint,
       }
     }
   );
@@ -859,16 +878,22 @@ export async function harvestInstruction(
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [escrowAuthority] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
-  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
-  const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount] = await getScoreVarsAccount(programId);
-  const [foodEscrow] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey);
+
+  const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
+  const [foodEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey);
+  const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+  const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
+  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processWithdrawFood(
+    stakingBump,
+    scoreVarsBump,
+    scoreVarsShipBump,
+    escrowAuthBump,
+    escrowBump,
     new BN(withdrawAmount),
     {
       accounts: {
@@ -882,6 +907,7 @@ export async function harvestInstruction(
         escrowAuthority: escrowAuthority,
         tokenProgram: TOKEN_PROGRAM_ID,
         clock: web3.SYSVAR_CLOCK_PUBKEY,
+        shipMint: shipMint,
       }
     }
   );
@@ -907,16 +933,21 @@ export async function harvestInstruction(
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [escrowAuthority] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
-  const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey)
-  const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount] = await getScoreVarsAccount(programId);
-  const [armsEscrow] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey);
+  const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
+  const [armsEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey);
+  const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+  const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
+  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processWithdrawArms(
+    stakingBump,
+    scoreVarsBump,
+    scoreVarsShipBump,
+    escrowAuthBump,
+    escrowBump,
     new BN(withdrawAmount),
     {
       accounts: {
@@ -930,6 +961,7 @@ export async function harvestInstruction(
         escrowAuthority: escrowAuthority,
         tokenProgram: TOKEN_PROGRAM_ID,
         clock: web3.SYSVAR_CLOCK_PUBKEY,
+        shipMint: shipMint,
       }
     }
   );
