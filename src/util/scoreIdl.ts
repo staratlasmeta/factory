@@ -969,7 +969,7 @@ export const baseIdl: unknown = {
       ]
     },
     {
-      'name': 'processWithdrawShip',
+      'name': 'processWithdrawShips',
       'accounts': [
         {
           'name': 'playerAccount',
@@ -1040,9 +1040,48 @@ export const baseIdl: unknown = {
           'name': 'clock',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'toolkitMint',
+          'isMut': true,
+          'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryBump',
+          'type': 'u8'
+        }
+      ]
     }
   ],
   'accounts': [
@@ -1278,6 +1317,11 @@ export const baseIdl: unknown = {
       'code': 310,
       'name': 'InvalidShipStakingOwner',
       'msg': 'Invalid Ship Staking Owner'
+    },
+    {
+      'code': 311,
+      'name': 'InvalidShipWithdraw',
+      'msg': 'Invalid Ship Withdraw'
     }
   ],
   'metadata': {
