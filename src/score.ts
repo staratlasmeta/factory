@@ -340,7 +340,7 @@ export async function getScoreTreasuryAuthAccount(
  * @param toolkitMint - Toolkit mint address
  * @param programId - Deployed program ID for the SCORE program
  */
-export async function initializeInstruction(
+export async function createScoreVarsInitializeInstruction(
   connection: web3.Connection, 
   updateAuthorityAccount: web3.PublicKey,
   atlasMint: web3.PublicKey,
@@ -398,7 +398,7 @@ export async function initializeInstruction(
  * @param rewardRatePerSecond - Atlas rewarded per second
  * @param programId - Deployed Score program ID
  */
-export async function registerShipInstruction(
+export async function createRegisterShipInstruction(
   connection: web3.Connection,
   updateAuthorityAccount: web3.PublicKey,
   shipMint: web3.PublicKey,
@@ -455,7 +455,7 @@ export async function registerShipInstruction(
  * @param shipTokenAccount - Token account for the ship resource being deposited
  * @param programId - Deployed program ID for the SCORE program
  */
-export async function initialDepositInstruction(
+export async function createInitialDepositInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   shipQuantity: number,
@@ -506,7 +506,7 @@ export async function initialDepositInstruction(
  * @param armsTokenAccount - Token account for the arms resources being deposited
  * @param programId - Deployed program ID for the SCORE program
  */
-export async function rearmInstruction(
+export async function createRearmInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   armsQuantity: number,
@@ -558,7 +558,7 @@ export async function rearmInstruction(
  * @param foodTokenAccount - Token account for the food resource being deposited
  * @param programId - Deployed program ID for the SCORE program
  */
-export async function refeedInstruction(
+export async function createRefeedInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   foodQuantity: number,
@@ -610,7 +610,7 @@ export async function refeedInstruction(
  * @param fuelTokenAccount - Token account for the fuel resource being deposited
  * @param programId - Deployed program ID for the SCORE program
  */
-export async function refuelInstruction(
+export async function createRefuelInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   fuelQuantity: number,
@@ -663,7 +663,7 @@ export async function refuelInstruction(
  * @param toolkitTokenAccountBurn - Burn account which tokens are transfered to when used
  * @param programId - Deployed program ID for the SCORE program
  */
-export async function repairInstruction(
+export async function createRepairInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   toolkitQuantity: number,
@@ -711,7 +711,7 @@ export async function repairInstruction(
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
  */
-export async function settleInstruction(
+export async function createSettleInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   updateAuthorityAccount: web3.PublicKey,
@@ -746,7 +746,7 @@ export async function settleInstruction(
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
  */
-export async function harvestInstruction(
+export async function createHarvestInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   playerAtlasTokenAccount: web3.PublicKey,
