@@ -1082,6 +1082,102 @@ export const baseIdl: unknown = {
           'type': 'u8'
         }
       ]
+    },
+    {
+      'name': 'processCloseAccounts',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'foodTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'armsTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'foodMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'armsMint',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'shipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'fuelBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'foodBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'armsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        }
+      ]
     }
   ],
   'accounts': [
@@ -1322,6 +1418,11 @@ export const baseIdl: unknown = {
       'code': 311,
       'name': 'InvalidShipWithdraw',
       'msg': 'Invalid Ship Withdraw'
+    },
+    {
+      'code': 312,
+      'name': 'EscrowAccountNotZero',
+      'msg': 'Escrow account must be 0 to close accounts'
     }
   ],
   'metadata': {

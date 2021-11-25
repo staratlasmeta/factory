@@ -1030,3 +1030,61 @@ export async function harvestInstruction(
   );
   return ix;
 }
+
+/**
+ * Close all escrow accounts and ship staking accounts
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param shipMint - Ship mint address
+ * @param fuelMint - Fuel mint address
+ * @param foodMint - Food mint address
+ * @param armsMint - Arms mint address
+ * @param programId - Deployed program ID for the SCORE program
+ */
+ export async function closeAccountsInstruction(
+  connection: web3.Connection,
+  playerPublicKey: web3.PublicKey,
+  shipMint: web3.PublicKey,
+  fuelMint: web3.PublicKey,
+  foodMint: web3.PublicKey,
+  armsMint: web3.PublicKey,
+  programId: web3.PublicKey
+): Promise<web3.TransactionInstruction> {
+  const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
+  const [shipEscrow, shipBump] = await getScoreEscrowAccount(programId, shipMint, null, playerPublicKey);
+  const [fuelEscrow, fuelBump] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey);
+  const [foodEscrow, foodBump] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey);
+  const [armsEscrow, armsBump] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey);
+  const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+
+  const idl = getScoreIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const ix = await program.instruction.processCloseAccounts(
+    stakingBump,
+    shipBump,
+    fuelBump,
+    foodBump,
+    armsBump,
+    escrowAuthBump,
+    {
+      accounts: {
+        playerAccount: playerPublicKey,
+        shipStakingAccount: shipStakingAccount,
+        shipTokenAccountEscrow: shipEscrow,
+        fuelTokenAccountEscrow: fuelEscrow,
+        foodTokenAccountEscrow: foodEscrow,
+        armsTokenAccountEscrow: armsEscrow,
+        escrowAuthority: escrowAuthority,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: web3.SystemProgram.programId,
+        shipMint: shipMint,
+        fuelMint: fuelMint,
+        foodMint: foodMint,
+        armsMint: armsMint,
+      }
+    }
+  );
+  return ix;
+}
