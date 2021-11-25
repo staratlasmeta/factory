@@ -210,10 +210,13 @@ export async function confirmTokenBalance(
   expectedQuantity: number
 ) {
   const tokenData = await provider.connection.getAccountInfo(tokenAccount, 'recent');
-  const tokenAmount = byteArrayToLong(tokenData.data.slice(64, 72));
-
-  assert(tokenAmount == expectedQuantity, 
-    `On-chain Token amount of ${tokenAmount} does not match expected amount ${expectedQuantity}`);
+  if (tokenData !== null) {
+    const tokenAmount = byteArrayToLong(tokenData.data.slice(64, 72));
+    assert(tokenAmount == expectedQuantity, 
+      `On-chain Token amount of ${tokenAmount} does not match expected amount ${expectedQuantity}`);
+  } else {
+    console.log('Token account %s does not exist', tokenAccount.toString());
+  }
 }
 
 /**
