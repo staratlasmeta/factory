@@ -207,9 +207,16 @@ export async function createMint(
 export async function confirmTokenBalance(
   provider: Provider,
   tokenAccount: web3.PublicKey,
-  expectedQuantity: number
+  expectedQuantity: number,
+  confirmClosed?: boolean
 ) {
   const tokenData = await provider.connection.getAccountInfo(tokenAccount, 'recent');
+  
+  // Confirm account is closed
+  if (confirmClosed === true) {
+    assert(tokenData === null);
+  }
+
   if (tokenData !== null) {
     const tokenAmount = byteArrayToLong(tokenData.data.slice(64, 72));
     assert(tokenAmount == expectedQuantity, 
