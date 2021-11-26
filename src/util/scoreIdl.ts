@@ -1097,6 +1097,11 @@ export const baseIdl: unknown = {
           'isSigner': false
         },
         {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
           'name': 'shipTokenAccountEscrow',
           'isMut': true,
           'isSigner': false
@@ -1155,6 +1160,10 @@ export const baseIdl: unknown = {
       'args': [
         {
           'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
           'type': 'u8'
         },
         {

@@ -1056,6 +1056,7 @@ export async function harvestInstruction(
   const [fuelEscrow, fuelBump] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey);
   const [foodEscrow, foodBump] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey);
   const [armsEscrow, armsBump] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey);
+  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
 
   const idl = getScoreIDL(programId);
@@ -1063,6 +1064,7 @@ export async function harvestInstruction(
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processCloseAccounts(
     stakingBump,
+    scoreVarsBump,
     shipBump,
     fuelBump,
     foodBump,
@@ -1072,6 +1074,7 @@ export async function harvestInstruction(
       accounts: {
         playerAccount: playerPublicKey,
         shipStakingAccount: shipStakingAccount,
+        scoreVarsAccount: scoreVarsAccount,
         shipTokenAccountEscrow: shipEscrow,
         fuelTokenAccountEscrow: fuelEscrow,
         foodTokenAccountEscrow: foodEscrow,
