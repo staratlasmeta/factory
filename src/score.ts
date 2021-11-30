@@ -815,7 +815,7 @@ export async function createHarvestInstruction(
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
  */
- export async function withdrawFuelInstruction(
+ export async function createWithdrawFuelInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   withdrawAmount: number,
@@ -869,7 +869,7 @@ export async function createHarvestInstruction(
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
  */
- export async function withdrawFoodInstruction(
+ export async function createWithdrawFoodInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   withdrawAmount: number,
@@ -924,7 +924,7 @@ export async function createHarvestInstruction(
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
  */
- export async function withdrawArmsInstruction(
+ export async function createWithdrawArmsInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   withdrawAmount: number,
@@ -978,7 +978,7 @@ export async function createHarvestInstruction(
  * @param toolkitMint - Toolkit resource mint address
  * @param programId - Deployed program ID for the SCORE program
  */
- export async function withdrawShipsInstruction(
+ export async function createWithdrawShipsInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   playerAtlasTokenAccount: web3.PublicKey,
