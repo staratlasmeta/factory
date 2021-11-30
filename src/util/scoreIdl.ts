@@ -627,6 +627,11 @@ export const baseIdl: unknown = {
           'isSigner': false
         },
         {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
           'name': 'shipMint',
           'isMut': false,
           'isSigner': false
@@ -682,6 +687,11 @@ export const baseIdl: unknown = {
         },
         {
           'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
           'isMut': false,
           'isSigner': false
         },
@@ -1153,6 +1163,11 @@ export const baseIdl: unknown = {
         },
         {
           'name': 'armsMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
           'isMut': false,
           'isSigner': false
         }

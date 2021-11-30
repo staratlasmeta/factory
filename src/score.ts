@@ -754,6 +754,7 @@ export async function createSettleInstruction(
         shipStakingAccount: shipStakingAccount,
         scoreVarsShipAccount: scoreVarsShipAccount,
         scoreVarsAccount: scoreVarsAccount,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       }
     }
@@ -798,6 +799,7 @@ export async function createHarvestInstruction(
         treasuryTokenAccount: treasuryTokenAccount,
         treasuryAuthorityAccount: treasuryAuthorityAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       }
     }
@@ -1086,6 +1088,7 @@ export async function createHarvestInstruction(
         fuelMint: fuelMint,
         foodMint: foodMint,
         armsMint: armsMint,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
       }
     }
   );
