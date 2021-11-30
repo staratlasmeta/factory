@@ -418,9 +418,10 @@ export async function createRegisterShipInstruction(
   const program = new Program(<Idl>idl, programId, provider);
 
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount] = await getScoreVarsAccount(programId);
+  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const ix = await program.instruction.processRegisterShip(
+    scoreVarsBump,
     scoreVarsShipBump,
     new BN(rewardRatePerSecond),
     fuelMaxReserve,

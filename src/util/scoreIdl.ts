@@ -104,7 +104,11 @@ export const baseIdl: unknown = {
       ],
       'args': [
         {
-          'name': 'bump',
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
           'type': 'u8'
         },
         {
