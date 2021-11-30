@@ -211,7 +211,19 @@ export const baseIdl: unknown = {
       ],
       'args': [
         {
-          'name': 'bump',
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
           'type': 'u8'
         },
         {
@@ -291,6 +303,26 @@ export const baseIdl: unknown = {
       ],
       'args': [
         {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
           'name': 'fuelQuantity',
           'type': 'u64'
         }
@@ -366,6 +398,26 @@ export const baseIdl: unknown = {
         }
       ],
       'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
         {
           'name': 'foodQuantity',
           'type': 'u64'
@@ -443,6 +495,26 @@ export const baseIdl: unknown = {
       ],
       'args': [
         {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
           'name': 'armsQuantity',
           'type': 'u64'
         }
@@ -498,21 +570,28 @@ export const baseIdl: unknown = {
         },
         {
           'name': 'toolkitMint',
-          'isMut': false,
+          'isMut': true,
           'isSigner': false
         },
         {
           'name': 'toolkitTokenAccountSource',
           'isMut': true,
           'isSigner': false
-        },
-        {
-          'name': 'toolkitTokenAccountBurn',
-          'isMut': true,
-          'isSigner': false
         }
       ],
       'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
         {
           'name': 'toolkitQuantity',
           'type': 'u64'
@@ -522,6 +601,11 @@ export const baseIdl: unknown = {
     {
       'name': 'processSettle',
       'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
+        },
         {
           'name': 'updateAuthorityAccount',
           'isMut': false,
@@ -541,9 +625,27 @@ export const baseIdl: unknown = {
           'name': 'scoreVarsAccount',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        }
+      ]
     },
     {
       'name': 'processHarvest',
@@ -582,9 +684,509 @@ export const baseIdl: unknown = {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryAuthBump',
+          'type': 'u8'
+        }
+      ]
+    },
+    {
+      'name': 'processWithdrawFuel',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelTokenAccountReturn',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelMint',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'withdrawAmount',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'processWithdrawFood',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'foodTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'foodTokenAccountReturn',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'foodMint',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'withdrawAmount',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'processWithdrawArms',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'armsTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'armsTokenAccountReturn',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'armsMint',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'withdrawAmount',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'processWithdrawShips',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'playerAtlasTokenAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipTokenAccountReturn',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'toolkitTokenAccountSource',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'treasuryTokenAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'treasuryAuthorityAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'toolkitMint',
+          'isMut': true,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryBump',
+          'type': 'u8'
+        }
+      ]
+    },
+    {
+      'name': 'processCloseAccounts',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'foodTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'armsTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'fuelMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'foodMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'armsMint',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'shipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'fuelBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'foodBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'armsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        }
+      ]
     }
   ],
   'accounts': [
@@ -762,7 +1364,7 @@ export const baseIdl: unknown = {
             'type': 'u16'
           }
         ]
-      },
+      }
     }
   ],
   'errors': [
@@ -810,6 +1412,26 @@ export const baseIdl: unknown = {
       'code': 308,
       'name': 'InvalidScoreVarsAccount',
       'msg': 'Invalid ScoreVars account for ship Staking Account given'
+    },
+    {
+      'code': 309,
+      'name': 'InvalidResourceWithdraw',
+      'msg': 'Invalid Resource Withdraw, nothing to withdraw'
+    },
+    {
+      'code': 310,
+      'name': 'InvalidShipStakingOwner',
+      'msg': 'Invalid Ship Staking Owner'
+    },
+    {
+      'code': 311,
+      'name': 'InvalidShipWithdraw',
+      'msg': 'Invalid Ship Withdraw'
+    },
+    {
+      'code': 312,
+      'name': 'EscrowAccountNotZero',
+      'msg': 'Escrow account must be 0 to close accounts'
     }
   ],
   'metadata': {
