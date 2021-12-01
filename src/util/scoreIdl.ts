@@ -70,6 +70,14 @@ export const baseIdl: unknown = {
         {
           'name': 'bump',
           'type': 'u8'
+        },
+        {
+          'name': 'treasuryBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'treasuryAuthBump',
+          'type': 'u8'
         }
       ]
     },
@@ -104,7 +112,11 @@ export const baseIdl: unknown = {
       ],
       'args': [
         {
-          'name': 'bump',
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsBump',
           'type': 'u8'
         },
         {
@@ -627,6 +639,11 @@ export const baseIdl: unknown = {
           'isSigner': false
         },
         {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
           'name': 'shipMint',
           'isMut': false,
           'isSigner': false
@@ -682,6 +699,11 @@ export const baseIdl: unknown = {
         },
         {
           'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
           'isMut': false,
           'isSigner': false
         },
@@ -1155,6 +1177,11 @@ export const baseIdl: unknown = {
           'name': 'armsMint',
           'isMut': false,
           'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
         }
       ],
       'args': [
@@ -1190,6 +1217,90 @@ export const baseIdl: unknown = {
     }
   ],
   'accounts': [
+    {
+      'name': 'ScoreVars',
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'updateAuthorityMaster',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'updateAuthority1',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'updateAuthority2',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'fuelMint',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'foodMint',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'armsMint',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'toolkitMint',
+            'type': 'publicKey'
+          }
+        ]
+      }
+    },
+    {
+      'name': 'ScoreVarsShip',
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'shipMint',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'rewardRatePerSecond',
+            'type': 'u64'
+          },
+          {
+            'name': 'fuelMaxReserve',
+            'type': 'u16'
+          },
+          {
+            'name': 'foodMaxReserve',
+            'type': 'u16'
+          },
+          {
+            'name': 'armsMaxReserve',
+            'type': 'u16'
+          },
+          {
+            'name': 'toolkitMaxReserve',
+            'type': 'u16'
+          },
+          {
+            'name': 'secondsToBurnOneFuel',
+            'type': 'u16'
+          },
+          {
+            'name': 'secondsToBurnOneFood',
+            'type': 'u16'
+          },
+          {
+            'name': 'secondsToBurnOneArms',
+            'type': 'u16'
+          },
+          {
+            'name': 'secondsToBurnOneToolkit',
+            'type': 'u16'
+          }
+        ]
+      }
+    },
     {
       'name': 'ShipStaking',
       'type': {
@@ -1278,90 +1389,6 @@ export const baseIdl: unknown = {
           {
             'name': 'totalRewardsPaid',
             'type': 'u64'
-          }
-        ]
-      }
-    },
-    {
-      'name': 'ScoreVars',
-      'type': {
-        'kind': 'struct',
-        'fields': [
-          {
-            'name': 'updateAuthorityMaster',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'updateAuthority1',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'updateAuthority2',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'fuelMint',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'foodMint',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'armsMint',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'toolkitMint',
-            'type': 'publicKey'
-          }
-        ]
-      }
-    },
-    {
-      'name': 'ScoreVarsShip',
-      'type': {
-        'kind': 'struct',
-        'fields': [
-          {
-            'name': 'shipMint',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'rewardRatePerSecond',
-            'type': 'u64'
-          },
-          {
-            'name': 'fuelMaxReserve',
-            'type': 'u16'
-          },
-          {
-            'name': 'foodMaxReserve',
-            'type': 'u16'
-          },
-          {
-            'name': 'armsMaxReserve',
-            'type': 'u16'
-          },
-          {
-            'name': 'toolkitMaxReserve',
-            'type': 'u16'
-          },
-          {
-            'name': 'secondsToBurnOneFuel',
-            'type': 'u16'
-          },
-          {
-            'name': 'secondsToBurnOneFood',
-            'type': 'u16'
-          },
-          {
-            'name': 'secondsToBurnOneArms',
-            'type': 'u16'
-          },
-          {
-            'name': 'secondsToBurnOneToolkit',
-            'type': 'u16'
           }
         ]
       }

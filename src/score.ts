@@ -354,12 +354,14 @@ export async function createScoreVarsInitializeInstruction(
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const [treasuryTokenAccount] = await getScoreTreasuryTokenAccount(programId);
-  const [treasuryAuthorityAccount] = await getScoreTreasuryAuthAccount(programId);
+  const [treasuryTokenAccount, treasuryBump] = await getScoreTreasuryTokenAccount(programId);
+  const [treasuryAuthorityAccount, treasuryAuthBump] = await getScoreTreasuryAuthAccount(programId);
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const ix = await program.instruction.processInitialize(
     scoreVarsBump,
+    treasuryBump,
+    treasuryAuthBump,
     {
       accounts: {
         updateAuthorityAccount: updateAuthorityAccount,
@@ -418,9 +420,10 @@ export async function createRegisterShipInstruction(
   const program = new Program(<Idl>idl, programId, provider);
 
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount] = await getScoreVarsAccount(programId);
+  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const ix = await program.instruction.processRegisterShip(
+    scoreVarsBump,
     scoreVarsShipBump,
     new BN(rewardRatePerSecond),
     fuelMaxReserve,
@@ -754,6 +757,7 @@ export async function createSettleInstruction(
         shipStakingAccount: shipStakingAccount,
         scoreVarsShipAccount: scoreVarsShipAccount,
         scoreVarsAccount: scoreVarsAccount,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       }
     }
@@ -798,6 +802,7 @@ export async function createHarvestInstruction(
         treasuryTokenAccount: treasuryTokenAccount,
         treasuryAuthorityAccount: treasuryAuthorityAccount,
         tokenProgram: TOKEN_PROGRAM_ID,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       }
     }
@@ -1086,6 +1091,7 @@ export async function createHarvestInstruction(
         fuelMint: fuelMint,
         foodMint: foodMint,
         armsMint: armsMint,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
       }
     }
   );
