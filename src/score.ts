@@ -354,12 +354,14 @@ export async function createScoreVarsInitializeInstruction(
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const [treasuryTokenAccount] = await getScoreTreasuryTokenAccount(programId);
-  const [treasuryAuthorityAccount] = await getScoreTreasuryAuthAccount(programId);
+  const [treasuryTokenAccount, treasuryBump] = await getScoreTreasuryTokenAccount(programId);
+  const [treasuryAuthorityAccount, treasuryAuthBump] = await getScoreTreasuryAuthAccount(programId);
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const ix = await program.instruction.processInitialize(
     scoreVarsBump,
+    treasuryBump,
+    treasuryAuthBump,
     {
       accounts: {
         updateAuthorityAccount: updateAuthorityAccount,
