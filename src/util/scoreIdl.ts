@@ -245,6 +245,83 @@ export const baseIdl: unknown = {
       ]
     },
     {
+      'name': 'processPartialDeposit',
+      'accounts': [
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'shipStakingAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'shipTokenAccountSource',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipTokenAccountEscrow',
+          'isMut': true,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'stakingBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowAuthBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'escrowBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'shipQuantity',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
       'name': 'processRefuel',
       'accounts': [
         {
@@ -1462,6 +1539,6 @@ export const baseIdl: unknown = {
     }
   ],
   'metadata': {
-    'address': '9v78iF6b1Ng1eH7nWYw5Yqc9fGx67Uu7U7gBqtSm5ELJ'
+    'address': '3ed3LTq6kCu9pEkVDddDYPyrSddywsEpXb2F8Uav69CT'
   }
 }

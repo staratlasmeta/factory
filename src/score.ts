@@ -502,6 +502,57 @@ export async function createInitialDepositInstruction(
 }
 
 /**
+ * Provides a transaction instruction which can be used to deposit a specified quantity of ships to an already deployed player's ship staking account.
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param shipQuantity - Quantity to deposit as u64
+ * @param shipMint - Ship mint address
+ * @param shipTokenAccount - Token account for the ship resource being deposited
+ * @param programId - Deployed program ID for the SCORE program
+ */
+ export async function createPartialDepositInstruction(
+  connection: web3.Connection,
+  playerPublicKey: web3.PublicKey,
+  shipQuantity: number,
+  shipMint: web3.PublicKey,
+  shipTokenAccount: web3.PublicKey,
+  programId: web3.PublicKey
+): Promise<web3.TransactionInstruction> {
+  const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
+  const [shipEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, null, playerPublicKey);
+  const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
+  const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
+
+  const idl = getScoreIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  const ix = await program.instruction.processPartialDeposit(
+    stakingBump,
+    scoreVarsShipBump,
+    escrowAuthBump,
+    escrowBump,
+    new BN(shipQuantity),
+    {
+      accounts: {
+        playerAccount: playerPublicKey,
+        shipStakingAccount: shipStakingAccount,
+        scoreVarsShipAccount: scoreVarsShipAccount,
+        escrowAuthority: escrowAuthority,
+        systemProgram: web3.SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
+        shipMint: shipMint,
+        shipTokenAccountSource: shipTokenAccount,
+        shipTokenAccountEscrow: shipEscrow
+      }
+    }
+  );
+  return ix;
+}
+
+
+/**
  * Provides a transaction instruction which can be used to transfer arms resources to a player's arms escrow account.
  * 
  * @param connection - web3.Connection object
