@@ -72,14 +72,14 @@ export interface ShipStakingInfo {
 export interface ScoreVarsShipInfo {
   shipMint: web3.PublicKey;
   rewardRatePerSecond: BN;
-  fuelMaxReserve: BN;
-  foodMaxReserve: BN;
-  armsMaxReserve: BN;
-  toolkitMaxReserve: BN;
-  secondsToBurnOneFuel: BN;
-  secondsToBurnOneFood: BN;
-  secondsToBurnOneArms: BN;
-  secondsToBurnOneToolkit: BN;
+  fuelMaxReserve: number;
+  foodMaxReserve: number;
+  armsMaxReserve: number;
+  toolkitMaxReserve: number;
+  secondsToBurnOneFuel: number;
+  secondsToBurnOneFood: number;
+  secondsToBurnOneArms: number;
+  secondsToBurnOneToolkit: number;
 }
 
 /**
