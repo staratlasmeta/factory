@@ -348,7 +348,7 @@ export async function getScoreTreasuryAuthAccount(
 
   const shipsRegistered = await program.account.scoreVarsShip.all();
 
-  let playerShipStakingAccounts = [];
+  const playerShipStakingAccounts = [];
   for(const ship of shipsRegistered) {
     const [playerShipStakingAccount] = await getShipStakingAccount(
       programId,
@@ -357,7 +357,7 @@ export async function getScoreTreasuryAuthAccount(
     );
     playerShipStakingAccounts.push(playerShipStakingAccount);
   }
-  
+
   const _playerFleets = await program.account.shipStaking.fetchMultiple(playerShipStakingAccounts);
   const playerFleets: ShipStakingInfo[] = _playerFleets
     .filter((fleet) => fleet !== null)
