@@ -3,7 +3,7 @@ name: Star Atlas Storybook publish
 # This will be on merge to main instead
 on:
   pull_request:
-    branches: [ docs-autobuild ]
+    branches: [ develop ]
 jobs:
   build:
     runs-on: ubuntu-latest
