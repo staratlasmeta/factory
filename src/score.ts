@@ -72,14 +72,14 @@ export interface ShipStakingInfo {
 export interface ScoreVarsShipInfo {
   shipMint: web3.PublicKey;
   rewardRatePerSecond: BN;
-  fuelMaxReserve: BN;
-  foodMaxReserve: BN;
-  armsMaxReserve: BN;
-  toolkitMaxReserve: BN;
-  secondsToBurnOneFuel: BN;
-  secondsToBurnOneFood: BN;
-  secondsToBurnOneArms: BN;
-  secondsToBurnOneToolkit: BN;
+  fuelMaxReserve: number;
+  foodMaxReserve: number;
+  armsMaxReserve: number;
+  toolkitMaxReserve: number;
+  secondsToBurnOneFuel: number;
+  secondsToBurnOneFood: number;
+  secondsToBurnOneArms: number;
+  secondsToBurnOneToolkit: number;
 }
 
 /**
@@ -329,6 +329,44 @@ export async function getScoreTreasuryAuthAccount(
 }
 
 /**
+ * Returns a list of player deployed fleets to the SCORE program
+ * 
+ * @param connection - web3.Connection object
+ * @param playerPublicKey - Player's public key
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - [Ship Staking Account Infos]
+ */
+ export async function getAllFleetsForUserPublicKey(
+  connection: web3.Connection,
+  playerPublicKey: web3.PublicKey,
+  programId: web3.PublicKey,
+): Promise<ShipStakingInfo[]> {
+
+  const idl = getScoreIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const shipsRegistered = await program.account.scoreVarsShip.all();
+
+  const playerShipStakingAccounts = [];
+  for(const ship of shipsRegistered) {
+    const [playerShipStakingAccount] = await getShipStakingAccount(
+      programId,
+      ship.account.shipMint,
+      playerPublicKey
+    );
+    playerShipStakingAccounts.push(playerShipStakingAccount);
+  }
+
+  const _playerFleets = await program.account.shipStaking.fetchMultiple(playerShipStakingAccounts);
+  const playerFleets: ShipStakingInfo[] = _playerFleets
+    .filter((fleet) => fleet !== null)
+    .map(fleet => <ShipStakingInfo>fleet);
+
+  return playerFleets;
+}
+
+/**
  * Initializes Score variables account and creates ATLAS treasury token account
  * 
  * @param connection - web3.Connection object
@@ -414,7 +452,7 @@ export async function createRegisterShipInstruction(
   secondsToBurnToolkit: number,
   rewardRatePerSecond: number,
   programId: web3.PublicKey
-): Promise<[web3.TransactionInstruction]> {
+): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
