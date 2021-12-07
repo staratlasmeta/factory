@@ -125,19 +125,19 @@ export const baseIdl: unknown = {
         },
         {
           'name': 'fuelMaxReserve',
-          'type': 'u16'
+          'type': 'u32'
         },
         {
           'name': 'foodMaxReserve',
-          'type': 'u16'
+          'type': 'u32'
         },
         {
           'name': 'armsMaxReserve',
-          'type': 'u16'
+          'type': 'u32'
         },
         {
           'name': 'toolkitMaxReserve',
-          'type': 'u16'
+          'type': 'u32'
         },
         {
           'name': 'secondsToBurnOneFuel',
@@ -1345,19 +1345,19 @@ export const baseIdl: unknown = {
           },
           {
             'name': 'fuelMaxReserve',
-            'type': 'u16'
+            'type': 'u32'
           },
           {
             'name': 'foodMaxReserve',
-            'type': 'u16'
+            'type': 'u32'
           },
           {
             'name': 'armsMaxReserve',
-            'type': 'u16'
+            'type': 'u32'
           },
           {
             'name': 'toolkitMaxReserve',
-            'type': 'u16'
+            'type': 'u32'
           },
           {
             'name': 'secondsToBurnOneFuel',
@@ -1489,51 +1489,56 @@ export const baseIdl: unknown = {
     },
     {
       'code': 303,
+      'name': 'InvalidShipError',
+      'msg': 'Invalid Ship Mint'
+    },
+    {
+      'code': 304,
       'name': 'InvalidResourceError',
       'msg': 'Invalid Resource Mint'
     },
     {
-      'code': 304,
+      'code': 305,
       'name': 'ZeroResourceError',
       'msg': 'Resource Quantity must be >0.'
     },
     {
-      'code': 305,
+      'code': 306,
       'name': 'ZeroShipError',
       'msg': 'Ship Quantity must be >0.'
     },
     {
-      'code': 306,
+      'code': 307,
       'name': 'NumericalOverflowError',
       'msg': 'Numerical overflow error'
     },
     {
-      'code': 307,
+      'code': 308,
       'name': 'ResourceAmountTooSmall',
       'msg': 'Resource Amount Too Small, would add 0 seconds to capacity'
     },
     {
-      'code': 308,
+      'code': 309,
       'name': 'InvalidScoreVarsAccount',
       'msg': 'Invalid ScoreVars account for ship Staking Account given'
     },
     {
-      'code': 309,
+      'code': 310,
       'name': 'InvalidResourceWithdraw',
       'msg': 'Invalid Resource Withdraw, nothing to withdraw'
     },
     {
-      'code': 310,
+      'code': 311,
       'name': 'InvalidShipStakingOwner',
       'msg': 'Invalid Ship Staking Owner'
     },
     {
-      'code': 311,
+      'code': 312,
       'name': 'InvalidShipWithdraw',
       'msg': 'Invalid Ship Withdraw'
     },
     {
-      'code': 312,
+      'code': 313,
       'name': 'EscrowAccountNotZero',
       'msg': 'Escrow account must be 0 to close accounts'
     }
