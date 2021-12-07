@@ -2,8 +2,8 @@ name: Docs publish
 
 # This will be on merge to main instead
 on:
-  pull_request:
-    branches: [ develop ]
+  merge:
+    branches: [ main ]
 jobs:
   build:
     runs-on: ubuntu-latest
