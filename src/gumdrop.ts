@@ -1,12 +1,3 @@
-/**
-node build/gumdrop-cli.js create --claim-integration transfer \
-    --transfer-mint DrG3dPxTvcLSwa83xEX5tU8Zx8gVCHBmaizHSpbo9PKg \
-    --distribution-method wallets \
-    --distribution-list /home/mosh/Downloads/gumdrop-example.json \
-    -e devnet \
-    -k ~/.config/solana/id.json
-*/
-
 import { Idl, Program, Provider, web3, BN } from '@project-serum/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -230,22 +221,3 @@ export const claimTokenInstructions = async (
 
   return instructions;
 };
-
-const provider = Provider.env();
-
-claimTokenInstructions({
-  connection: provider.connection,
-  claimUrl:
-    'https://lwus.github.io/gumdrop/claim?distributor=7FGxnmA2LkTQQ87ZqE6M94Z7PXr3JunK9CgX7NdZTQC4&handle=44fVncfVm5fB8VsRBwVZW75FdR1nSVUKcf9nUa4ky6qN&amount=10&index=0&proof=7iwAXdidunuBjJXwEGCmKhiX8K4eVAH4GhYmh8NxxdPY&pin=NA&tokenAcc=B7WvBgsq9pq14bzBoFPTWWQnbYBdBVcmRezXmSARai7g',
-  playerPublicKey: provider.wallet.publicKey,
-  programId: GUMDROP_DISTRIBUTOR_ID,
-})
-  .catch((error) => console.log(`Error ${error}`))
-  .then(async (result) => {
-    if (result) {
-      const tx = new web3.Transaction();
-      tx.add(...result);
-      const id = await provider.send(tx);
-      console.log('txid', id);
-    }
-  });
