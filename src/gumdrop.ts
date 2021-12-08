@@ -24,13 +24,30 @@ const GUMDROP_DISTRIBUTOR_ID = new web3.PublicKey(
 );
 
 /**
+ * Claim status account
+ *
+ * isClaimed - whether the gumdrop has been claimed or not
+ * claimant - the Solana account that claimed the gumdrop
+ * claimedAt - the time at which the gumdrop was claimed
+ * amount - the amount that was claimed
+ */
+export interface ClaimStatusAccount {
+  isClaimed: boolean;
+  claimant: web3.PublicKey;
+  claimedAt: BN;
+  amount: BN;
+}
+
+/**
+ * Parameters for creating a new claim
+ *
  * connection - the Solana connection object
  * playerPublicKey - the player's public key
- * programId - the program id of the program to execute (Gumdrop program)
+ * programId - the public key of the program to execute (Gumdrop program)
  * claimUrl - the url for this player's claim.  The claim url is obtained from the
  *            "claims" JSON file produced after creating a Gumdrop distributor
  */
-interface ClaimTokenInstructionsParams {
+export interface ClaimTokenInstructionsParams {
   connection: web3.Connection /** the Solana connection object */;
   claimUrl: string;
   playerPublicKey: web3.PublicKey;
@@ -42,11 +59,13 @@ interface ClaimTokenInstructionsParams {
  *
  * @param index - the index of the claim
  * @param distributor - the Gumdrop distributor public key
+ * @param programId - the public key of the program to execute (Gumdrop program)
  * @returns [claim account public key, bump seed]
  */
 export const getClaimStatusKey = async (
   index: u64,
-  distributor: web3.PublicKey
+  distributor: web3.PublicKey,
+  programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
 ): Promise<[web3.PublicKey, number]> => {
   return await web3.PublicKey.findProgramAddress(
     [
@@ -54,12 +73,47 @@ export const getClaimStatusKey = async (
       index.toArrayLike(Buffer, 'le', 8),
       distributor.toBuffer(),
     ],
-    GUMDROP_DISTRIBUTOR_ID
+    programId
   );
 };
 
 /**
- * Generate the instruction(s) to claim tokens from the Gumdrop didstributor
+ * Helper method to get the claim status account
+ * If this does return a valid account, it means that the drop has been claimed already
+ *
+ * @param connection - the Solana connection object
+ * @param index - the index of the claim
+ * @param distributor - the Gumdrop distributor public key
+ * @param programId - the public key of the program to execute (Gumdrop program)
+ * @returns the claim status account or null if the drop has not been claimed
+ */
+export const getClaimStatusAccount = async (
+  connection: web3.Connection,
+  index: BN,
+  distributor: web3.PublicKey,
+  programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
+): Promise<ClaimStatusAccount | null> => {
+  // Wallet not required to query player faction accounts
+  const provider = new Provider(connection, null, null);
+  const program = new Program(gumDropIdl as Idl, programId, provider);
+  const claimStatusResult = await getClaimStatusKey(
+    index,
+    distributor,
+    programId
+  );
+
+  try {
+    const account = await program.account.claimStatus.fetch(
+      claimStatusResult[0]
+    );
+    return account as unknown as ClaimStatusAccount;
+  } catch (e) {
+    return null;
+  }
+};
+
+/**
+ * Generate the instruction(s) to claim tokens from the Gumdrop distributor
  * This only works for a distributor configured to deal with fungible token
  * transfers to Solana wallets.
  *
@@ -70,6 +124,8 @@ export const claimTokenInstructions = async (
   params: ClaimTokenInstructionsParams
 ): Promise<web3.TransactionInstruction[]> => {
   const { connection, claimUrl, playerPublicKey, programId } = params;
+
+  // unpack the claim url
   const options = new URLSearchParams(claimUrl.split('?')[1]);
   const distributorKeyStr = options.get('distributor');
   const claimantKeyStr = options.get('handle');
@@ -77,7 +133,6 @@ export const claimTokenInstructions = async (
   const claimantIndexStr = options.get('index');
   const proofStr = options.get('proof');
   const tokenAccStr = options.get('tokenAcc');
-
   if (
     !distributorKeyStr ||
     !claimantKeyStr ||
@@ -109,6 +164,7 @@ export const claimTokenInstructions = async (
   }
   const tokenAccountInfo = AccountLayout.decode(distTokenAccount.data);
   const distributorMintKey = new web3.PublicKey(tokenAccountInfo.mint);
+
   // get the claimant token account
   const claimantKey = new web3.PublicKey(claimantKeyStr);
   const claimantTokenKey = await getAssociatedTokenAddress(
@@ -125,7 +181,11 @@ export const claimTokenInstructions = async (
   // get the claim account for this player (owned by the gumdrop program)
   const index = new BN(claimantIndexStr);
   const amount = new BN(claimAmountStr);
-  const [claimStatus, nonce] = await getClaimStatusKey(index, distributorKey);
+  const [claimStatusKey, nonce] = await getClaimStatusKey(
+    index,
+    distributorKey,
+    programId
+  );
 
   const provider = new Provider(connection, null, null);
   const program = new Program(gumDropIdl as Idl, programId, provider);
@@ -156,7 +216,7 @@ export const claimTokenInstructions = async (
       {
         accounts: {
           distributor: distributorKey,
-          claimStatus,
+          claimStatus: claimStatusKey,
           from: distributorTokenKey,
           to: claimantTokenKey,
           temporal: playerPublicKey,
@@ -176,7 +236,7 @@ const provider = Provider.env();
 claimTokenInstructions({
   connection: provider.connection,
   claimUrl:
-    'https://lwus.github.io/gumdrop/claim?distributor=DBn1zonMvudgTriZRYVHHQyqCHd5ZeionPWeKWkcGcER&handle=44fVncfVm5fB8VsRBwVZW75FdR1nSVUKcf9nUa4ky6qN&amount=10&index=0&proof=7iwAXdidunuBjJXwEGCmKhiX8K4eVAH4GhYmh8NxxdPY&pin=NA&tokenAcc=B7WvBgsq9pq14bzBoFPTWWQnbYBdBVcmRezXmSARai7g',
+    'https://lwus.github.io/gumdrop/claim?distributor=7FGxnmA2LkTQQ87ZqE6M94Z7PXr3JunK9CgX7NdZTQC4&handle=44fVncfVm5fB8VsRBwVZW75FdR1nSVUKcf9nUa4ky6qN&amount=10&index=0&proof=7iwAXdidunuBjJXwEGCmKhiX8K4eVAH4GhYmh8NxxdPY&pin=NA&tokenAcc=B7WvBgsq9pq14bzBoFPTWWQnbYBdBVcmRezXmSARai7g',
   playerPublicKey: provider.wallet.publicKey,
   programId: GUMDROP_DISTRIBUTOR_ID,
 })
