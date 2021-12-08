@@ -1,6 +1,5 @@
 name: Docs publish
 
-# This will be on merge to main instead
 on:
   merge:
     branches: [ main ]
