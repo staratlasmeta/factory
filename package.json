@@ -1,6 +1,6 @@
 {
   "name": "@staratlas/factory",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Star Atlas Factory for constructing Transactions targeting Solana on-chain programs",
   "repository": {
     "type": "git",
@@ -22,12 +22,14 @@
     "lint": "eslint src",
     "test": "jest --detectOpenHandles --no-cache --silent",
     "start": "tsc --watch",
-    "docs": "npx typedoc --out docs src"
+    "docs": "npx typedoc --out docs src",
+    "ts-node": "ts-node"
   },
   "dependencies": {
     "@project-serum/anchor": "^0.18.2",
     "@solana/spl-token": "^0.1.8",
-    "@solana/web3.js": "^1.15.0"
+    "@solana/web3.js": "^1.15.0",
+    "js-sha3": "^0.8.0"
   },
   "devDependencies": {
     "@types/bs58": "^4.0.1",

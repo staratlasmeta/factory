@@ -32,3 +32,5 @@ jobs:
       run: npm run test
     - name: Check the dependencies of all packages for vulnerabilities
       run: npm audit --audit-level=critical
+    - name: Ensure docs build
+      run: npm run docs

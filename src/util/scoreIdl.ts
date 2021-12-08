@@ -125,19 +125,19 @@ export const baseIdl: unknown = {
         },
         {
           'name': 'fuelMaxReserve',
-          'type': 'u32'
+          'type': 'u16'
         },
         {
           'name': 'foodMaxReserve',
-          'type': 'u32'
+          'type': 'u16'
         },
         {
           'name': 'armsMaxReserve',
-          'type': 'u32'
+          'type': 'u16'
         },
         {
           'name': 'toolkitMaxReserve',
-          'type': 'u32'
+          'type': 'u16'
         },
         {
           'name': 'secondsToBurnOneFuel',
@@ -154,6 +154,45 @@ export const baseIdl: unknown = {
         {
           'name': 'secondsToBurnOneToolkit',
           'type': 'u16'
+        }
+      ]
+    },
+    {
+      'name': 'processUpdateRewardRate',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'newRewardRatePerSecond',
+          'type': 'u64'
         }
       ]
     },
@@ -325,9 +364,14 @@ export const baseIdl: unknown = {
       'name': 'processRefuel',
       'accounts': [
         {
-          'name': 'playerAccount',
+          'name': 'tokenOwnerAccount',
           'isMut': false,
           'isSigner': true
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'shipStakingAccount',
@@ -421,9 +465,14 @@ export const baseIdl: unknown = {
       'name': 'processRefeed',
       'accounts': [
         {
-          'name': 'playerAccount',
+          'name': 'tokenOwnerAccount',
           'isMut': false,
           'isSigner': true
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'shipStakingAccount',
@@ -517,9 +566,14 @@ export const baseIdl: unknown = {
       'name': 'processRearm',
       'accounts': [
         {
-          'name': 'playerAccount',
+          'name': 'tokenOwnerAccount',
           'isMut': false,
           'isSigner': true
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'shipStakingAccount',
@@ -613,9 +667,14 @@ export const baseIdl: unknown = {
       'name': 'processRepair',
       'accounts': [
         {
-          'name': 'playerAccount',
+          'name': 'tokenOwnerAccount',
           'isMut': false,
           'isSigner': true
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'shipStakingAccount',
@@ -1345,19 +1404,19 @@ export const baseIdl: unknown = {
           },
           {
             'name': 'fuelMaxReserve',
-            'type': 'u32'
+            'type': 'u16'
           },
           {
             'name': 'foodMaxReserve',
-            'type': 'u32'
+            'type': 'u16'
           },
           {
             'name': 'armsMaxReserve',
-            'type': 'u32'
+            'type': 'u16'
           },
           {
             'name': 'toolkitMaxReserve',
-            'type': 'u32'
+            'type': 'u16'
           },
           {
             'name': 'secondsToBurnOneFuel',
