@@ -1,4 +1,6 @@
 import { FactionType} from '..';
+import { PublicKey } from '@solana/web3.js';
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 export function byteArrayToString(array: number[]): string {
   return String.fromCharCode(...array);
@@ -53,6 +55,20 @@ export async function convertFactionStringToNum(
       return FactionType.Ustur;
     default:
       return FactionType.Unenlisted;
-      
   }
+}
+
+/**
+ * Get associated token address
+ *
+ * @param owner - the public key that owns the associated token address
+ * @param mint - the mint
+ * @returns a promise of the associated token address
+ */
+ export async function getAssociatedTokenAddress(owner: PublicKey, mint: PublicKey): Promise<PublicKey> {
+  const [address] = await PublicKey.findProgramAddress(
+      [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+  );
+  return address;
 }
