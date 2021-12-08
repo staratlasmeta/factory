@@ -589,11 +589,11 @@ export async function createInitialDepositInstruction(
   return ix;
 }
 
-
 /**
  * Provides a transaction instruction which can be used to transfer arms resources to a player's arms escrow account.
  * 
  * @param connection - web3.Connection object
+ * @param tokenOwnerPublickey - Resource Token Account Owner
  * @param playerPublicKey - Player's public key
  * @param armsQuantity - Arms resource quantity as u64
  * @param shipMint - Ship mint address
@@ -603,6 +603,7 @@ export async function createInitialDepositInstruction(
  */
 export async function createRearmInstruction(
   connection: web3.Connection,
+  tokenOwnerPublickey: web3.PublicKey,
   playerPublicKey: web3.PublicKey,
   armsQuantity: number,
   shipMint: web3.PublicKey,
@@ -628,6 +629,7 @@ export async function createRearmInstruction(
     new BN(armsQuantity),
     {
       accounts: {
+        tokenOwnerAccount: tokenOwnerPublickey,
         playerAccount: playerPublicKey,
         shipStakingAccount: shipStakingAccount,
         scoreVarsAccount: scoreVarsAccount,
@@ -651,6 +653,7 @@ export async function createRearmInstruction(
  * Provides a transaction instruction which can be used to transfer food resources to a player's food escrow account.
  * 
  * @param connection - web3.Connection object
+ * @param tokenOwnerPublickey - Resource Token Account Owner
  * @param playerPublicKey - Player's public key
  * @param foodQuantity - Food resource quantity as u64
  * @param shipMint - Ship mint address
@@ -660,6 +663,7 @@ export async function createRearmInstruction(
  */
 export async function createRefeedInstruction(
   connection: web3.Connection,
+  tokenOwnerPublickey: web3.PublicKey,
   playerPublicKey: web3.PublicKey,
   foodQuantity: number,
   shipMint: web3.PublicKey,
@@ -685,6 +689,7 @@ export async function createRefeedInstruction(
     new BN(foodQuantity),
     {
       accounts: {
+        tokenOwnerAccount: tokenOwnerPublickey,
         playerAccount: playerPublicKey,
         shipStakingAccount: shipStakingAccount,
         scoreVarsAccount: scoreVarsAccount,
@@ -708,6 +713,7 @@ export async function createRefeedInstruction(
  * Provides a transaction instruction which can be used to transfer fuel resources to a player's fuel escrow account.
  * 
  * @param connection - web3.Connection object
+ * @param tokenOwnerPublickey - Resource Token Account Owner
  * @param playerPublicKey - Player's public key
  * @param fuelQuantity - Fuel resource quantity as u64
  * @param shipMint - Ship mint address
@@ -717,6 +723,7 @@ export async function createRefeedInstruction(
  */
 export async function createRefuelInstruction(
   connection: web3.Connection,
+  tokenOwnerPublickey: web3.PublicKey,
   playerPublicKey: web3.PublicKey,
   fuelQuantity: number,
   shipMint: web3.PublicKey,
@@ -742,6 +749,7 @@ export async function createRefuelInstruction(
     new BN(fuelQuantity),
     {
       accounts: {
+        tokenOwnerAccount: tokenOwnerPublickey,
         playerAccount: playerPublicKey,
         shipStakingAccount: shipStakingAccount,
         scoreVarsAccount: scoreVarsAccount,
@@ -765,6 +773,7 @@ export async function createRefuelInstruction(
  * Provides a transaction instruction which can be used to transfer toolkit resources to a player's toolkit escrow account.
  * 
  * @param connection - web3.Connection object
+ * @param tokenOwnerPublickey - Resource Token Account Owner
  * @param playerPublicKey - Player's public key
  * @param toolkitQuantity - Toolkit resource quantity as u64
  * @param shipMint - Ship mint address
@@ -774,6 +783,7 @@ export async function createRefuelInstruction(
  */
 export async function createRepairInstruction(
   connection: web3.Connection,
+  tokenOwnerPublickey: web3.PublicKey,
   playerPublicKey: web3.PublicKey,
   toolkitQuantity: number,
   shipMint: web3.PublicKey,
@@ -795,6 +805,7 @@ export async function createRepairInstruction(
     new BN(toolkitQuantity),
     {
       accounts: {
+        tokenOwnerAccount: tokenOwnerPublickey,
         playerAccount: playerPublicKey,
         shipStakingAccount: shipStakingAccount,
         scoreVarsAccount: scoreVarsAccount,
