@@ -325,9 +325,14 @@ export const baseIdl: unknown = {
       'name': 'processRefuel',
       'accounts': [
         {
-          'name': 'playerAccount',
+          'name': 'tokenOwnerAccount',
           'isMut': false,
           'isSigner': true
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'shipStakingAccount',
@@ -421,9 +426,14 @@ export const baseIdl: unknown = {
       'name': 'processRefeed',
       'accounts': [
         {
-          'name': 'playerAccount',
+          'name': 'tokenOwnerAccount',
           'isMut': false,
           'isSigner': true
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'shipStakingAccount',
@@ -517,9 +527,14 @@ export const baseIdl: unknown = {
       'name': 'processRearm',
       'accounts': [
         {
-          'name': 'playerAccount',
+          'name': 'tokenOwnerAccount',
           'isMut': false,
           'isSigner': true
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'shipStakingAccount',
@@ -613,9 +628,14 @@ export const baseIdl: unknown = {
       'name': 'processRepair',
       'accounts': [
         {
-          'name': 'playerAccount',
+          'name': 'tokenOwnerAccount',
           'isMut': false,
           'isSigner': true
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'shipStakingAccount',
