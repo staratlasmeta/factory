@@ -64,10 +64,10 @@ export interface ShipStakingInfo {
  * foodMaxReserve - Maximum number of food in units
  * armsMaxReserve - Maximum number of arms in units
  * toolkitMaxReserve - Maximum number of toolkits in units
- * secondsToBurnOneFuel - Seconds to burn one unit of fuel
- * secondsToBurnOneFood - Seconds to burn one unit of food
- * secondsToBurnOneArms - Seconds to burn one unit of arms
- * secondsToBurnOneToolkit - Seconds to burn one unit of toolkits
+ * millisecondsToBurnOneFuel - Milliseconds to burn one unit of fuel
+ * millisecondsToBurnOneFood - Milliseconds to burn one unit of food
+ * millisecondsToBurnOneArms - Milliseconds to burn one unit of arms
+ * millisecondsToBurnOneToolkit - Milliseconds to burn one unit of toolkits
  */
 export interface ScoreVarsShipInfo {
   shipMint: web3.PublicKey;
@@ -76,10 +76,10 @@ export interface ScoreVarsShipInfo {
   foodMaxReserve: number;
   armsMaxReserve: number;
   toolkitMaxReserve: number;
-  secondsToBurnOneFuel: number;
-  secondsToBurnOneFood: number;
-  secondsToBurnOneArms: number;
-  secondsToBurnOneToolkit: number;
+  millisecondsToBurnOneFuel: number;
+  millisecondsToBurnOneFood: number;
+  millisecondsToBurnOneArms: number;
+  millisecondsToBurnOneToolkit: number;
 }
 
 /**
