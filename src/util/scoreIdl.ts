@@ -125,35 +125,70 @@ export const baseIdl: unknown = {
         },
         {
           'name': 'fuelMaxReserve',
-          'type': 'u16'
+          'type': 'u32'
         },
         {
           'name': 'foodMaxReserve',
-          'type': 'u16'
+          'type': 'u32'
         },
         {
           'name': 'armsMaxReserve',
-          'type': 'u16'
+          'type': 'u32'
         },
         {
           'name': 'toolkitMaxReserve',
-          'type': 'u16'
+          'type': 'u32'
         },
         {
-          'name': 'secondsToBurnOneFuel',
-          'type': 'u16'
+          'name': 'millisecondsToBurnOneFuel',
+          'type': 'u32'
         },
         {
-          'name': 'secondsToBurnOneFood',
-          'type': 'u16'
+          'name': 'millisecondsToBurnOneFood',
+          'type': 'u32'
         },
         {
-          'name': 'secondsToBurnOneArms',
-          'type': 'u16'
+          'name': 'millisecondsToBurnOneArms',
+          'type': 'u32'
         },
         {
-          'name': 'secondsToBurnOneToolkit',
-          'type': 'u16'
+          'name': 'millisecondsToBurnOneToolkit',
+          'type': 'u32'
+        }
+      ]
+    },
+    {
+      'name': 'processDeregisterShip',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
         }
       ]
     },
@@ -1404,35 +1439,35 @@ export const baseIdl: unknown = {
           },
           {
             'name': 'fuelMaxReserve',
-            'type': 'u16'
+            'type': 'u32'
           },
           {
             'name': 'foodMaxReserve',
-            'type': 'u16'
+            'type': 'u32'
           },
           {
             'name': 'armsMaxReserve',
-            'type': 'u16'
+            'type': 'u32'
           },
           {
             'name': 'toolkitMaxReserve',
-            'type': 'u16'
+            'type': 'u32'
           },
           {
-            'name': 'secondsToBurnOneFuel',
-            'type': 'u16'
+            'name': 'millisecondsToBurnOneFuel',
+            'type': 'u32'
           },
           {
-            'name': 'secondsToBurnOneFood',
-            'type': 'u16'
+            'name': 'millisecondsToBurnOneFood',
+            'type': 'u32'
           },
           {
-            'name': 'secondsToBurnOneArms',
-            'type': 'u16'
+            'name': 'millisecondsToBurnOneArms',
+            'type': 'u32'
           },
           {
-            'name': 'secondsToBurnOneToolkit',
-            'type': 'u16'
+            'name': 'millisecondsToBurnOneToolkit',
+            'type': 'u32'
           }
         ]
       }
