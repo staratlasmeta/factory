@@ -158,6 +158,41 @@ export const baseIdl: unknown = {
       ]
     },
     {
+      'name': 'processDeregisterShip',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'scoreVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'scoreVarsShipAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'shipMint',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'scorevarsBump',
+          'type': 'u8'
+        },
+        {
+          'name': 'scorevarsShipBump',
+          'type': 'u8'
+        }
+      ]
+    },
+    {
       'name': 'processUpdateRewardRate',
       'accounts': [
         {
