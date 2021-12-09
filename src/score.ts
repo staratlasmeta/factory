@@ -427,14 +427,14 @@ export async function createScoreVarsInitializeInstruction(
  * @param connection - web3.Connection object
  * @param updateAuthorityAccount - valid authority public key 
  * @param shipMint - Ship mint address
- * @param fuelMaxReserve - Max fuel in units
- * @param foodMaxReserve - Max food in units
- * @param armsMaxReserve - Max arms in units
- * @param toolkitMaxReserve - Max toolkits in units
- * @param secondsToBurnFuel 
- * @param secondsToBurnFood 
- * @param secondsToBurnArms 
- * @param secondsToBurnToolkit 
+ * @param fuelMaxReserve - Max fuel in token units
+ * @param foodMaxReserve - Max food in token units
+ * @param armsMaxReserve - Max arms in token units
+ * @param toolkitMaxReserve - Max toolkits in token units
+ * @param millisecondsToBurnFuel - the amount of milliseconds to burn one fuel token
+ * @param millisecondsToBurnFood - the amount of milliseconds to burn one food token
+ * @param millisecondsToBurnArms - the amount of milliseconds to burn one arms token
+ * @param millisecondsToBurnToolkit - the amount of milliseconds to burn one toolkit token
  * @param rewardRatePerSecond - Atlas rewarded per second
  * @param programId - Deployed Score program ID
  */
@@ -446,10 +446,10 @@ export async function createRegisterShipInstruction(
   foodMaxReserve: number,
   armsMaxReserve: number,
   toolkitMaxReserve: number,
-  secondsToBurnFuel: number,
-  secondsToBurnFood: number,
-  secondsToBurnArms: number,
-  secondsToBurnToolkit: number,
+  millisecondsToBurnFuel: number,
+  millisecondsToBurnFood: number,
+  millisecondsToBurnArms: number,
+  millisecondsToBurnToolkit: number,
   rewardRatePerSecond: number,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
@@ -468,10 +468,10 @@ export async function createRegisterShipInstruction(
     foodMaxReserve,
     armsMaxReserve,
     toolkitMaxReserve,
-    secondsToBurnFuel,
-    secondsToBurnFood,
-    secondsToBurnArms,
-    secondsToBurnToolkit,
+    millisecondsToBurnFuel,
+    millisecondsToBurnFood,
+    millisecondsToBurnArms,
+    millisecondsToBurnToolkit,
     {
       accounts: {
         updateAuthorityAccount: updateAuthorityAccount,
@@ -530,7 +530,7 @@ export async function createRegisterShipInstruction(
  * @param connection - web3.Connection object
  * @param updateAuthorityAccount - valid authority public key 
  * @param shipMint - Ship mint address
- * @param newRewardRatePerSecond - New Atlas rewards per second
+ * @param newRewardRatePerSecond - New Atlas rewards per second in base units
  * @param programId - Deployed Score program ID
  */
  export async function createUpdateRewardRateInstruction(
