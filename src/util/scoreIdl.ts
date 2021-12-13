@@ -1565,6 +1565,28 @@ export const baseIdl: unknown = {
       }
     }
   ],
+  'types': [
+    {
+      'name': 'Resource',
+      'type': {
+        'kind': 'enum',
+        'variants': [
+          {
+            'name': 'Arms'
+          },
+          {
+            'name': 'Fuel'
+          },
+          {
+            'name': 'Food'
+          },
+          {
+            'name': 'Toolkits'
+          }
+        ]
+      }
+    }
+  ],
   'errors': [
     {
       'code': 300,
@@ -1633,8 +1655,28 @@ export const baseIdl: unknown = {
     },
     {
       'code': 313,
+      'name': 'NotEnoughToolkits',
+      'msg': 'Not enough toolkits for Ship Withdraw'
+    },
+    {
+      'code': 314,
       'name': 'EscrowAccountNotZero',
       'msg': 'Escrow account must be 0 to close accounts'
+    },
+    {
+      'code': 315,
+      'name': 'IncorrectTokenAccountOwner',
+      'msg': 'Token account does not have correct owner!'
+    },
+    {
+      'code': 316,
+      'name': 'UninitializedTokenAccount',
+      'msg': 'Token Account is not initialized!'
+    },
+    {
+      'code': 317,
+      'name': 'IncorrectTokenAccountMint',
+      'msg': 'Token Account mint is not correct!'
     }
   ],
   'metadata': {
