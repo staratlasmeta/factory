@@ -87,8 +87,6 @@ export interface ScoreVarsShipInfo {
 /**
  * 
  * updateAuthorityMaster - Public key for master update authority
- * updateAuthority1 - Public key for alternate update authority
- * updateAuthority2 - Public key for alternate update authority
  * fuelMint - Public key for fuel mint
  * foodMint - Public key for food mint
  * armsMint - Public key for arms mint
@@ -96,8 +94,6 @@ export interface ScoreVarsShipInfo {
  */
 export interface ScoreVarsInfo {
   updateAuthorityMaster: web3.PublicKey;
-  updateAuthority1: web3.PublicKey;
-  updateAuthority2: web3.PublicKey;
   fuelMint: web3.PublicKey;
   foodMint: web3.PublicKey;
   armsMint: web3.PublicKey;

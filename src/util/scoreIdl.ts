@@ -1398,14 +1398,6 @@ export const baseIdl: unknown = {
             'type': 'publicKey'
           },
           {
-            'name': 'updateAuthority1',
-            'type': 'publicKey'
-          },
-          {
-            'name': 'updateAuthority2',
-            'type': 'publicKey'
-          },
-          {
             'name': 'fuelMint',
             'type': 'publicKey'
           },
