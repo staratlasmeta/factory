@@ -31,6 +31,7 @@ const factionProgramId = new web3.PublicKey('FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5Cg
  * repairedAtTimestamp - Timestamp in seconds of last repair
  * currentCapacityTimestamp - Timestamp in seconds that represents start time for each resource current capacity
  * totalTimeStaked - Time in seconds that the ships have been staked with all resources
+ * stakedTimePaid - Time in seconds that have been settled to pending_rewards or that has been paid to user
  * pendingRewards - Rewards in ATLAS to be paid to user on next harvest
  * totalRewardsPaid - Rewards paid in ATLAS in base units (8 decimals)
  */
@@ -53,6 +54,7 @@ export interface ShipStakingInfo {
   repairedAtTimestamp: BN;
   currentCapacityTimestamp: BN;
   totalTimeStaked: BN;
+  stakedTimePaid: BN;
   pendingRewards: BN;
   totalRewardsPaid: BN;
 }
@@ -85,8 +87,6 @@ export interface ScoreVarsShipInfo {
 /**
  * 
  * updateAuthorityMaster - Public key for master update authority
- * updateAuthority1 - Public key for alternate update authority
- * updateAuthority2 - Public key for alternate update authority
  * fuelMint - Public key for fuel mint
  * foodMint - Public key for food mint
  * armsMint - Public key for arms mint
@@ -94,8 +94,6 @@ export interface ScoreVarsShipInfo {
  */
 export interface ScoreVarsInfo {
   updateAuthorityMaster: web3.PublicKey;
-  updateAuthority1: web3.PublicKey;
-  updateAuthority2: web3.PublicKey;
   fuelMint: web3.PublicKey;
   foodMint: web3.PublicKey;
   armsMint: web3.PublicKey;
