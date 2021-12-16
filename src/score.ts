@@ -999,7 +999,6 @@ export async function createHarvestInstruction(
  export async function createWithdrawFuelInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  withdrawAmount: number,
   fuelTokenAccount: web3.PublicKey,
   fuelMint: web3.PublicKey,
   shipMint: web3.PublicKey,
@@ -1020,7 +1019,6 @@ export async function createHarvestInstruction(
     scoreVarsShipBump,
     escrowAuthBump,
     escrowBump,
-    new BN(withdrawAmount),
     {
       accounts: {
         playerAccount: playerPublicKey,
@@ -1053,7 +1051,6 @@ export async function createHarvestInstruction(
  export async function createWithdrawFoodInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  withdrawAmount: number,
   foodTokenAccount: web3.PublicKey,
   foodMint: web3.PublicKey,
   shipMint: web3.PublicKey,
@@ -1075,7 +1072,6 @@ export async function createHarvestInstruction(
     scoreVarsShipBump,
     escrowAuthBump,
     escrowBump,
-    new BN(withdrawAmount),
     {
       accounts: {
         playerAccount: playerPublicKey,
@@ -1108,7 +1104,6 @@ export async function createHarvestInstruction(
  export async function createWithdrawArmsInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  withdrawAmount: number,
   armsTokenAccount: web3.PublicKey,
   armsMint: web3.PublicKey,
   shipMint: web3.PublicKey,
@@ -1129,7 +1124,6 @@ export async function createHarvestInstruction(
     scoreVarsShipBump,
     escrowAuthBump,
     escrowBump,
-    new BN(withdrawAmount),
     {
       accounts: {
         playerAccount: playerPublicKey,
