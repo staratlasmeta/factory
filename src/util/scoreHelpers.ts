@@ -5,6 +5,7 @@ import {
 import { ASSOCIATED_TOKEN_PROGRAM_ID, MintLayout, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { byteArrayToLong } from '.';
 import { strict as assert } from 'assert';
+import BN from 'bn.js';
 
 /**
  * Returns a program address and bump seed of an associated token account for a designated mint
@@ -56,6 +57,53 @@ export async function createATokenAccount(
   console.log('Created Token Account: ', txid);
 
   return associatedTokenAccount;
+}
+
+export class Numberu32 extends BN {
+  /**
+   * Convert to Buffer representation
+   */
+  toBuffer() {
+    const a = super.toArray().reverse();
+    const b = Buffer.from(a);
+    if (b.length === 4) {
+      return b;
+    }
+
+    const zeroPad = Buffer.alloc(4);
+    b.copy(zeroPad);
+    return zeroPad;
+  }
+
+  /**
+   * Construct a Numberu32 from Buffer representation
+   */
+  static fromBuffer(buffer) {
+    return new BN(
+      [...buffer]
+        .reverse()
+        .map((i) => `00${i.toString(16)}`.slice(-2))
+        .join(''),
+      16
+    );
+  }
+}
+
+/**
+ * Request more compute units for solana transcations
+*/
+export async function createRequestUnitsInstruction(
+  payer: web3.PublicKey,
+): Promise<web3.TransactionInstruction> {
+  const maxUnits = new Numberu32(1000000);
+  const instruction0 = Buffer.from([0]);
+  const buffer = maxUnits.toBuffer();
+  const instruction = new web3.TransactionInstruction({
+    keys: [{pubkey: payer, isSigner: true, isWritable: true}],
+    programId: new web3.PublicKey('ComputeBudget111111111111111111111111111111'),
+    data: Buffer.concat([instruction0, buffer]),
+  });
+  return instruction;
 }
 
 /**
