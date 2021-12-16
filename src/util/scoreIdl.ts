@@ -982,10 +982,6 @@ export const baseIdl: unknown = {
         {
           'name': 'escrowBump',
           'type': 'u8'
-        },
-        {
-          'name': 'withdrawAmount',
-          'type': 'u64'
         }
       ]
     },
@@ -1068,10 +1064,6 @@ export const baseIdl: unknown = {
         {
           'name': 'escrowBump',
           'type': 'u8'
-        },
-        {
-          'name': 'withdrawAmount',
-          'type': 'u64'
         }
       ]
     },
@@ -1154,10 +1146,6 @@ export const baseIdl: unknown = {
         {
           'name': 'escrowBump',
           'type': 'u8'
-        },
-        {
-          'name': 'withdrawAmount',
-          'type': 'u64'
         }
       ]
     },
@@ -1663,15 +1651,15 @@ export const baseIdl: unknown = {
     {
       'code': 316,
       'name': 'UninitializedTokenAccount',
-      'msg': 'Token Account is not initialized!'
+      'msg': 'Token or Mint Account is not initialized!'
     },
     {
       'code': 317,
       'name': 'IncorrectTokenAccountMint',
-      'msg': 'Token Account mint is not correct!'
+      'msg': 'Token or Mint Account mint is not correct!'
     }
   ],
   'metadata': {
-    'address': '3ed3LTq6kCu9pEkVDddDYPyrSddywsEpXb2F8Uav69CT'
+    'address': 'HXw1c4Wzqr9yki3UZXtuw8jEkU2dPWa8Ww93v1JWqZ5i'
   }
 }
