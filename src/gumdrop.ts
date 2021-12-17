@@ -121,17 +121,13 @@ export const getMultipleClaimStatusAccounts = async (
   // Wallet not required to query accounts
   const provider = new Provider(connection, null, null);
   const program = new Program(gumDropIdl as Idl, programId, provider);
-  const claimStatusKeys: web3.PublicKey[] = [];
 
-  for (let index = 0; index < indexArray.length; index++) {
-    const element = indexArray[index];
-    const claimStatusResult = await getClaimStatusKey(
-      element,
-      distributor,
-      programId
-    );
-    claimStatusKeys.push(claimStatusResult[0]);
-  }
+  const claimStatusPromises = indexArray.map((it) => {
+    return getClaimStatusKey(it, distributor, programId);
+  });
+  const claimStatusKeys = (await Promise.all(claimStatusPromises)).map(
+    (it) => it[0]
+  );
 
   const accounts = await program.account.claimStatus.fetchMultiple(
     claimStatusKeys
