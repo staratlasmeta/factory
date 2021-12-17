@@ -84,7 +84,7 @@ export const getClaimStatusAccount = async (
   distributor: web3.PublicKey,
   programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
 ): Promise<ClaimStatusAccount | null> => {
-  // Wallet not required to query player faction accounts
+  // Wallet not required to query accounts
   const provider = new Provider(connection, null, null);
   const program = new Program(gumDropIdl as Idl, programId, provider);
   const claimStatusResult = await getClaimStatusKey(
@@ -118,7 +118,7 @@ export const getMultipleClaimStatusAccounts = async (
   distributor: web3.PublicKey,
   programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
 ): Promise<Array<ClaimStatusAccount | null>> => {
-  // Wallet not required to query player faction accounts
+  // Wallet not required to query accounts
   const provider = new Provider(connection, null, null);
   const program = new Program(gumDropIdl as Idl, programId, provider);
   const claimStatusKeys: web3.PublicKey[] = [];
