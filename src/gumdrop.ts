@@ -84,7 +84,7 @@ export const getClaimStatusAccount = async (
   distributor: web3.PublicKey,
   programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
 ): Promise<ClaimStatusAccount | null> => {
-  // Wallet not required to query player faction accounts
+  // Wallet not required to query accounts
   const provider = new Provider(connection, null, null);
   const program = new Program(gumDropIdl as Idl, programId, provider);
   const claimStatusResult = await getClaimStatusKey(
@@ -101,6 +101,39 @@ export const getClaimStatusAccount = async (
   } catch (e) {
     return null;
   }
+};
+
+/**
+ * Helper method to get multiple claim status accounts
+ *
+ * @param connection - the Solana connection object
+ * @param indexArray - the array of the indices of the claims
+ * @param distributor - the Gumdrop distributor public key
+ * @param programId - the public key of the program to execute (Gumdrop program)
+ * @returns array the claim status accounts or null if the drop has not been claimed
+ */
+export const getMultipleClaimStatusAccounts = async (
+  connection: web3.Connection,
+  indexArray: BN[],
+  distributor: web3.PublicKey,
+  programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
+): Promise<Array<ClaimStatusAccount | null>> => {
+  // Wallet not required to query accounts
+  const provider = new Provider(connection, null, null);
+  const program = new Program(gumDropIdl as Idl, programId, provider);
+
+  const claimStatusPromises = indexArray.map((it) => {
+    return getClaimStatusKey(it, distributor, programId);
+  });
+  const claimStatusKeys = (await Promise.all(claimStatusPromises)).map(
+    (it) => it[0]
+  );
+
+  const accounts = await program.account.claimStatus.fetchMultiple(
+    claimStatusKeys
+  );
+
+  return accounts as Array<ClaimStatusAccount | null>;
 };
 
 /**
