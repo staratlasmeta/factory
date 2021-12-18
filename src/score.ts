@@ -327,6 +327,54 @@ export async function getScoreTreasuryAuthAccount(
 }
 
 /**
+ * Returns a list registered ships
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - [Ship Staking Account Infos]
+ */
+ export async function getAllRegisteredShips(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+): Promise<ScoreVarsShipInfo[]> {
+
+  const idl = getScoreIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const _shipsRegistered = await program.account.scoreVarsShip.all();
+  let shipsRegistered = [];
+  for(const ship of _shipsRegistered) {
+    shipsRegistered.push(<ScoreVarsShipInfo>ship.account);
+  }
+  return shipsRegistered;
+}
+
+/**
+ * Returns a list of all fleets
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - [Ship Staking Account Infos]
+ */
+ export async function getAllFleets(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+): Promise<ShipStakingInfo[]> {
+
+  const idl = getScoreIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const _shipStakingAccounts = await program.account.shipStaking.all();
+  let shipStakingAccounts = [];
+  for(const stakingAccount of _shipStakingAccounts) {
+    shipStakingAccounts.push(<ShipStakingInfo>stakingAccount.account);
+  }
+  return shipStakingAccounts;
+}
+
+/**
  * Returns a list of player deployed fleets to the SCORE program
  * 
  * @param connection - web3.Connection object
