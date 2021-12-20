@@ -1039,6 +1039,7 @@ export async function createSettleInstruction(
  * @param connection - web3.Connection object
  * @param playerPublicKey - Player's public key
  * @param playerAtlasTokenAccount - Player's atlas token account public key TODO: can replace with getAtaForMint once we have ATLAS mint address
+ * @param atlasMint - Atlas mint address
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
  */
@@ -1046,9 +1047,10 @@ export async function createHarvestInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   playerAtlasTokenAccount: web3.PublicKey,
+  atlasMint: web3.PublicKey,
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction> {
+): Promise<web3.TransactionInstruction[]> {
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
   const [treasuryTokenAccount, treasuryBump] = await getScoreTreasuryTokenAccount(programId);
@@ -1057,6 +1059,28 @@ export async function createHarvestInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+
+  const instructions = [];
+  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+    playerPublicKey,
+    {
+      mint: atlasMint,
+    }
+  );
+  // if the token account does not exist, create it
+  if (possibleTokenAccountObj.value.length === 0) {
+    instructions.push(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        atlasMint,
+        playerAtlasTokenAccount, // token account
+        playerPublicKey, // owner
+        playerPublicKey, // payer
+      )
+    );
+  }
+
   const ix = await program.instruction.processHarvest(
     stakingBump,
     scoreVarsShipBump,
@@ -1076,7 +1100,8 @@ export async function createHarvestInstruction(
       }
     }
   );
-  return ix;
+  instructions.push(ix);
+  return instructions;
 }
 
 /**
