@@ -1337,6 +1337,7 @@ export async function createHarvestInstruction(
  * @param playerPublicKey - Player's public key
  * @param shipTokenAccount - Token account for the ships to be returned to
  * @param shipMint - Ship mint address
+ * @param atlasMint - ATLAS token mint
  * @param toolkitMint - Toolkit resource mint address
  * @param programId - Deployed program ID for the SCORE program
  */
@@ -1347,6 +1348,7 @@ export async function createHarvestInstruction(
   toolkitTokenAccount: web3.PublicKey,
   shipTokenAccount: web3.PublicKey,
   shipMint: web3.PublicKey,
+  atlasMint: web3.PublicKey,
   toolkitMint: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction[]> {
@@ -1396,6 +1398,24 @@ export async function createHarvestInstruction(
         TOKEN_PROGRAM_ID,
         shipMint,
         shipTokenAccount, // token account
+        playerPublicKey, // owner
+        playerPublicKey, // payer
+      )
+    );
+  }
+  const possibleAtlasTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+    playerPublicKey,
+    {
+      mint: atlasMint,
+    }
+  );
+  if (possibleAtlasTokenAccountObj.value.length === 0) {
+    instructions.push(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        atlasMint,
+        playerAtlasTokenAccount, // token account
         playerPublicKey, // owner
         playerPublicKey, // payer
       )
