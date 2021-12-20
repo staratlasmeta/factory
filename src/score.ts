@@ -5,7 +5,7 @@ import {
   Provider,
   web3
 } from '@project-serum/anchor'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 import { SystemProgram } from '@solana/web3.js';
 import { getPlayerFactionPDA } from '.';
 import { baseIdl } from './util/scoreIdl'
@@ -667,7 +667,7 @@ export async function createInitialDepositInstruction(
 
 /**
  * Provides a transaction instruction which can be used to transfer arms resources to a player's arms escrow account.
- * 
+ *
  * @param connection - web3.Connection object
  * @param tokenOwnerPublickey - Resource Token Account Owner
  * @param playerPublicKey - Player's public key
@@ -686,7 +686,7 @@ export async function createRearmInstruction(
   armsMint: web3.PublicKey,
   armsTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction> {
+): Promise<web3.TransactionInstruction[]> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [armsEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
@@ -696,6 +696,28 @@ export async function createRearmInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+
+  const instructions = [];
+  const possibleArmsTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+    tokenOwnerPublickey,
+    {
+      mint: armsMint,
+    }
+  );
+  // if the token account does not exist, create it
+  if (possibleArmsTokenAccountObj.value.length === 0) {
+    instructions.push(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        armsMint,
+        armsTokenAccount, // token account
+        tokenOwnerPublickey, // owner
+        playerPublicKey, // payer
+      )
+    );
+  }
+
   const ix = await program.instruction.processRearm(
     stakingBump,
     scoreVarsBump,
@@ -722,12 +744,13 @@ export async function createRearmInstruction(
       }
     }
   );
-  return ix;
+  instructions.push(ix);
+  return instructions;
 }
 
 /**
  * Provides a transaction instruction which can be used to transfer food resources to a player's food escrow account.
- * 
+ *
  * @param connection - web3.Connection object
  * @param tokenOwnerPublickey - Resource Token Account Owner
  * @param playerPublicKey - Player's public key
@@ -746,7 +769,7 @@ export async function createRefeedInstruction(
   foodMint: web3.PublicKey,
   foodTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction> {
+): Promise<web3.TransactionInstruction[]> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [foodEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
@@ -756,6 +779,28 @@ export async function createRefeedInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+
+  const instructions = [];
+  const possibleArmsTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+    tokenOwnerPublickey,
+    {
+      mint: foodMint,
+    }
+  );
+  // if the token account does not exist, create it
+  if (possibleArmsTokenAccountObj.value.length === 0) {
+    instructions.push(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        foodMint,
+        foodTokenAccount, // token account
+        tokenOwnerPublickey, // owner
+        playerPublicKey, // payer
+      )
+    );
+  }
+
   const ix = await program.instruction.processRefeed(
     stakingBump,
     scoreVarsBump,
@@ -782,12 +827,13 @@ export async function createRefeedInstruction(
       }
     }
   );
-  return ix;
+  instructions.push(ix);
+  return instructions;
 }
 
 /**
  * Provides a transaction instruction which can be used to transfer fuel resources to a player's fuel escrow account.
- * 
+ *
  * @param connection - web3.Connection object
  * @param tokenOwnerPublickey - Resource Token Account Owner
  * @param playerPublicKey - Player's public key
@@ -806,7 +852,7 @@ export async function createRefuelInstruction(
   fuelMint: web3.PublicKey,
   fuelTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction> {
+): Promise<web3.TransactionInstruction[]> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [fuelEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
@@ -816,6 +862,28 @@ export async function createRefuelInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+
+  const instructions = [];
+  const possibleArmsTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+    tokenOwnerPublickey,
+    {
+      mint: fuelMint,
+    }
+  );
+  // if the token account does not exist, create it
+  if (possibleArmsTokenAccountObj.value.length === 0) {
+    instructions.push(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        fuelMint,
+        fuelTokenAccount, // token account
+        tokenOwnerPublickey, // owner
+        playerPublicKey, // payer
+      )
+    );
+  }
+
   const ix = await program.instruction.processRefuel(
     stakingBump,
     scoreVarsBump,
@@ -842,12 +910,13 @@ export async function createRefuelInstruction(
       }
     }
   );
-  return ix;
+  instructions.push(ix);
+  return instructions;
 }
 
 /**
  * Provides a transaction instruction which can be used to transfer toolkit resources to a player's toolkit escrow account.
- * 
+ *
  * @param connection - web3.Connection object
  * @param tokenOwnerPublickey - Resource Token Account Owner
  * @param playerPublicKey - Player's public key
@@ -866,7 +935,7 @@ export async function createRepairInstruction(
   toolkitMint: web3.PublicKey,
   toolkitTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction> {
+): Promise<web3.TransactionInstruction[]> {
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
@@ -874,6 +943,28 @@ export async function createRepairInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+
+  const instructions = [];
+  const possibleArmsTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+    tokenOwnerPublickey,
+    {
+      mint: toolkitMint,
+    }
+  );
+  // if the token account does not exist, create it
+  if (possibleArmsTokenAccountObj.value.length === 0) {
+    instructions.push(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        toolkitMint,
+        toolkitMint, // token account
+        tokenOwnerPublickey, // owner
+        playerPublicKey, // payer
+      )
+    );
+  }
+
   const ix = await program.instruction.processRepair(
     stakingBump,
     scoreVarsBump,
@@ -896,7 +987,9 @@ export async function createRepairInstruction(
       }
     }
   );
-  return ix;
+
+  instructions.push(ix);
+  return instructions;
 }
 
 /**
