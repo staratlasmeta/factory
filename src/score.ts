@@ -686,7 +686,7 @@ export async function createRearmInstruction(
   armsMint: web3.PublicKey,
   armsTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction[]> {
+): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [armsEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
@@ -696,28 +696,6 @@ export async function createRearmInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-
-  const instructions = [];
-  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
-    tokenOwnerPublickey,
-    {
-      mint: armsMint,
-    }
-  );
-  // if the token account does not exist, create it
-  if (possibleTokenAccountObj.value.length === 0) {
-    instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        armsMint,
-        armsTokenAccount, // token account
-        tokenOwnerPublickey, // owner
-        playerPublicKey, // payer
-      )
-    );
-  }
-
   const ix = await program.instruction.processRearm(
     stakingBump,
     scoreVarsBump,
@@ -744,8 +722,8 @@ export async function createRearmInstruction(
       }
     }
   );
-  instructions.push(ix);
-  return instructions;
+
+  return ix;
 }
 
 /**
@@ -769,7 +747,7 @@ export async function createRefeedInstruction(
   foodMint: web3.PublicKey,
   foodTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction[]> {
+): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [foodEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
@@ -779,28 +757,6 @@ export async function createRefeedInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-
-  const instructions = [];
-  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
-    tokenOwnerPublickey,
-    {
-      mint: foodMint,
-    }
-  );
-  // if the token account does not exist, create it
-  if (possibleTokenAccountObj.value.length === 0) {
-    instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        foodMint,
-        foodTokenAccount, // token account
-        tokenOwnerPublickey, // owner
-        playerPublicKey, // payer
-      )
-    );
-  }
-
   const ix = await program.instruction.processRefeed(
     stakingBump,
     scoreVarsBump,
@@ -827,8 +783,8 @@ export async function createRefeedInstruction(
       }
     }
   );
-  instructions.push(ix);
-  return instructions;
+
+  return ix;
 }
 
 /**
@@ -852,7 +808,7 @@ export async function createRefuelInstruction(
   fuelMint: web3.PublicKey,
   fuelTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction[]> {
+): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [fuelEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
@@ -862,28 +818,6 @@ export async function createRefuelInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-
-  const instructions = [];
-  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
-    tokenOwnerPublickey,
-    {
-      mint: fuelMint,
-    }
-  );
-  // if the token account does not exist, create it
-  if (possibleTokenAccountObj.value.length === 0) {
-    instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        fuelMint,
-        fuelTokenAccount, // token account
-        tokenOwnerPublickey, // owner
-        playerPublicKey, // payer
-      )
-    );
-  }
-
   const ix = await program.instruction.processRefuel(
     stakingBump,
     scoreVarsBump,
@@ -910,8 +844,8 @@ export async function createRefuelInstruction(
       }
     }
   );
-  instructions.push(ix);
-  return instructions;
+
+  return ix;
 }
 
 /**
@@ -935,7 +869,7 @@ export async function createRepairInstruction(
   toolkitMint: web3.PublicKey,
   toolkitTokenAccount: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction[]> {
+): Promise<web3.TransactionInstruction> {
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
@@ -943,28 +877,6 @@ export async function createRepairInstruction(
   const idl = getScoreIDL(programId);
   const provider = new Provider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-
-  const instructions = [];
-  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
-    tokenOwnerPublickey,
-    {
-      mint: toolkitMint,
-    }
-  );
-  // if the token account does not exist, create it
-  if (possibleTokenAccountObj.value.length === 0) {
-    instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        toolkitMint,
-        toolkitTokenAccount, // token account
-        tokenOwnerPublickey, // owner
-        playerPublicKey, // payer
-      )
-    );
-  }
-
   const ix = await program.instruction.processRepair(
     stakingBump,
     scoreVarsBump,
@@ -988,8 +900,7 @@ export async function createRepairInstruction(
     }
   );
 
-  instructions.push(ix);
-  return instructions;
+  return ix;
 }
 
 /**
