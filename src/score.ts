@@ -8,7 +8,8 @@ import {
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 import { SystemProgram } from '@solana/web3.js';
 import { getPlayerFactionPDA } from '.';
-import { baseIdl } from './util/scoreIdl'
+import { baseIdl } from './util/scoreIdl';
+import { scoreLogBaseIdl } from './util/scoreLogIdl';
 
 const factionProgramId = new web3.PublicKey('FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe');
 
@@ -270,6 +271,23 @@ export async function getShipStakingAccountInfo(
 }
 
 /**
+ * Returns decoded event
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the SCORE program
+ * @param event - Event to decode
+ */
+ export async function decodeEvent(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+  event: string
+): Promise<any> {
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>scoreLogBaseIdl, programId, provider);
+  return program.coder.events.decode(event);
+}
+
+/**
  * Returns the current SCORE variables info for a designated ship mint.
  *
  * @param connection - web3.Connection object
@@ -324,6 +342,54 @@ export async function getScoreTreasuryAuthAccount(
   ],
     programId,
   );
+}
+
+/**
+ * Returns a list registered ships
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - [Ship Staking Account Infos]
+ */
+ export async function getAllRegisteredShips(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+): Promise<ScoreVarsShipInfo[]> {
+
+  const idl = getScoreIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const _shipsRegistered = await program.account.scoreVarsShip.all();
+  const shipsRegistered = [];
+  for(const ship of _shipsRegistered) {
+    shipsRegistered.push(<ScoreVarsShipInfo>ship.account);
+  }
+  return shipsRegistered;
+}
+
+/**
+ * Returns a list of all fleets
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the SCORE program
+ * @returns - [Ship Staking Account Infos]
+ */
+ export async function getAllFleets(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+): Promise<ShipStakingInfo[]> {
+
+  const idl = getScoreIDL(programId);
+  const provider = new Provider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const _shipStakingAccounts = await program.account.shipStaking.all();
+  const shipStakingAccounts = [];
+  for(const stakingAccount of _shipStakingAccounts) {
+    shipStakingAccounts.push(<ShipStakingInfo>stakingAccount.account);
+  }
+  return shipStakingAccounts;
 }
 
 /**
