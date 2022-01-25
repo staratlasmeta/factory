@@ -71,6 +71,8 @@ export async function createExchangeInstruction(
     offerTakerDepositTokenAccount: web3.PublicKey,
     offerTakerReceiveTokenAccount: web3.PublicKey,
     offerInitializer: web3.PublicKey,
+    initializerDepositTokenAccount: web3.PublicKey,
+    initializerReceiveTokenAccount: web3.PublicKey,
     offerAccount: web3.PublicKey,
     programId: web3.PublicKey,
 ): Promise<TransactionInstruction> {
@@ -88,6 +90,8 @@ export async function createExchangeInstruction(
                 offerTakerDepositTokenAccount,
                 offerTakerReceiveTokenAccount,
                 offerInitializer,
+                initializerDepositTokenAccount,
+                initializerReceiveTokenAccount,
                 offerAccount,
                 offerVaultAccount,
                 offerVaultAuthority,
@@ -149,6 +153,36 @@ export async function createInitializeOfferInstruction(
             signers: [offerAccount]
         }
     )
+
+    return ix;
+}
+
+export async function createCancelOfferInstruction(
+    connection: web3.Connection,
+    offerInitializer: web3.PublicKey,
+    initializerDepositTokenAccount: web3.PublicKey,
+    offerAccount: web3.PublicKey,
+    programId: web3.PublicKey,
+): Promise<TransactionInstruction> {
+    const idl = getGmIDL(programId);
+    const provider = new Provider(connection, null, null);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [offerVaultAccount, _offerVaultBump] = await getOfferVault(programId);
+    const [offerVaultAuthority, _offerVaultAuthBump] = await getOfferVaultAuth(programId);
+
+    const ix = program.instruction.createCancelOfferInstruction(
+        {
+            accounts: {
+                offerInitializer,
+                initializerDepositTokenAccount,
+                offerVaultAccount,
+                offerVaultAuthority,
+                offerAccount,
+                tokenProgram: TOKEN_PROGRAM_ID
+            },
+        }
+    );
 
     return ix;
 }
