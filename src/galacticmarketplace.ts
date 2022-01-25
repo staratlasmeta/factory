@@ -171,7 +171,7 @@ export async function createCancelOfferInstruction(
     const [offerVaultAccount, _offerVaultBump] = await getOfferVault(programId);
     const [offerVaultAuthority, _offerVaultAuthBump] = await getOfferVaultAuth(programId);
 
-    const ix = program.instruction.createCancelOfferInstruction(
+    const ix = program.instruction.processCancel(
         {
             accounts: {
                 offerInitializer,
