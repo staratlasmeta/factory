@@ -104,27 +104,29 @@ export async function createExchangeInstruction(
 }
 
 /**
- * Creates an instruction which creates an offer to exchange offerAmount of DepositToken for takerAmount of ReceiveToken
+ * Returns an instruction which creates an offer to purchase originationQty of ReceiveToken at 'price' value per unit
  *
  * @param connection
  * @param initializerPublicKey - PublicKey of offer initializer
  * @param initializerDepositTokenAccount - Token account for token being offered
  * @param initializerReceiveTokenAccount - Token account for token to be received
  * @param offerAccount - an initialized offerAccount
- * @param offerAmount - number of tokens to be transferred to offer taker
- * @param takerAmount - number of tokens to be transferred to offer initializer
+ * @param price - Price of individual unit
+ * @param originationQty - Number of units to purchase
  * @param offerTokenMint - Mint address of token being offered
+ * @param takerTokenMint - Mint address of token being purchased
  * @param programId - Deployed program ID for GM program
  */
-export async function createInitializeOfferInstruction(
+export async function createInitializeBuyOrderInstruction(
     connection: web3.Connection,
     initializerPublicKey: web3.PublicKey,
     initializerDepositTokenAccount: web3.PublicKey,
     initializerReceiveTokenAccount: web3.PublicKey,
     offerAccount: web3.Keypair,
-    offerAmount: BN,
-    takerAmount: BN,
+    price: number,
+    originationQty: number,
     offerTokenMint: web3.PublicKey,
+    takerTokenMint: web3.PublicKey,
     programId: web3.PublicKey
 
 ): Promise<web3.TransactionInstruction> {
@@ -134,14 +136,15 @@ export async function createInitializeOfferInstruction(
 
     const [offerVaultAccount, offerVaultBump] = await getOfferVault(programId);
 
-    const ix = program.instruction.processInitialize(
+    const ix = program.instruction.processInitializeBuy(
         offerVaultBump,
-        new BN(offerAmount),
-        new BN(takerAmount),
+        new BN(price),
+        new BN(originationQty),
         {
             accounts: {
                 offerInitializer: initializerPublicKey,
-                mint: offerTokenMint,
+                offerMint: offerTokenMint,
+                takerMint: takerTokenMint,
                 offerVaultAccount,
                 initializerDepositTokenAccount,
                 initializerReceiveTokenAccount,
@@ -157,6 +160,62 @@ export async function createInitializeOfferInstruction(
     return ix;
 }
 
+/**
+ * Returns an instruction which creates an offer to sell originationQty of DepositToken at 'price' value per unit
+ *
+ * @param connection
+ * @param initializerPublicKey - PublicKey of offer initializer
+ * @param initializerDepositTokenAccount - Token account for token being offered
+ * @param initializerReceiveTokenAccount - Token account for token to be received
+ * @param offerAccount - an initialized offerAccount
+ * @param price - Price of individual unit
+ * @param originationQty - Number of units to purchase
+ * @param offerTokenMint - Mint address of token being offered
+ * @param takerTokenMint - Mint address of token being purchased
+ * @param programId - Deployed program ID for GM program
+ */
+export async function createInitializeSellOrderInstruction(
+    connection: web3.Connection,
+    initializerPublicKey: web3.PublicKey,
+    initializerDepositTokenAccount: web3.PublicKey,
+    initializerReceiveTokenAccount: web3.PublicKey,
+    offerAccount: web3.Keypair,
+    price: number,
+    originationQty: number,
+    offerTokenMint: web3.PublicKey,
+    takerTokenMint: web3.PublicKey,
+    programId: web3.PublicKey
+
+): Promise<web3.TransactionInstruction> {
+    const idl = getGmIDL(programId);
+    const provider = new Provider(connection, null, null);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [offerVaultAccount, offerVaultBump] = await getOfferVault(programId);
+
+    const ix = program.instruction.processInitializeBuy(
+        offerVaultBump,
+        new BN(price),
+        new BN(originationQty),
+        {
+            accounts: {
+                offerInitializer: initializerPublicKey,
+                offerMint: offerTokenMint,
+                takerMint: takerTokenMint,
+                offerVaultAccount,
+                initializerDepositTokenAccount,
+                initializerReceiveTokenAccount,
+                offerAccount: offerAccount.publicKey,
+                systemProgram: web3.SystemProgram.programId,
+                rent: web3.SYSVAR_RENT_PUBKEY,
+                tokenProgram: TOKEN_PROGRAM_ID
+            },
+            signers: [offerAccount]
+        }
+    )
+
+    return ix;
+}
 export async function createCancelOfferInstruction(
     connection: web3.Connection,
     offerInitializer: web3.PublicKey,
