@@ -4,11 +4,11 @@ import {
     Program,
     Provider,
     web3
-} from "@project-serum/anchor";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { baseIdl } from "./util/gmIdl";
-import { createAccountInstruction } from "./util";
-import { TransactionInstruction } from "@solana/web3.js";
+} from '@project-serum/anchor';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { baseIdl } from './util/gmIdl';
+import { createAccountInstruction } from './util';
+import { TransactionInstruction } from '@solana/web3.js';
 
 /**
  * Returns the IDL for the Galactic Marketplace program with provided program ID stored in metadata.
@@ -33,7 +33,7 @@ export async function getOfferVault(
 ): Promise<[web3.PublicKey, number]> {
     return web3.PublicKey.findProgramAddress(
         [
-            Buffer.from("offer-vault-account")
+            Buffer.from('offer-vault-account')
         ],
         programId,
     );
@@ -48,7 +48,7 @@ export async function getOfferVaultAuth(
 ): Promise<[web3.PublicKey, number]> {
     return web3.PublicKey.findProgramAddress(
         [
-            Buffer.from("offer-vault-auth")
+            Buffer.from('offer-vault-auth')
         ],
         programId,
     );
@@ -161,7 +161,7 @@ export async function createInitializeBuyOrderInstruction(
 }
 
 /**
- * Returns an instruction which creates an offer to sell originationQty of DepositToken at 'price' value per unit
+ * Returns an instruction which creates an offer to sell originationQty of DepositToke;n at 'price' value per unit
  *
  * @param connection
  * @param initializerPublicKey - PublicKey of offer initializer

@@ -3,19 +3,19 @@ import {
     Program,
     Provider,
     web3
-} from "@project-serum/anchor";
-import { SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
-import { getGmIDL } from "..";
+} from '@project-serum/anchor';
+import { SystemProgram, Transaction, TransactionInstruction } from '@solana/web3.js';
+import { getGmIDL } from '..';
 
 /**
  * Creates an instruction to initialize an offer account which can be passed into an initialize offer instruction.
  *
  * Must add to an existing web3.Transaction. Transaction recentBlockhash and feePayer must be defined.
- * Must call ".partialsign(offerAccount)" before sending transaction containing this instruction or you will receive signature verification errors.
+ * Must call '.partialsign(offerAccount)' before sending transaction containing this instruction or you will receive signature verification errors.
  *
  * @param connection
  * @param payer - PublicKey of offer initializer
- * @param offerAccount - Keypair for offer account, can be obtained with "anchor.web3.Keypair.generate()"
+ * @param offerAccount - Keypair for offer account, can be obtained with 'anchor.web3.Keypair.generate()'
  * @param programId - Deployed program ID for GM program
  */
 export async function createAccountInstruction(
@@ -42,13 +42,13 @@ export async function createAccountInstruction(
 /**
  * Creates a transaction to initialize an offer account which can be passed into an initialize offer instruction.
  *
- * Can ".add()" additional instructions to this transaction.
+ * Can '.add()' additional instructions to this transaction.
  *
- * Must call ".partialsign(offerAccount)" before sending this transaction or you will receive signature verification errors.
+ * Must call '.partialsign(offerAccount)' before sending this transaction or you will receive signature verification errors.
  *
  * @param connection
  * @param payer - PublicKey of offer initializer
- * @param offerAccount - Keypair for offer account, can be obtained with "anchor.web3.Keypair.generate()"
+ * @param offerAccount - Keypair for offer account, can be obtained with 'anchor.web3.Keypair.generate()'
  * @param programId - Deployed program ID for GM program
  */
 export async function createAccountTransaction(
