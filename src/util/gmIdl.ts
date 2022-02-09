@@ -1,222 +1,421 @@
 export const baseIdl: unknown =
 {
-  'version': '0.1.0',
-  'name': 'marketplace',
-  'instructions': [
+  "version": "0.1.0",
+  "name": "marketplace",
+  "instructions": [
     {
-      'name': 'processInitialize',
-      'accounts': [
+      "name": "initialize",
+      "accounts": [
         {
-          'name': 'offerInitializer',
-          'isMut': true,
-          'isSigner': true
+          "name": "updateAuthorityAccount",
+          "isMut": false,
+          "isSigner": true
         },
         {
-          'name': 'mint',
-          'isMut': false,
-          'isSigner': false
+          "name": "marketVarsAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          'name': 'offerVaultAccount',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'initializerDepositTokenAccount',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'initializerReceiveTokenAccount',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'offerAccount',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
-      'args': [
+      "args": [
         {
-          'name': 'offerAccountBump',
-          'type': 'u8'
-        },
-        {
-          'name': 'offerAmount',
-          'type': 'u64'
-        },
-        {
-          'name': 'takerAmount',
-          'type': 'u64'
+          "name": "bump",
+          "type": "u8"
         }
       ]
     },
     {
-      'name': 'processExchange',
-      'accounts': [
+      "name": "processInitializeBuy",
+      "accounts": [
         {
-          'name': 'offerTaker',
-          'isMut': false,
-          'isSigner': true
+          "name": "orderInitializer",
+          "isMut": true,
+          "isSigner": true
         },
         {
-          'name': 'offerTakerDepositTokenAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "depositMint",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          'name': 'offerTakerReceiveTokenAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "receiveMint",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          'name': 'offerInitializer',
-          'isMut': true,
-          'isSigner': false
+          "name": "orderVaultAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          'name': 'initializerDepositTokenAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "initializerDepositTokenAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          'name': 'initializerReceiveTokenAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "initializerReceiveTokenAccount",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          'name': 'offerVaultAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "orderAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          'name': 'offerVaultAuthority',
-          'isMut': false,
-          'isSigner': false
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          'name': 'offerAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
-      'args': []
+      "args": [
+        {
+          "name": "offerAccountBump",
+          "type": "u8"
+        },
+        {
+          "name": "price",
+          "type": "u64"
+        },
+        {
+          "name": "originationQty",
+          "type": "u64"
+        }
+      ]
     },
     {
-      'name': 'processCancel',
-      'accounts': [
+      "name": "processInitializeSell",
+      "accounts": [
         {
-          'name': 'offerInitializer',
-          'isMut': true,
-          'isSigner': true
+          "name": "orderInitializer",
+          "isMut": true,
+          "isSigner": true
         },
         {
-          'name': 'initializerDepositTokenAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "depositMint",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          'name': 'offerVaultAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "receiveMint",
+          "isMut": false,
+          "isSigner": false
         },
         {
-          'name': 'offerVaultAuthority',
-          'isMut': false,
-          'isSigner': false
+          "name": "orderVaultAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          'name': 'offerAccount',
-          'isMut': true,
-          'isSigner': false
+          "name": "initializerDepositTokenAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
+          "name": "initializerReceiveTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "orderAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
         }
       ],
-      'args': []
+      "args": [
+        {
+          "name": "offerAccountBump",
+          "type": "u8"
+        },
+        {
+          "name": "price",
+          "type": "u64"
+        },
+        {
+          "name": "originationQty",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "processExchange",
+      "accounts": [
+        {
+          "name": "orderTaker",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "orderTakerDepositTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "orderTakerReceiveTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "orderInitializer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "initializerDepositTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "initializerReceiveTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "orderVaultAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "orderVaultAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "orderAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "purchaseQty",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "processCancel",
+      "accounts": [
+        {
+          "name": "orderInitializer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "initializerDepositTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "orderVaultAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "orderVaultAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "orderAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
-  'accounts': [
+  "accounts": [
     {
-      'name': 'OfferAccount',
-      'type': {
-        'kind': 'struct',
-        'fields': [
+      "name": "MarketVars",
+      "type": {
+        "kind": "struct",
+        "fields": [
           {
-            'name': 'offerInitializerPubkey',
-            'type': 'publicKey'
+            "name": "updateAuthorityMaster",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "orderInitializerPubkey",
+            "type": "publicKey"
           },
           {
-            'name': 'initializerDepositTokenAccount',
-            'type': 'publicKey'
+            "name": "depositMint",
+            "type": "publicKey"
           },
           {
-            'name': 'initializerReceiveTokenAccount',
-            'type': 'publicKey'
+            "name": "receiveMint",
+            "type": "publicKey"
           },
           {
-            'name': 'offerAmount',
-            'type': 'u64'
+            "name": "initializerDepositTokenAccount",
+            "type": "publicKey"
           },
           {
-            'name': 'takerAmount',
-            'type': 'u64'
+            "name": "initializerReceiveTokenAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "orderSide",
+            "type": {
+              "defined": "OrderSide"
+            }
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "orderOriginationQty",
+            "type": "u64"
+          },
+          {
+            "name": "orderRemainingQty",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RegisteredCurrency",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tokenMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "saCurrencyVault",
+            "type": "publicKey"
+          },
+          {
+            "name": "royalty",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SaAsset",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "assetMint",
+            "type": "publicKey"
           }
         ]
       }
     }
   ],
-  'errors': [
+  "types": [
     {
-      'code': 6000,
-      'name': 'InvalidInstruction',
-      'msg': 'Invalid instruction.'
-    },
-    {
-      'code': 6001,
-      'name': 'InvalidOfferAccountOwner',
-      'msg': 'Invalid Offer Account Owner'
-    },
-    {
-      'code': 6002,
-      'name': 'InvalidDestinationAccount',
-      'msg': 'Invalid Destiantion Token Account'
-    },
-    {
-      'code': 6003,
-      'name': 'InvalidMint',
-      'msg': 'Invalid SPL Token mint'
-    },
-    {
-      'code': 6004,
-      'name': 'InvalidTokenAccount',
-      'msg': 'Invalid SPL Token account'
+      "name": "OrderSide",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Buy"
+          },
+          {
+            "name": "Sell"
+          }
+        ]
+      }
     }
   ],
-  'metadata': {
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidDestinationAccount",
+      "msg": "Invalid Destiantion Token Account"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidInstruction",
+      "msg": "Invalid instruction."
+    },
+    {
+      "code": 6002,
+      "name": "InvalidMint",
+      "msg": "Invalid SPL Token mint"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidOfferAccountOwner",
+      "msg": "Invalid Offer Account Owner"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidTokenAccount",
+      "msg": "Invalid SPL Token account"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidUpdateAuthorityAccount",
+      "msg": "Numerical overflow error"
+    },
+    {
+      "code": 6006,
+      "name": "NumericalOverflowError",
+      "msg": "Invalid Update Authority account"
+    },
+    {
+      "code": 6007,
+      "name": "UninitializedTokenAccount",
+      "msg": "Uninitialized Token Account"
+    }
+  ],
+  "metadata": {
+    "address": ""
   }
 }
