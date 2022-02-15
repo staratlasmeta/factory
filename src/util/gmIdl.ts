@@ -4,7 +4,7 @@ export const baseIdl: unknown =
   "name": "marketplace",
   "instructions": [
     {
-      "name": "initialize",
+      "name": "initializeMarket",
       "accounts": [
         {
           "name": "updateAuthorityAccount",
@@ -22,12 +22,7 @@ export const baseIdl: unknown =
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "bump",
-          "type": "u8"
-        }
-      ]
+      "args": []
     },
     {
       "name": "processInitializeBuy",
@@ -68,6 +63,11 @@ export const baseIdl: unknown =
           "isSigner": false
         },
         {
+          "name": "registeredCurrency",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -84,10 +84,6 @@ export const baseIdl: unknown =
         }
       ],
       "args": [
-        {
-          "name": "offerAccountBump",
-          "type": "u8"
-        },
         {
           "name": "price",
           "type": "u64"
@@ -137,6 +133,11 @@ export const baseIdl: unknown =
           "isSigner": false
         },
         {
+          "name": "registeredCurrency",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -154,10 +155,6 @@ export const baseIdl: unknown =
       ],
       "args": [
         {
-          "name": "offerAccountBump",
-          "type": "u8"
-        },
-        {
           "name": "price",
           "type": "u64"
         },
@@ -172,7 +169,7 @@ export const baseIdl: unknown =
       "accounts": [
         {
           "name": "orderTaker",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -263,6 +260,47 @@ export const baseIdl: unknown =
         }
       ],
       "args": []
+    },
+    {
+      "name": "registerCurrency",
+      "accounts": [
+        {
+          "name": "updateAuthorityAccount",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "marketVarsAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "registeredCurrency",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "currencyMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "saCurrencyVault",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "royalty",
+          "type": "u32"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -274,6 +312,10 @@ export const baseIdl: unknown =
           {
             "name": "updateAuthorityMaster",
             "type": "publicKey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
@@ -288,19 +330,19 @@ export const baseIdl: unknown =
             "type": "publicKey"
           },
           {
-            "name": "depositMint",
+            "name": "currencyMint",
             "type": "publicKey"
           },
           {
-            "name": "receiveMint",
+            "name": "assetMint",
             "type": "publicKey"
           },
           {
-            "name": "initializerDepositTokenAccount",
+            "name": "initializerCurrencyTokenAccount",
             "type": "publicKey"
           },
           {
-            "name": "initializerReceiveTokenAccount",
+            "name": "initializerAssetTokenAccount",
             "type": "publicKey"
           },
           {
@@ -320,6 +362,10 @@ export const baseIdl: unknown =
           {
             "name": "orderRemainingQty",
             "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
@@ -339,6 +385,10 @@ export const baseIdl: unknown =
           },
           {
             "name": "royalty",
+            "type": "u32"
+          },
+          {
+            "name": "bump",
             "type": "u8"
           }
         ]
@@ -416,6 +466,5 @@ export const baseIdl: unknown =
     }
   ],
   "metadata": {
-    "address": ""
   }
 }

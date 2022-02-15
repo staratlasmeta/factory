@@ -10,6 +10,16 @@ import { baseIdl } from './util/gmIdl';
 import { createAccountInstruction } from './util';
 import { TransactionInstruction } from '@solana/web3.js';
 
+export interface MarketVarsInfo {
+    updateAuthorityMaster: web3.PublicKey,
+}
+
+export interface RegisteredCurrencyInfo {
+    tokenMint: web3.PublicKey,
+    saCurrencyVault: web3.PublicKey,
+    royalty: BN,
+}
+
 /**
  * Returns the IDL for the Galactic Marketplace program with provided program ID stored in metadata.
  *
@@ -24,9 +34,25 @@ export function getGmIDL(
 }
 
 /**
+ * Returns the public key and bump seed for the market variables account
+ *
+ * @param programId - Deployed program ID for Galactic Marketplace
+ */
+export async function getMarketVarsAccount(
+    programId: web3.PublicKey
+): Promise<[web3.PublicKey, number]> {
+    return web3.PublicKey.findProgramAddress(
+        [
+            Buffer.from('market-vars')
+        ],
+        programId,
+    );
+}
+
+/**
  * Returns the public key and bump seed for an order escrow account.
  *
- * @param programId
+ * @param programId - Deployed program ID for Galactic Marketplace
  */
 export async function getOrderVault(
     programId: web3.PublicKey
@@ -41,7 +67,8 @@ export async function getOrderVault(
 
 /**
  * Returns the public key and bump seed for an order escrow authority.
- * @param programId
+ *
+ * @param programId - Deployed program ID for Galactic Marketplace
  */
 export async function getOrderVaultAuth(
     programId: web3.PublicKey
@@ -52,6 +79,92 @@ export async function getOrderVaultAuth(
         ],
         programId,
     );
+}
+
+/**
+ * Returns the public key and bump seed for a registered currency account
+ *
+ * @param programId - Deployed program ID for Galactic Marketplace
+ * @param currencyMint - Mint address for registered currency
+ */
+export async function getRegisteredCurrencyAccount(
+    programId: web3.PublicKey,
+    currencyMint: web3.PublicKey,
+): Promise<[web3.PublicKey, number]> {
+    return web3.PublicKey.findProgramAddress(
+        [
+            Buffer.from('registered-currency'),
+            currencyMint.toBuffer()
+        ],
+        programId,
+    )
+}
+
+export async function getMarketVarsAccountInfo(
+    connection: web3.Connection,
+    programId: web3.PublicKey,
+): Promise<MarketVarsInfo> {
+    const provider = new Provider(connection, null, null);
+    const idl = getGmIDL(programId);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [marketVarsAccount] = await getMarketVarsAccount(programId);
+    const marketVarsInfo = await program.account.marketVars.fetch(marketVarsAccount);
+    return marketVarsInfo as MarketVarsInfo;
+}
+
+export async function getRegisteredCurrencyAccountInfo(
+    connection: web3.Connection,
+    programId: web3.PublicKey,
+    currencyMint: web3.PublicKey,
+): Promise<RegisteredCurrencyInfo> {
+    const provider = new Provider(connection, null, null);
+    const idl = getGmIDL(programId);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [registeredCurrencyAccount] = await getRegisteredCurrencyAccount(programId, currencyMint);
+    const registeredCurrencyInfo = await program.account.registeredCurrency.fetch(registeredCurrencyAccount);
+    return registeredCurrencyInfo as RegisteredCurrencyInfo;
+}
+
+/**
+ * Returns an instruction which cancels an open order, returns the balance in escrow to the order initializer, closes the orderAccount,
+ * and refunds rent fees.
+ *
+ * @param connection
+ * @param orderInitializer - Public key of order initializer
+ * @param initializerDepositTokenAccount - Public key of token account for token being returned
+ * @param orderAccount - Public key of orderAccount being closed
+ * @param programId - Deployed program ID for GM program
+ */
+export async function createCancelOrderInstruction(
+    connection: web3.Connection,
+    orderInitializer: web3.PublicKey,
+    initializerDepositTokenAccount: web3.PublicKey,
+    orderAccount: web3.PublicKey,
+    programId: web3.PublicKey,
+): Promise<TransactionInstruction> {
+    const idl = getGmIDL(programId);
+    const provider = new Provider(connection, null, null);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [orderVaultAccount, _orderVaultBump] = await getOrderVault(programId);
+    const [orderVaultAuthority, _orderVaultAuthBump] = await getOrderVaultAuth(programId);
+
+    const ix = program.instruction.processCancel(
+        {
+            accounts: {
+                orderInitializer,
+                initializerDepositTokenAccount,
+                orderVaultAccount,
+                orderVaultAuthority,
+                orderAccount,
+                tokenProgram: TOKEN_PROGRAM_ID
+            },
+        }
+    );
+
+    return ix;
 }
 
 /**
@@ -83,8 +196,8 @@ export async function createExchangeInstruction(
     const provider = new Provider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
-    const [orderVaultAccount, _orderVaultBump] = await getOrderVault(programId);
-    const [orderVaultAuthority, _orderVaultAuthBump] = await getOrderVaultAuth(programId);
+    const [orderVaultAccount] = await getOrderVault(programId);
+    const [orderVaultAuthority] = await getOrderVaultAuth(programId);
 
     const ix = program.instruction.processExchange(
         new BN(purchaseQty),
@@ -138,10 +251,10 @@ export async function createInitializeBuyOrderInstruction(
     const provider = new Provider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
-    const [orderVaultAccount, orderVaultBump] = await getOrderVault(programId);
+    const [orderVaultAccount] = await getOrderVault(programId);
+    const [registeredMintAccount] = await getRegisteredCurrencyAccount(programId, depositMint);
 
     const ix = program.instruction.processInitializeBuy(
-        orderVaultBump,
         new BN(price),
         new BN(originationQty),
         {
@@ -153,6 +266,7 @@ export async function createInitializeBuyOrderInstruction(
                 initializerDepositTokenAccount,
                 initializerReceiveTokenAccount,
                 orderAccount: orderAccount.publicKey,
+                registeredCurrency: registeredMintAccount,
                 systemProgram: web3.SystemProgram.programId,
                 rent: web3.SYSVAR_RENT_PUBKEY,
                 tokenProgram: TOKEN_PROGRAM_ID
@@ -161,6 +275,30 @@ export async function createInitializeBuyOrderInstruction(
         }
     )
 
+    return ix;
+}
+
+export async function createInitializeMarketInstruction(
+    connection: web3.Connection,
+    updateAuthorityAccount: web3.PublicKey,
+    programId: web3.PublicKey,
+): Promise<web3.TransactionInstruction> {
+    const idl = getGmIDL(programId);
+    const provider = new Provider(connection, null, null);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [marketVarsAccount] = await getMarketVarsAccount(programId);
+
+    const ix = program.instruction.initializeMarket(
+        {
+            accounts: {
+               updateAuthorityAccount,
+               marketVarsAccount,
+               systemProgram: web3.SystemProgram.programId,
+            },
+            signers: [],
+        }
+    )
     return ix;
 }
 
@@ -195,10 +333,10 @@ export async function createInitializeSellOrderInstruction(
     const provider = new Provider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
-    const [orderVaultAccount, orderVaultBump] = await getOrderVault(programId);
+    const [orderVaultAccount] = await getOrderVault(programId);
+    const [registeredMintAccount] = await getRegisteredCurrencyAccount(programId, receiveMint);
 
     const ix = program.instruction.processInitializeSell(
-        orderVaultBump,
         new BN(price),
         new BN(originationQty),
         {
@@ -210,6 +348,7 @@ export async function createInitializeSellOrderInstruction(
                 initializerDepositTokenAccount,
                 initializerReceiveTokenAccount,
                 orderAccount: orderAccount.publicKey,
+                registeredCurrency: registeredMintAccount,
                 systemProgram: web3.SystemProgram.programId,
                 rent: web3.SYSVAR_RENT_PUBKEY,
                 tokenProgram: TOKEN_PROGRAM_ID
@@ -221,42 +360,34 @@ export async function createInitializeSellOrderInstruction(
     return ix;
 }
 
-/**
- * Returns an instruction which cancels an open order, returns the balance in escrow to the order initializer, closes the orderAccount,
- * and refunds rent fees.
- *
- * @param connection
- * @param orderInitializer - Public key of order initializer
- * @param initializerDepositTokenAccount - Public key of token account for token being returned
- * @param orderAccount - Public key of orderAccount being closed
- * @param programId - Deployed program ID for GM program
- */
-export async function createCancelOrderInstruction(
+export async function createRegisterCurrencyInstruction(
     connection: web3.Connection,
-    orderInitializer: web3.PublicKey,
-    initializerDepositTokenAccount: web3.PublicKey,
-    orderAccount: web3.PublicKey,
+    updateAuthorityAccount: web3.PublicKey,
+    royalty: number,
+    saCurrencyVault: web3.PublicKey,
+    currencyMint: web3.PublicKey,
     programId: web3.PublicKey,
-): Promise<TransactionInstruction> {
+): Promise<web3.TransactionInstruction> {
     const idl = getGmIDL(programId);
     const provider = new Provider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
-    const [orderVaultAccount, _orderVaultBump] = await getOrderVault(programId);
-    const [orderVaultAuthority, _orderVaultAuthBump] = await getOrderVaultAuth(programId);
+    const [registeredCurrency] = await getRegisteredCurrencyAccount(programId, currencyMint);
+    const [marketVarsAccount] = await getMarketVarsAccount(programId);
 
-    const ix = program.instruction.processCancel(
+    const ix = program.instruction.registerCurrency(
+        new BN(royalty),
         {
             accounts: {
-                orderInitializer,
-                initializerDepositTokenAccount,
-                orderVaultAccount,
-                orderVaultAuthority,
-                orderAccount,
-                tokenProgram: TOKEN_PROGRAM_ID
+                updateAuthorityAccount,
+                marketVarsAccount,
+                registeredCurrency,
+                currencyMint,
+                saCurrencyVault,
+                systemProgram: web3.SystemProgram.programId,
             },
+            signers: [],
         }
-    );
-
+    )
     return ix;
 }
