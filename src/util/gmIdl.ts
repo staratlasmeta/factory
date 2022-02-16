@@ -364,6 +364,14 @@ export const baseIdl: unknown =
             "type": "u64"
           },
           {
+            "name": "createdAtTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "expiresAtTimestamp",
+            "type": "i64"
+          },
+          {
             "name": "bump",
             "type": "u8"
           }
@@ -427,7 +435,7 @@ export const baseIdl: unknown =
     {
       "code": 6000,
       "name": "InvalidDestinationAccount",
-      "msg": "Invalid Destiantion Token Account"
+      "msg": "Invalid Destination Token Account"
     },
     {
       "code": 6001,
@@ -451,18 +459,23 @@ export const baseIdl: unknown =
     },
     {
       "code": 6005,
-      "name": "InvalidUpdateAuthorityAccount",
+      "name": "NumericalOverflowError",
       "msg": "Numerical overflow error"
     },
     {
       "code": 6006,
-      "name": "NumericalOverflowError",
+      "name": "InvalidUpdateAuthorityAccount",
       "msg": "Invalid Update Authority account"
     },
     {
       "code": 6007,
       "name": "UninitializedTokenAccount",
       "msg": "Uninitialized Token Account"
+    },
+    {
+      "code": 6008,
+      "name": "InsufficientBalance",
+      "msg": "Insufficient Balance"
     }
   ],
   "metadata": {
