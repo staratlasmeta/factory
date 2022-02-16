@@ -22,7 +22,12 @@ export const baseIdl: unknown =
           'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'maxOrderDuration',
+          'type': 'u32'
+        }
+      ]
     },
     {
       'name': 'processInitializeBuy',
@@ -31,6 +36,11 @@ export const baseIdl: unknown =
           'name': 'orderInitializer',
           'isMut': true,
           'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'depositMint',
@@ -91,6 +101,10 @@ export const baseIdl: unknown =
         {
           'name': 'originationQty',
           'type': 'u64'
+        },
+        {
+          'name': 'orderDuration',
+          'type': 'u32'
         }
       ]
     },
@@ -103,6 +117,11 @@ export const baseIdl: unknown =
           'isSigner': true
         },
         {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
           'name': 'depositMint',
           'isMut': false,
           'isSigner': false
@@ -161,6 +180,10 @@ export const baseIdl: unknown =
         {
           'name': 'originationQty',
           'type': 'u64'
+        },
+        {
+          'name': 'orderDuration',
+          'type': 'u32'
         }
       ]
     },
@@ -312,6 +335,10 @@ export const baseIdl: unknown =
           {
             'name': 'updateAuthorityMaster',
             'type': 'publicKey'
+          },
+          {
+            'name': 'maxOrderDuration',
+            'type': 'u32'
           },
           {
             'name': 'bump',
@@ -476,6 +503,11 @@ export const baseIdl: unknown =
       'code': 6008,
       'name': 'InsufficientBalance',
       'msg': 'Insufficient Balance'
+    },
+    {
+      'code': 6009,
+      'name': 'InvalidOrderDuration',
+      'msg': 'Invalid Order Duration'
     }
   ],
   'metadata': {
