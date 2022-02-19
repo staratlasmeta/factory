@@ -1,8 +1,8 @@
 name: Docs publish
 
 on:
-  merge:
-    branches: [ main ]
+  push:
+    branches: [ main, develop ]
 jobs:
   build:
     runs-on: ubuntu-latest
