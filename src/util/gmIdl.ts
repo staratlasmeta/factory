@@ -223,6 +223,11 @@ export const baseIdl: unknown =
           'isSigner': false
         },
         {
+          'name': 'registeredCurrency',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
@@ -308,7 +313,7 @@ export const baseIdl: unknown =
       'args': [
         {
           'name': 'royalty',
-          'type': 'u32'
+          'type': 'u64'
         }
       ]
     }
@@ -403,7 +408,7 @@ export const baseIdl: unknown =
           },
           {
             'name': 'royalty',
-            'type': 'u32'
+            'type': 'u64'
           },
           {
             'name': 'bump',
@@ -436,6 +441,20 @@ export const baseIdl: unknown =
           },
           {
             'name': 'Sell'
+          }
+        ]
+      }
+    },
+    {
+      'name': 'TokenType',
+      'type': {
+        'kind': 'enum',
+        'variants': [
+          {
+            'name': 'Asset'
+          },
+          {
+            'name': 'Currency'
           }
         ]
       }

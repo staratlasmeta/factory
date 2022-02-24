@@ -198,6 +198,9 @@ export async function createExchangeInstruction(
 
     const [orderVaultAccount] = await getOrderVault(programId);
     const [orderVaultAuthority] = await getOrderVaultAuth(programId);
+    const _orderAccount = await program.account.orderAccount.fetch(orderAccount);
+    const _currencyMint = _orderAccount.currencyMint;
+    const [registeredCurrency] = await getRegisteredCurrencyAccount(programId, _currencyMint);
 
     const ix = program.instruction.processExchange(
         new BN(purchaseQty),
@@ -212,6 +215,7 @@ export async function createExchangeInstruction(
                 orderVaultAccount,
                 orderVaultAuthority,
                 orderAccount,
+                registeredCurrency,
                 tokenProgram: TOKEN_PROGRAM_ID,
             }
         }
