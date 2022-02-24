@@ -242,7 +242,6 @@ export async function createInitializeBuyOrderInstruction(
     orderAccount: web3.Keypair,
     price: number,
     originationQty: number,
-    orderDuration: number,
     depositMint: web3.PublicKey,
     receiveMint: web3.PublicKey,
     programId: web3.PublicKey
@@ -259,7 +258,6 @@ export async function createInitializeBuyOrderInstruction(
     const ix = program.instruction.processInitializeBuy(
         new BN(price),
         new BN(originationQty),
-        new BN(orderDuration),
         {
             accounts: {
                 orderInitializer,
@@ -285,7 +283,6 @@ export async function createInitializeBuyOrderInstruction(
 export async function createInitializeMarketInstruction(
     connection: web3.Connection,
     updateAuthorityAccount: web3.PublicKey,
-    maxOrderDuration: number,
     programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
     const idl = getGmIDL(programId);
@@ -295,7 +292,6 @@ export async function createInitializeMarketInstruction(
     const [marketVarsAccount] = await getMarketVarsAccount(programId);
 
     const ix = program.instruction.initializeMarket(
-        new BN(maxOrderDuration),
         {
             accounts: {
                updateAuthorityAccount,
@@ -330,7 +326,6 @@ export async function createInitializeSellOrderInstruction(
     orderAccount: web3.Keypair,
     price: number,
     originationQty: number,
-    orderDuration: number,
     depositMint: web3.PublicKey,
     receiveMint: web3.PublicKey,
     programId: web3.PublicKey
@@ -347,7 +342,6 @@ export async function createInitializeSellOrderInstruction(
     const ix = program.instruction.processInitializeSell(
         new BN(price),
         new BN(originationQty),
-        new BN(orderDuration),
         {
             accounts: {
                 orderInitializer,

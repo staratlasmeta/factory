@@ -22,12 +22,7 @@ export const baseIdl: unknown =
           'isSigner': false
         }
       ],
-      'args': [
-        {
-          'name': 'maxOrderDuration',
-          'type': 'u32'
-        }
-      ]
+      'args': []
     },
     {
       'name': 'processInitializeBuy',
@@ -101,10 +96,6 @@ export const baseIdl: unknown =
         {
           'name': 'originationQty',
           'type': 'u64'
-        },
-        {
-          'name': 'orderDuration',
-          'type': 'u32'
         }
       ]
     },
@@ -180,10 +171,6 @@ export const baseIdl: unknown =
         {
           'name': 'originationQty',
           'type': 'u64'
-        },
-        {
-          'name': 'orderDuration',
-          'type': 'u32'
         }
       ]
     },
@@ -335,10 +322,6 @@ export const baseIdl: unknown =
           {
             'name': 'updateAuthorityMaster',
             'type': 'publicKey'
-          },
-          {
-            'name': 'maxOrderDuration',
-            'type': 'u32'
           },
           {
             'name': 'bump',
@@ -508,6 +491,16 @@ export const baseIdl: unknown =
       'code': 6009,
       'name': 'InvalidOrderDuration',
       'msg': 'Invalid Order Duration'
+    },
+    {
+      'code': 6010,
+      'name': 'OrderExpired',
+      'msg': 'Order Expired'
+    },
+    {
+      'code': 6011,
+      'name': 'InsufficientOrderQty',
+      'msg': 'Insufficient Order Quantity Remaining'
     }
   ],
   'metadata': {
