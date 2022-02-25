@@ -168,6 +168,41 @@ export async function createCancelOrderInstruction(
 }
 
 /**
+ * Closes a registered currency account and returns the rent to the update authority
+ * @param connection
+ * @param updateAuthorityAccount - Public key of update authority specified in market vars account
+ * @param currencyMint - Mint address of currency being deregistered
+ * @param programId - Deployed program ID for GM program
+ */
+export async function createDeregisterCurrencyInstruction(
+    connection: web3.Connection,
+    updateAuthorityAccount: web3.PublicKey,
+    currencyMint: web3.PublicKey,
+    programId: web3.PublicKey,
+): Promise<web3.TransactionInstruction> {
+    const idl = getGmIDL(programId);
+    const provider = new Provider(connection, null, null);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [registeredCurrency] = await getRegisteredCurrencyAccount(programId, currencyMint);
+    const [marketVarsAccount] = await getMarketVarsAccount(programId);
+
+    const ix = program.instruction.deregisterCurrency(
+        {
+            accounts: {
+                updateAuthorityAccount,
+                marketVarsAccount,
+                registeredCurrency,
+                currencyMint,
+                systemProgram: web3.SystemProgram.programId,
+            },
+            signers: [],
+        }
+    )
+    return ix;
+}
+
+/**
  * Creates an instruction which exchanges tokens between offer initializer and offer taker to satisfy the exchange detailed in offerAccount
  *
  * @param connection

@@ -4,6 +4,37 @@ export const baseIdl: unknown =
   'name': 'marketplace',
   'instructions': [
     {
+      'name': 'deregisterCurrency',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
       'name': 'initializeMarket',
       'accounts': [
         {
