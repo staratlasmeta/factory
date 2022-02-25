@@ -177,6 +177,7 @@ export async function createCancelOrderInstruction(
  * @param orderInitializer - Public key of the order initializer's main wallet
  * @param initializerDepositTokenAccount - Publickey of token account for token being sent by initializer
  * @param initializerReceiveTokenAccount - Publickey of token account for token being received by initializer
+ * @param saVault - Public key of Star Atlas token account designated in registered currency account
  * @param orderAccount - an initialized orderAccount
  * @param programId - Deployed program ID for GM program
  */
@@ -189,6 +190,7 @@ export async function createExchangeInstruction(
     initializerDepositTokenAccount: web3.PublicKey,
     initializerReceiveTokenAccount: web3.PublicKey,
     orderAccount: web3.PublicKey,
+    saVault: web3.PublicKey,
     purchaseQty: number,
     programId: web3.PublicKey,
 ): Promise<TransactionInstruction> {
@@ -215,6 +217,7 @@ export async function createExchangeInstruction(
                 orderVaultAccount,
                 orderVaultAuthority,
                 orderAccount,
+                saVault,
                 registeredCurrency,
                 tokenProgram: TOKEN_PROGRAM_ID,
             }

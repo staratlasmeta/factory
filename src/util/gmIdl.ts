@@ -223,6 +223,11 @@ export const baseIdl: unknown =
           'isSigner': false
         },
         {
+          'name': 'saVault',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
           'name': 'registeredCurrency',
           'isMut': false,
           'isSigner': false
