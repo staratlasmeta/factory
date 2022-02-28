@@ -7,7 +7,7 @@ import {
 } from '@project-serum/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { baseIdl } from './util/gmIdl';
-import { createAccountInstruction } from './util';
+import { createAccountInstruction, getOrderSide } from './util';
 import { TransactionInstruction } from '@solana/web3.js';
 
 export interface MarketVarsInfo {
@@ -55,11 +55,15 @@ export async function getMarketVarsAccount(
  * @param programId - Deployed program ID for Galactic Marketplace
  */
 export async function getOrderVault(
+    orderInitializer: web3.PublicKey,
+    currencyMint: web3.PublicKey,
     programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
     return web3.PublicKey.findProgramAddress(
         [
-            Buffer.from('order-vault-account')
+            Buffer.from('order-vault-account'),
+            orderInitializer.toBuffer(),
+            currencyMint.toBuffer(),
         ],
         programId,
     );
@@ -148,7 +152,10 @@ export async function createCancelOrderInstruction(
     const provider = new Provider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
-    const [orderVaultAccount, _orderVaultBump] = await getOrderVault(programId);
+    const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
+    const currencyMint = orderAccountInfo.currencyMint;
+
+    const [orderVaultAccount, _orderVaultBump] = await getOrderVault(orderInitializer, currencyMint, programId);
     const [orderVaultAuthority, _orderVaultAuthBump] = await getOrderVaultAuth(programId);
 
     const ix = program.instruction.processCancel(
@@ -233,7 +240,11 @@ export async function createExchangeInstruction(
     const provider = new Provider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
-    const [orderVaultAccount] = await getOrderVault(programId);
+    const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
+
+    const depositMint = (getOrderSide(orderAccountInfo) === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
+
+    const [orderVaultAccount, _orderVaultBump] = await getOrderVault(orderInitializer, depositMint, programId);
     const [orderVaultAuthority] = await getOrderVaultAuth(programId);
     const _orderAccount = await program.account.orderAccount.fetch(orderAccount);
     const _currencyMint = _orderAccount.currencyMint;
@@ -294,7 +305,7 @@ export async function createInitializeBuyOrderInstruction(
     const program = new Program(idl as Idl, programId, provider);
 
     const [marketVarsAccount] = await getMarketVarsAccount(programId);
-    const [orderVaultAccount] = await getOrderVault(programId);
+    const [orderVaultAccount] = await getOrderVault(orderInitializer, depositMint, programId);
     const [registeredMintAccount] = await getRegisteredCurrencyAccount(programId, depositMint);
 
     const ix = program.instruction.processInitializeBuy(
@@ -378,7 +389,7 @@ export async function createInitializeSellOrderInstruction(
     const program = new Program(idl as Idl, programId, provider);
 
     const [marketVarsAccount] = await getMarketVarsAccount(programId);
-    const [orderVaultAccount] = await getOrderVault(programId);
+    const [orderVaultAccount] = await getOrderVault(orderInitializer, depositMint, programId);
     const [registeredMintAccount] = await getRegisteredCurrencyAccount(programId, receiveMint);
 
     const ix = program.instruction.processInitializeSell(

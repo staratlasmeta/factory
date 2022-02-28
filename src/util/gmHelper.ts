@@ -79,3 +79,10 @@ export async function createAccountTransaction(
 
     return tx;
 }
+
+export const getOrderSide = (side: any): string => {
+    if (JSON.stringify(side) === JSON.stringify({ buy: {} })) {
+        return 'BuySide';
+    }
+    return 'SellSide';
+}
