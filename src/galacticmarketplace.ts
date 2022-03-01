@@ -306,6 +306,7 @@ export async function createInitializeBuyOrderInstruction(
 
     const [marketVarsAccount] = await getMarketVarsAccount(programId);
     const [orderVaultAccount] = await getOrderVault(orderInitializer, depositMint, programId);
+    const [orderVaultAuthority] = await getOrderVaultAuth(programId);
     const [registeredMintAccount] = await getRegisteredCurrencyAccount(programId, depositMint);
 
     const ix = program.instruction.processInitializeBuy(
@@ -318,6 +319,7 @@ export async function createInitializeBuyOrderInstruction(
                 depositMint,
                 receiveMint,
                 orderVaultAccount,
+                orderVaultAuthority,
                 initializerDepositTokenAccount,
                 initializerReceiveTokenAccount,
                 orderAccount: orderAccount.publicKey,
@@ -390,6 +392,7 @@ export async function createInitializeSellOrderInstruction(
 
     const [marketVarsAccount] = await getMarketVarsAccount(programId);
     const [orderVaultAccount] = await getOrderVault(orderInitializer, depositMint, programId);
+    const [orderVaultAuthority] = await getOrderVaultAuth(programId);
     const [registeredMintAccount] = await getRegisteredCurrencyAccount(programId, receiveMint);
 
     const ix = program.instruction.processInitializeSell(
@@ -402,6 +405,7 @@ export async function createInitializeSellOrderInstruction(
                 depositMint,
                 receiveMint,
                 orderVaultAccount,
+                orderVaultAuthority,
                 initializerDepositTokenAccount,
                 initializerReceiveTokenAccount,
                 orderAccount: orderAccount.publicKey,
