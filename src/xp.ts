@@ -221,3 +221,43 @@ export const updateXpAccountLimitIx = async ({
     instructions,
   };
 };
+
+/** Params for Create User XP Account instruction */
+export interface CreateXpUserAccountParams {
+  user: PublicKey /** the admin public key */;
+  connection: Connection /** the Solana connection object */;
+  xpAccountKey: PublicKey /** the admin public key */;
+  programId: web3.PublicKey /** Deployed program ID for the XP program */;
+}
+
+/**
+ * Creates a user XP Account
+ * @param param - the input parameters
+ */
+export const createXpUserAccountLimitIx = async ({
+  user,
+  connection,
+  xpAccountKey,
+  programId,
+}: CreateXpUserAccountParams) => {
+  const program = getXpProgram(connection, programId);
+  const [userXpAccountKey] = await findUserXpAccount(xpAccountKey, user, program.programId);
+
+  const instructions = [
+    program.instruction.createUserXpAccount({
+      accounts: {
+        user,
+        xpAccount: xpAccountKey,
+        userXpAccount: userXpAccountKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+    }),
+  ];
+
+  return {
+    user,
+    userXpAccount: userXpAccountKey,
+    xpAccount: xpAccountKey,
+    instructions,
+  };
+};
