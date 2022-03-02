@@ -138,7 +138,6 @@ export const initXpVarsIx = async ({
   ];
 
   return {
-    admin,
     xpVarsAccount: xpVarsAccountKey,
     instructions,
   };
@@ -176,7 +175,6 @@ export const registerXpAccountIx = async ({
   ];
 
   return {
-    admin,
     xpVarsAccount: xpVarsAccountKey,
     xpAccount: xpAccountKey,
     instructions,
@@ -216,9 +214,7 @@ export const updateXpAccountLimitIx = async ({
   ];
 
   return {
-    admin,
     xpVarsAccount: xpVarsAccountKey,
-    xpAccount: xpAccountKey,
     instructions,
   };
 };
@@ -258,9 +254,7 @@ export const createXpUserAccountIx = async ({
   ];
 
   return {
-    user,
     userXpAccount: userXpAccountKey,
-    xpAccount: xpAccountKey,
     instructions,
   };
 };
@@ -305,9 +299,7 @@ export const createXpUserAccountWithLicenseIx = async ({
   ];
 
   return {
-    user,
     userXpAccount: userXpAccountKey,
-    xpAccount: xpAccountKey,
     instructions,
   };
 };
