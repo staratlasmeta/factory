@@ -143,7 +143,7 @@ export const initXpVarsIx = async ({
 export interface RegisterXpAccountParams {
   admin: PublicKey /** the admin public key */;
   connection: Connection /** the Solana connection object */;
-  label: string/** The XP account label */;
+  label: string /** The XP account label */;
   programId: web3.PublicKey /** Deployed program ID for the XP program */;
 }
 
