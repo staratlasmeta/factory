@@ -158,6 +158,10 @@ export const initXpVarsIx = async ({
 export interface RegisterXpAccountParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
   label: string /** The XP account label */;
+  xpLimit: BN /** The XP limit */;
+  tokenRequired: boolean /** Whether a token is required */;
+  tokenQuantity: BN /** The required token quantity */;
+  tokenMintKey?: PublicKey /** The required token mint */;
 }
 
 /**
@@ -168,21 +172,41 @@ export const registerXpAccountIx = async ({
   admin,
   connection,
   label,
+  xpLimit,
+  tokenRequired,
+  tokenQuantity,
+  tokenMintKey,
   programId,
 }: RegisterXpAccountParams) => {
   const program = getXpProgram(connection, programId);
   const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
   const [xpAccountKey] = await findXpAccount(label, program.programId);
 
+  if (tokenRequired && !tokenMintKey) {
+    throw new Error('The token mint is required');
+  }
+
   const instructions = [
-    program.instruction.registerXpAccount(label, {
-      accounts: {
-        admin,
-        xpVarsAccount: xpVarsAccountKey,
-        xpAccount: xpAccountKey,
-        systemProgram: web3.SystemProgram.programId,
-      },
-    }),
+    program.instruction.registerXpAccount(
+      label,
+      tokenRequired,
+      tokenQuantity,
+      xpLimit,
+      {
+        accounts: {
+          admin,
+          xpVarsAccount: xpVarsAccountKey,
+          xpAccount: xpAccountKey,
+          systemProgram: web3.SystemProgram.programId,
+        },
+        ...(tokenRequired &&
+          tokenMintKey && {
+            remainingAccounts: [
+              { pubkey: tokenMintKey, isWritable: false, isSigner: false },
+            ],
+          }),
+      }
+    ),
   ];
 
   return {
@@ -193,35 +217,61 @@ export const registerXpAccountIx = async ({
 };
 
 /** Params for Update XP Account instruction */
-export interface UpdateXpAccountLimitParams extends BaseParams {
+export interface UpdateXpAccountParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
   xpAccountKey: PublicKey /** the Xp Account public key */;
-  xpLimit: BN /** The XP account limit */;
+  xpLimit?: BN /** The XP limit */;
+  tokenRequired?: boolean /** Whether a token is required */;
+  tokenQuantity?: BN /** The required token quantity */;
+  tokenMintKey?: PublicKey /** The required token mint */;
 }
 
 /**
  * Updates an XP Account
  * @param param - the input parameters
  */
-export const updateXpAccountLimitIx = async ({
+export const updateXpAccountIx = async ({
   admin,
   connection,
   xpAccountKey,
   xpLimit,
+  tokenRequired,
+  tokenQuantity,
+  tokenMintKey,
   programId,
-}: UpdateXpAccountLimitParams) => {
+}: UpdateXpAccountParams) => {
   const program = getXpProgram(connection, programId);
   const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
 
+  const xpLimitInput = xpLimit == null ? null : xpLimit;
+  const tokenQuantityInput = tokenQuantity == null ? null : tokenQuantity;
+  const tokenRequiredInput = tokenRequired == null ? null : tokenRequired;
+  const tokenMintKeyInput = tokenMintKey == null ? null : tokenMintKey;
+
+  if (tokenRequiredInput && !tokenMintKeyInput) {
+    throw new Error('The token mint is required');
+  }
+
   const instructions = [
-    program.instruction.updateXpLimit(xpLimit, {
-      accounts: {
-        admin,
-        xpVarsAccount: xpVarsAccountKey,
-        xpAccount: xpAccountKey,
-        systemProgram: web3.SystemProgram.programId,
-      },
-    }),
+    program.instruction.updateXpAccount(
+      xpLimitInput,
+      tokenQuantityInput,
+      tokenRequiredInput,
+      {
+        accounts: {
+          admin,
+          xpVarsAccount: xpVarsAccountKey,
+          xpAccount: xpAccountKey,
+          systemProgram: web3.SystemProgram.programId,
+        },
+        ...(tokenRequiredInput &&
+          tokenMintKeyInput && {
+            remainingAccounts: [
+              { pubkey: tokenMintKeyInput, isWritable: false, isSigner: false },
+            ],
+          }),
+      }
+    ),
   ];
 
   return {
