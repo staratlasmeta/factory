@@ -1,5 +1,5 @@
 import { Connection, PublicKey } from '@solana/web3.js';
-import { Program, Provider, web3 } from '@project-serum/anchor';
+import { Program, Provider, web3, BN } from '@project-serum/anchor';
 import { IDL } from './types/xp_program';
 import type { Xp } from './types/xp_program';
 
@@ -180,30 +180,31 @@ export const registerXpAccountIx = async ({
   };
 };
 
-/** Params for Register XP Account instruction */
+/** Params for Update XP Account instruction */
 export interface UpdateXpAccountLimitParams {
   admin: PublicKey /** the admin public key */;
   connection: Connection /** the Solana connection object */;
-  label: string /** The XP account label */;
+  xpAccountKey: PublicKey /** the admin public key */;
+  xpLimit: BN /** The XP account label */;
   programId: web3.PublicKey /** Deployed program ID for the XP program */;
 }
 
 /**
- * Registers an XP Account
+ * Updates an XP Account
  * @param param - the input parameters
  */
 export const updateXpAccountLimitIx = async ({
   admin,
   connection,
-  label,
+  xpAccountKey,
+  xpLimit,
   programId,
 }: UpdateXpAccountLimitParams) => {
   const program = getXpProgram(connection, programId);
   const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
-  const [xpAccountKey] = await findXpAccount(label, program.programId);
 
   const instructions = [
-    program.instruction.registerXpAccount(label, {
+    program.instruction.updateXpLimit(xpLimit, {
       accounts: {
         admin,
         xpVarsAccount: xpVarsAccountKey,
