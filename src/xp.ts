@@ -1,5 +1,6 @@
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, Provider, web3, BN } from '@project-serum/anchor';
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { IDL } from './types/xp_program';
 import type { Xp } from './types/xp_program';
 
@@ -103,11 +104,15 @@ export const getXpProgram = (
   return program;
 };
 
-/** Params for Init instruction */
-export interface InitXpVarsParams {
-  admin: PublicKey /** the admin public key */;
+/** Base Params for instructions */
+interface BaseParams {
   connection: Connection /** the Solana connection object */;
   programId: web3.PublicKey /** Deployed program ID for the XP program */;
+}
+
+/** Params for Init instruction */
+export interface InitXpVarsParams extends BaseParams {
+  admin: PublicKey /** the admin public key */;
 }
 
 /**
@@ -140,11 +145,9 @@ export const initXpVarsIx = async ({
 };
 
 /** Params for Register XP Account instruction */
-export interface RegisterXpAccountParams {
+export interface RegisterXpAccountParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
-  connection: Connection /** the Solana connection object */;
   label: string /** The XP account label */;
-  programId: web3.PublicKey /** Deployed program ID for the XP program */;
 }
 
 /**
@@ -181,12 +184,10 @@ export const registerXpAccountIx = async ({
 };
 
 /** Params for Update XP Account instruction */
-export interface UpdateXpAccountLimitParams {
+export interface UpdateXpAccountLimitParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
-  connection: Connection /** the Solana connection object */;
-  xpAccountKey: PublicKey /** the admin public key */;
+  xpAccountKey: PublicKey /** the Xp Account public key */;
   xpLimit: BN /** The XP account label */;
-  programId: web3.PublicKey /** Deployed program ID for the XP program */;
 }
 
 /**
@@ -223,25 +224,27 @@ export const updateXpAccountLimitIx = async ({
 };
 
 /** Params for Create User XP Account instruction */
-export interface CreateXpUserAccountParams {
-  user: PublicKey /** the admin public key */;
-  connection: Connection /** the Solana connection object */;
-  xpAccountKey: PublicKey /** the admin public key */;
-  programId: web3.PublicKey /** Deployed program ID for the XP program */;
+export interface CreateXpUserAccountParams extends BaseParams {
+  user: PublicKey /** the user public key */;
+  xpAccountKey: PublicKey /** the Xp Account public key */;
 }
 
 /**
  * Creates a user XP Account
  * @param param - the input parameters
  */
-export const createXpUserAccountLimitIx = async ({
+export const createXpUserAccountIx = async ({
   user,
   connection,
   xpAccountKey,
   programId,
 }: CreateXpUserAccountParams) => {
   const program = getXpProgram(connection, programId);
-  const [userXpAccountKey] = await findUserXpAccount(xpAccountKey, user, program.programId);
+  const [userXpAccountKey] = await findUserXpAccount(
+    xpAccountKey,
+    user,
+    program.programId
+  );
 
   const instructions = [
     program.instruction.createUserXpAccount({
@@ -249,6 +252,53 @@ export const createXpUserAccountLimitIx = async ({
         user,
         xpAccount: xpAccountKey,
         userXpAccount: userXpAccountKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+    }),
+  ];
+
+  return {
+    user,
+    userXpAccount: userXpAccountKey,
+    xpAccount: xpAccountKey,
+    instructions,
+  };
+};
+
+/** Params for Create User XP Account instruction with license */
+export interface CreateXpUserAccountWithLicenseParams extends CreateXpUserAccountParams {
+  licenseTokenAccountKey: PublicKey /** the token account for the license to burn */;
+  licenseMintAccountKey: PublicKey /** the mint of the license token account */;
+}
+
+/**
+ * Creates a user XP Account when a license is required
+ * @param param - the input parameters
+ */
+export const createXpUserAccountWithLicenseIx = async ({
+  user,
+  connection,
+  licenseTokenAccountKey,
+  licenseMintAccountKey,
+  xpAccountKey,
+  programId,
+}: CreateXpUserAccountWithLicenseParams) => {
+  const program = getXpProgram(connection, programId);
+  const [userXpAccountKey] = await findUserXpAccount(
+    xpAccountKey,
+    user,
+    program.programId
+  );
+
+  const instructions = [
+    program.instruction.createUserXpAccountWithLicense({
+      accounts: {
+        user,
+        xpAccount: xpAccountKey,
+        userXpAccount: userXpAccountKey,
+        userTokenAccount: licenseTokenAccountKey,
+        licenseMintAccount: licenseMintAccountKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: web3.SystemProgram.programId,
       },
     }),
