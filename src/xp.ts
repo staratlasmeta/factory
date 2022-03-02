@@ -112,9 +112,13 @@ export interface InitXpVarsParams {
 
 /**
  * Initialize the XP Vars Account
- * @param param0
+ * @param param - the input parameters
  */
-export const initXpVarsIx = async ({ admin, connection, programId }: InitXpVarsParams) => {
+export const initXpVarsIx = async ({
+  admin,
+  connection,
+  programId,
+}: InitXpVarsParams) => {
   const program = getXpProgram(connection, programId);
   const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
 
@@ -131,6 +135,47 @@ export const initXpVarsIx = async ({ admin, connection, programId }: InitXpVarsP
   return {
     admin,
     xpVarsAccount: xpVarsAccountKey,
+    instructions,
+  };
+};
+
+/** Params for Init instruction */
+export interface RegisterXpAccountParams {
+  admin: PublicKey /** the admin public key */;
+  connection: Connection /** the Solana connection object */;
+  label: string/** The XP account label */;
+  programId: web3.PublicKey /** Deployed program ID for the XP program */;
+}
+
+/**
+ * Registers an XP Account
+ * @param param - the input parameters
+ */
+export const registerXpAccountIx = async ({
+  admin,
+  connection,
+  label,
+  programId,
+}: RegisterXpAccountParams) => {
+  const program = getXpProgram(connection, programId);
+  const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
+  const [xpAccountKey] = await findXpAccount(label, program.programId);
+
+  const instructions = [
+    program.instruction.processRegisterXpAccount(label, {
+      accounts: {
+        admin,
+        xpVarsAccount: xpVarsAccountKey,
+        xpAccount: xpAccountKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+    }),
+  ];
+
+  return {
+    admin,
+    xpVarsAccount: xpVarsAccountKey,
+    xpAccount: xpAccountKey,
     instructions,
   };
 };
