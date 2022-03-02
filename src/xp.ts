@@ -139,7 +139,7 @@ export const initXpVarsIx = async ({
   };
 };
 
-/** Params for Init instruction */
+/** Params for Register XP Account instruction */
 export interface RegisterXpAccountParams {
   admin: PublicKey /** the admin public key */;
   connection: Connection /** the Solana connection object */;
