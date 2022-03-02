@@ -400,3 +400,57 @@ export const deregisterXpModifierIx = async ({
     instructions,
   };
 };
+
+/** Params for XP Modify instruction */
+export interface ModifyXpParams extends BaseParams {
+  user: PublicKey /** the admin public key */;
+  newXpValue: BN /** the new XP value */;
+  xpAccountKey: PublicKey /** the Xp Account public key */;
+  modifierKey: PublicKey /** the modifier public key */;
+}
+
+/**
+ * Modifies a user XP account
+ * @param param - the input parameters
+ */
+export const modifyXpIx = async ({
+  user,
+  newXpValue,
+  connection,
+  modifierKey,
+  xpAccountKey,
+  programId,
+}: ModifyXpParams) => {
+  const program = getXpProgram(connection, programId);
+  const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
+  const [userXpAccountKey] = await findUserXpAccount(
+    xpAccountKey,
+    user,
+    program.programId
+  );
+  const [xpModifierAccountKey] = await findXpModifierAccount(
+    xpAccountKey,
+    modifierKey,
+    program.programId
+  );
+
+  const instructions = [
+    program.instruction.modifyXp(newXpValue, {
+      accounts: {
+        user,
+        userXpAccount: userXpAccountKey,
+        xpAccount: xpAccountKey,
+        xpModifierAccount: xpModifierAccountKey,
+        modifier: modifierKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+    }),
+  ];
+
+  return {
+    xpVarsAccount: xpVarsAccountKey,
+    userXpAccount: userXpAccountKey,
+    xpModifierAccount: xpModifierAccountKey,
+    instructions,
+  };
+};
