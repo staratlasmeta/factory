@@ -196,7 +196,7 @@ export const registerXpAccountIx = async ({
 export interface UpdateXpAccountLimitParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
   xpAccountKey: PublicKey /** the Xp Account public key */;
-  xpLimit: BN /** The XP account label */;
+  xpLimit: BN /** The XP account limit */;
 }
 
 /**
