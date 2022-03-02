@@ -482,7 +482,7 @@ export const getXpVarsAccount = async ({
   };
 };
 
-/** Params for XP Modify instruction */
+/** Params for XP Account getter */
 export interface GetXpAccountParams extends BaseParams {
   xpAccountKey: PublicKey /** the Xp Account public key */;
 }
@@ -500,4 +500,113 @@ export const getXpAccount = async ({
   const xpAccount = await program.account.xpAccount.fetch(xpAccountKey);
 
   return xpAccount as XpAccount;
+};
+
+/** Params for UserXP Account Getter */
+export interface GetUserXpAccountParams extends BaseParams {
+  userXpAccountKey: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * Gets a user XP account
+ * @param param - the input parameters
+ */
+export const getUserXpAccount = async ({
+  userXpAccountKey,
+  connection,
+  programId,
+}: GetUserXpAccountParams) => {
+  const program = getXpProgram(connection, programId);
+  const userXpAccount = await program.account.userXpAccount.fetch(
+    userXpAccountKey
+  );
+
+  return userXpAccount as UserXpAccount;
+};
+
+/** Params for UserXP Account Getter */
+export interface GetUserXpAccountViaUserAndXpKeysParams extends BaseParams {
+  user: PublicKey /** the Xp Account public key */;
+  xpAccountKey: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * Gets a user's XP account using the user and XP Account
+ * @param param - the input parameters
+ */
+export const getUserXpAccountViaUserAndXpKeys = async ({
+  user,
+  xpAccountKey,
+  connection,
+  programId,
+}: GetUserXpAccountViaUserAndXpKeysParams) => {
+  const program = getXpProgram(connection, programId);
+  const [userXpAccountKey] = await findUserXpAccount(
+    xpAccountKey,
+    user,
+    programId
+  );
+  const userXpAccount = await program.account.userXpAccount.fetch(
+    userXpAccountKey
+  );
+
+  return {
+    userXpAccountKey,
+    userXpAccount: userXpAccount as UserXpAccount,
+  };
+};
+
+/** Params for XP Modifier account getter */
+export interface GetXpModifierAccountParams extends BaseParams {
+  xpModifierAccountKey: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * Gets an XP Modifier account
+ * @param param - the input parameters
+ */
+export const getXpModifierAccount = async ({
+  xpModifierAccountKey,
+  connection,
+  programId,
+}: GetXpModifierAccountParams) => {
+  const program = getXpProgram(connection, programId);
+  const xpModifierAccount = await program.account.xpModifier.fetch(
+    xpModifierAccountKey
+  );
+
+  return xpModifierAccount as XpModifier;
+};
+
+/** Params for UserXP Account Getter */
+export interface GetXpModifierAccountViaModifierAndXpKeysParams
+  extends BaseParams {
+  modifier: PublicKey /** the Xp Account public key */;
+  xpAccountKey: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * Gets a user's XP account using the user and XP Account
+ * @param param - the input parameters
+ */
+export const getXpModifierAccountViaModifierAndXpKeys = async ({
+  modifier,
+  xpAccountKey,
+  connection,
+  programId,
+}: GetXpModifierAccountViaModifierAndXpKeysParams) => {
+  const program = getXpProgram(connection, programId);
+  const [xpModifierAccountKey] = await findXpModifierAccount(
+    xpAccountKey,
+    modifier,
+    programId
+  );
+  const xpModifierAccount = await program.account.userXpAccount.fetch(
+    xpModifierAccountKey
+  );
+
+  return {
+    xpModifierAccountKey,
+    xpModifierAccount: xpModifierAccount as XpModifier,
+  };
 };
