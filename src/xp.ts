@@ -2,7 +2,16 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, Provider, web3, BN } from '@project-serum/anchor';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { IDL } from './types/xp_program';
+import {
+  XpVars,
+  XpModifier,
+  XpAccount,
+  UserXpAccount,
+} from './types/xp_accounts';
 import type { Xp } from './types/xp_program';
+
+/** Export account types */
+export * from './types/xp_accounts';
 
 const XP_VARS_GLOBAL_SEED = Buffer.from('XPVarsGlobal');
 const XP_ACCOUNT_SEED = Buffer.from('XP_Account');
@@ -453,4 +462,42 @@ export const modifyXpIx = async ({
     xpModifierAccount: xpModifierAccountKey,
     instructions,
   };
+};
+
+/**
+ * Gets the XP Vars account
+ * @param param - the input parameters
+ */
+export const getXpVarsAccount = async ({
+  connection,
+  programId,
+}: BaseParams) => {
+  const program = getXpProgram(connection, programId);
+  const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
+  const xpVarsAccount = await program.account.xpVars.fetch(xpVarsAccountKey);
+
+  return {
+    xpVarsAccount: xpVarsAccount as XpVars,
+    xpVarsAccountKey: xpVarsAccountKey,
+  };
+};
+
+/** Params for XP Modify instruction */
+export interface GetXpAccountParams extends BaseParams {
+  xpAccountKey: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * Gets an XP account
+ * @param param - the input parameters
+ */
+export const getXpAccount = async ({
+  xpAccountKey,
+  connection,
+  programId,
+}: GetXpAccountParams) => {
+  const program = getXpProgram(connection, programId);
+  const xpAccount = await program.account.xpAccount.fetch(xpAccountKey);
+
+  return xpAccount as XpAccount;
 };
