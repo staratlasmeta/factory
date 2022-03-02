@@ -1,6 +1,6 @@
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, Provider, web3 } from '@project-serum/anchor';
-import { xpIdl } from './idl/xp';
+import { IDL } from './types/xp_program';
 import type { Xp } from './types/xp_program';
 
 const XP_VARS_GLOBAL_SEED = Buffer.from('XPVarsGlobal');
@@ -82,7 +82,7 @@ export const findXpModifierAccount = async (
  * @returns - The base IDL object
  */
 export function getXpIDL(programId: web3.PublicKey): unknown {
-  const _tmp = xpIdl;
+  const _tmp = IDL;
   _tmp['metadata']['address'] = programId.toBase58();
   return _tmp;
 }
@@ -123,7 +123,7 @@ export const initXpVarsIx = async ({
   const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
 
   const instructions = [
-    program.instruction.processInit({
+    program.instruction.init({
       accounts: {
         admin,
         xpVarsAccount: xpVarsAccountKey,
@@ -162,7 +162,48 @@ export const registerXpAccountIx = async ({
   const [xpAccountKey] = await findXpAccount(label, program.programId);
 
   const instructions = [
-    program.instruction.processRegisterXpAccount(label, {
+    program.instruction.registerXpAccount(label, {
+      accounts: {
+        admin,
+        xpVarsAccount: xpVarsAccountKey,
+        xpAccount: xpAccountKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+    }),
+  ];
+
+  return {
+    admin,
+    xpVarsAccount: xpVarsAccountKey,
+    xpAccount: xpAccountKey,
+    instructions,
+  };
+};
+
+/** Params for Register XP Account instruction */
+export interface UpdateXpAccountLimitParams {
+  admin: PublicKey /** the admin public key */;
+  connection: Connection /** the Solana connection object */;
+  label: string /** The XP account label */;
+  programId: web3.PublicKey /** Deployed program ID for the XP program */;
+}
+
+/**
+ * Registers an XP Account
+ * @param param - the input parameters
+ */
+export const updateXpAccountLimitIx = async ({
+  admin,
+  connection,
+  label,
+  programId,
+}: UpdateXpAccountLimitParams) => {
+  const program = getXpProgram(connection, programId);
+  const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
+  const [xpAccountKey] = await findXpAccount(label, program.programId);
+
+  const instructions = [
+    program.instruction.registerXpAccount(label, {
       accounts: {
         admin,
         xpVarsAccount: xpVarsAccountKey,

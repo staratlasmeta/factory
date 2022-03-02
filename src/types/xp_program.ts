@@ -3,7 +3,7 @@ export type Xp = {
   name: 'xp';
   instructions: [
     {
-      name: 'processInit';
+      name: 'init';
       accounts: [
         {
           name: 'admin';
@@ -24,7 +24,7 @@ export type Xp = {
       args: [];
     },
     {
-      name: 'processRegisterXpAccount';
+      name: 'registerXpAccount';
       accounts: [
         {
           name: 'admin';
@@ -69,7 +69,7 @@ export type Xp = {
       ];
     },
     {
-      name: 'processUpdateXpLimit';
+      name: 'updateXpLimit';
       accounts: [
         {
           name: 'admin';
@@ -100,7 +100,7 @@ export type Xp = {
       ];
     },
     {
-      name: 'processCreateUserXpAccount';
+      name: 'createUserXpAccount';
       accounts: [
         {
           name: 'user';
@@ -126,7 +126,7 @@ export type Xp = {
       args: [];
     },
     {
-      name: 'processCreateUserXpAccountWithLicense';
+      name: 'createUserXpAccountWithLicense';
       accounts: [
         {
           name: 'user';
@@ -167,7 +167,7 @@ export type Xp = {
       args: [];
     },
     {
-      name: 'processRegisterXpModifier';
+      name: 'registerXpModifier';
       accounts: [
         {
           name: 'admin';
@@ -214,7 +214,7 @@ export type Xp = {
       ];
     },
     {
-      name: 'processDeregisterXpModifier';
+      name: 'deregisterXpModifier';
       accounts: [
         {
           name: 'admin';
@@ -250,7 +250,7 @@ export type Xp = {
       args: [];
     },
     {
-      name: 'processModifyXp';
+      name: 'modifyXp';
       accounts: [
         {
           name: 'modifier';
@@ -438,7 +438,7 @@ export const IDL: Xp = {
   name: 'xp',
   instructions: [
     {
-      name: 'processInit',
+      name: 'init',
       accounts: [
         {
           name: 'admin',
@@ -459,7 +459,7 @@ export const IDL: Xp = {
       args: [],
     },
     {
-      name: 'processRegisterXpAccount',
+      name: 'registerXpAccount',
       accounts: [
         {
           name: 'admin',
@@ -504,7 +504,7 @@ export const IDL: Xp = {
       ],
     },
     {
-      name: 'processUpdateXpLimit',
+      name: 'updateXpLimit',
       accounts: [
         {
           name: 'admin',
@@ -535,7 +535,7 @@ export const IDL: Xp = {
       ],
     },
     {
-      name: 'processCreateUserXpAccount',
+      name: 'createUserXpAccount',
       accounts: [
         {
           name: 'user',
@@ -561,7 +561,7 @@ export const IDL: Xp = {
       args: [],
     },
     {
-      name: 'processCreateUserXpAccountWithLicense',
+      name: 'createUserXpAccountWithLicense',
       accounts: [
         {
           name: 'user',
@@ -602,7 +602,7 @@ export const IDL: Xp = {
       args: [],
     },
     {
-      name: 'processRegisterXpModifier',
+      name: 'registerXpModifier',
       accounts: [
         {
           name: 'admin',
@@ -649,7 +649,7 @@ export const IDL: Xp = {
       ],
     },
     {
-      name: 'processDeregisterXpModifier',
+      name: 'deregisterXpModifier',
       accounts: [
         {
           name: 'admin',
@@ -685,7 +685,7 @@ export const IDL: Xp = {
       args: [],
     },
     {
-      name: 'processModifyXp',
+      name: 'modifyXp',
       accounts: [
         {
           name: 'modifier',
