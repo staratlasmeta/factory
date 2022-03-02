@@ -260,7 +260,8 @@ export const createXpUserAccountIx = async ({
 };
 
 /** Params for Create User XP Account instruction with license */
-export interface CreateXpUserAccountWithLicenseParams extends CreateXpUserAccountParams {
+export interface CreateXpUserAccountWithLicenseParams
+  extends CreateXpUserAccountParams {
   licenseTokenAccountKey: PublicKey /** the token account for the license to burn */;
   licenseMintAccountKey: PublicKey /** the mint of the license token account */;
 }
@@ -300,6 +301,56 @@ export const createXpUserAccountWithLicenseIx = async ({
 
   return {
     userXpAccount: userXpAccountKey,
+    instructions,
+  };
+};
+
+/** Params for Register XP Modifier instruction */
+export interface RegisterXpModifierParams extends BaseParams {
+  admin: PublicKey /** the admin public key */;
+  canIncrement: boolean /** whether the modifier can increment XP */;
+  canDecrement: boolean /** whether the modifier can decrement XP */;
+  xpAccountKey: PublicKey /** the Xp Account public key */;
+  modifierKey: PublicKey /** the modifer public key */;
+}
+
+/**
+ * Registers an XP modifier
+ * @param param - the input parameters
+ */
+export const registerXpModifierIx = async ({
+  admin,
+  canIncrement,
+  canDecrement,
+  connection,
+  modifierKey,
+  xpAccountKey,
+  programId,
+}: RegisterXpModifierParams) => {
+  const program = getXpProgram(connection, programId);
+  const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
+  const [xpModifierAccountKey] = await findXpModifierAccount(
+    xpAccountKey,
+    modifierKey,
+    program.programId
+  );
+
+  const instructions = [
+    program.instruction.registerXpModifier(canIncrement, canDecrement, {
+      accounts: {
+        admin,
+        xpVarsAccount: xpVarsAccountKey,
+        xpAccount: xpAccountKey,
+        xpModifierAccount: xpModifierAccountKey,
+        modifier: modifierKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+    }),
+  ];
+
+  return {
+    xpVarsAccount: xpVarsAccountKey,
+    xpModifierAccount: xpModifierAccountKey,
     instructions,
   };
 };
