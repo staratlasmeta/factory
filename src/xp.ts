@@ -7,6 +7,9 @@ import {
   XpModifier,
   XpAccount,
   UserXpAccount,
+  UserXpAccountItem,
+  XpModifierItem,
+  XpAccountItem,
 } from './types/xp_accounts';
 import type { Xp } from './types/xp_program';
 
@@ -556,6 +559,34 @@ export const getUserXpAccountViaUserAndXpKeys = async ({
   };
 };
 
+/** Params for User XP Accounts Getter */
+export interface GetUserXpAccountsParams extends BaseParams {
+  user: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * Gets a user's XP accounts
+ * @param param - the input parameters
+ */
+export const getUserXpAccounts = async ({
+  user,
+  connection,
+  programId,
+}: GetUserXpAccountsParams) => {
+  const program = getXpProgram(connection, programId);
+  const userXpAccounts: UserXpAccountItem[] =
+    await program.account.userXpAccount.all([
+      {
+        memcmp: {
+          offset: 8,
+          bytes: user.toBase58(),
+        },
+      },
+    ]);
+
+  return userXpAccounts;
+};
+
 /** Params for XP Modifier account getter */
 export interface GetXpModifierAccountParams extends BaseParams {
   xpModifierAccountKey: PublicKey /** the Xp Account public key */;
@@ -609,4 +640,58 @@ export const getXpModifierAccountViaModifierAndXpKeys = async ({
     xpModifierAccountKey,
     xpModifierAccount: xpModifierAccount as XpModifier,
   };
+};
+
+/** Params for XP Account modifierss Getter */
+export interface GetXpAccountModifiersParams extends BaseParams {
+  xpAccountKey: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * Gets an Xp Account's registered XP modifier accounts
+ * @param param - the input parameters
+ */
+export const getXpAccountModifiers = async ({
+  xpAccountKey,
+  connection,
+  programId,
+}: GetXpAccountModifiersParams) => {
+  const program = getXpProgram(connection, programId);
+  const modifiers = await program.account.xpModifier.all([
+    {
+      memcmp: {
+        offset: 40,
+        bytes: xpAccountKey.toBase58(),
+      },
+    },
+  ]);
+
+  return modifiers as XpModifierItem[];
+};
+
+/** Params for modifier XP Accounts Getter */
+export interface GetModifierXpAccountsParams extends BaseParams {
+  modifier: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * Gets XP modifiers that belong to a particular modifier
+ * @param param - the input parameters
+ */
+export const getModifierXpAccounts = async ({
+  modifier,
+  connection,
+  programId,
+}: GetModifierXpAccountsParams) => {
+  const program = getXpProgram(connection, programId);
+  const modifiers = await program.account.xpModifier.all([
+    {
+      memcmp: {
+        offset: 8,
+        bytes: modifier.toBase58(),
+      },
+    },
+  ]);
+
+  return modifiers as XpModifierItem[];
 };
