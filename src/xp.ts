@@ -9,7 +9,6 @@ import {
   UserXpAccount,
   UserXpAccountItem,
   XpModifierItem,
-  XpAccountItem,
 } from './types/xp_accounts';
 import type { Xp } from './types/xp_program';
 
