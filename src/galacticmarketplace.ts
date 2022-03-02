@@ -104,6 +104,12 @@ export async function getRegisteredCurrencyAccount(
     )
 }
 
+/**
+ * Returns the contents of the market vars account as detailed in the MarketVarsInfo interface
+ *
+ * @param connection
+ * @param programId - Deployed program ID for Galactic Marketplace
+ */
 export async function getMarketVarsAccountInfo(
     connection: web3.Connection,
     programId: web3.PublicKey,
@@ -117,6 +123,13 @@ export async function getMarketVarsAccountInfo(
     return marketVarsInfo as MarketVarsInfo;
 }
 
+/**
+ * Returns the contents of a registered currency account as detailed in the RegisteredCurrencyInfo interface
+ *
+ * @param connection
+ * @param programId - Deployed program ID for Galactic Marketplace
+ * @param currencyMint - Mint address of currency
+ */
 export async function getRegisteredCurrencyAccountInfo(
     connection: web3.Connection,
     programId: web3.PublicKey,
@@ -335,6 +348,13 @@ export async function createInitializeBuyOrderInstruction(
     return ix;
 }
 
+/**
+ * Returns an instruction which initializes a market with a specified update authority
+ *
+ * @param connection
+ * @param updateAuthorityAccount - Public key of desired update authority
+ * @param programId - Deployed program ID for GM program
+ */
 export async function createInitializeMarketInstruction(
     connection: web3.Connection,
     updateAuthorityAccount: web3.PublicKey,
@@ -421,6 +441,16 @@ export async function createInitializeSellOrderInstruction(
     return ix;
 }
 
+/**
+ * Returns an instruction which registers a valid currency with the market. Update authority must match marketVarsAccount.
+ *
+ * @param connection
+ * @param updateAuthorityAccount - Signer must be update authority registered in marketVars
+ * @param royalty - Associated royalty fee with 1,000,000 equaling 100%
+ * @param saCurrencyVault - Star Atlas token account which will receive royalties
+ * @param currencyMint - Mint address of currency being registered
+ * @param programId - Deployed program ID for GM program
+ */
 export async function createRegisterCurrencyInstruction(
     connection: web3.Connection,
     updateAuthorityAccount: web3.PublicKey,
