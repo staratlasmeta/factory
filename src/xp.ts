@@ -104,7 +104,7 @@ export const getXpProgram = (
 };
 
 /** Params for Init instruction */
-interface InitParams {
+export interface InitXpVarsParams {
   admin: PublicKey /** the admin public key */;
   connection: Connection /** the Solana connection object */;
   programId: web3.PublicKey /** Deployed program ID for the XP program */;
@@ -114,7 +114,7 @@ interface InitParams {
  * Initialize the XP Vars Account
  * @param param0
  */
-export const initXpVarsIx = async ({ admin, connection, programId }: InitParams) => {
+export const initXpVarsIx = async ({ admin, connection, programId }: InitXpVarsParams) => {
   const program = getXpProgram(connection, programId);
   const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
 
