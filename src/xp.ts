@@ -311,7 +311,7 @@ export interface RegisterXpModifierParams extends BaseParams {
   canIncrement: boolean /** whether the modifier can increment XP */;
   canDecrement: boolean /** whether the modifier can decrement XP */;
   xpAccountKey: PublicKey /** the Xp Account public key */;
-  modifierKey: PublicKey /** the modifer public key */;
+  modifierKey: PublicKey /** the modifier public key */;
 }
 
 /**
@@ -337,6 +337,52 @@ export const registerXpModifierIx = async ({
 
   const instructions = [
     program.instruction.registerXpModifier(canIncrement, canDecrement, {
+      accounts: {
+        admin,
+        xpVarsAccount: xpVarsAccountKey,
+        xpAccount: xpAccountKey,
+        xpModifierAccount: xpModifierAccountKey,
+        modifier: modifierKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+    }),
+  ];
+
+  return {
+    xpVarsAccount: xpVarsAccountKey,
+    xpModifierAccount: xpModifierAccountKey,
+    instructions,
+  };
+};
+
+/** Params for Deregister XP Modifier instruction */
+export interface DeregisterXpModifierParams extends BaseParams {
+  admin: PublicKey /** the admin public key */;
+  xpAccountKey: PublicKey /** the Xp Account public key */;
+  modifierKey: PublicKey /** the modifier public key */;
+}
+
+/**
+ * De-registers an XP modifier
+ * @param param - the input parameters
+ */
+export const deregisterXpModifierIx = async ({
+  admin,
+  connection,
+  modifierKey,
+  xpAccountKey,
+  programId,
+}: DeregisterXpModifierParams) => {
+  const program = getXpProgram(connection, programId);
+  const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
+  const [xpModifierAccountKey] = await findXpModifierAccount(
+    xpAccountKey,
+    modifierKey,
+    program.programId
+  );
+
+  const instructions = [
+    program.instruction.deregisterXpModifier({
       accounts: {
         admin,
         xpVarsAccount: xpVarsAccountKey,
