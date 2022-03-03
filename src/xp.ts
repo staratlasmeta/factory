@@ -30,7 +30,7 @@ export async function findXpVarsAccount(
   programId: PublicKey
 ): Promise<[PublicKey, number]> {
   return await PublicKey.findProgramAddress([XP_VARS_GLOBAL_SEED], programId);
-};
+}
 
 /**
  * Returns the public key and bump seed for the Xp Account
@@ -94,8 +94,8 @@ export const findXpModifierAccount = async (
  * @returns - The base IDL object
  */
 export function getXpIDL(programId: web3.PublicKey): unknown {
-  let _tmp = IDL;
-  _tmp['metadata'] = {'address': programId.toBase58()} 
+  const _tmp = IDL;
+  _tmp['metadata'] = { address: programId.toBase58() };
   return _tmp;
 }
 
