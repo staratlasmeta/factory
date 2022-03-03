@@ -26,9 +26,9 @@ const USER_XP_SEED = Buffer.from('UserXP');
  * @param programId - deployed program ID for XP program
  * @returns [Xp Vars account public key, bump seed]
  */
-export const findXpVarsAccount = async (
+export async function findXpVarsAccount(
   programId: PublicKey
-): Promise<[PublicKey, number]> => {
+): Promise<[PublicKey, number]> {
   return await PublicKey.findProgramAddress([XP_VARS_GLOBAL_SEED], programId);
 };
 
@@ -94,8 +94,8 @@ export const findXpModifierAccount = async (
  * @returns - The base IDL object
  */
 export function getXpIDL(programId: web3.PublicKey): unknown {
-  const _tmp = IDL;
-  _tmp['metadata']['address'] = programId.toBase58();
+  let _tmp = IDL;
+  _tmp['metadata'] = {'address': programId.toBase58()} 
   return _tmp;
 }
 
@@ -160,7 +160,7 @@ export interface RegisterXpAccountParams extends BaseParams {
   label: string /** The XP account label */;
   xpLimit: BN /** The XP limit */;
   tokenRequired: boolean /** Whether a token is required */;
-  tokenQuantity: BN /** The required token quantity */;
+  tokenQuantity: BN /** The token quantity to burn*/;
   tokenMintKey?: PublicKey /** The required token mint */;
 }
 
