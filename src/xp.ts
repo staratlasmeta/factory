@@ -14,6 +14,7 @@ import type { Xp } from './types/xp_program';
 
 /** Export account types */
 export * from './types/xp_accounts';
+export * from './types/xp_program';
 
 const XP_VARS_GLOBAL_SEED = Buffer.from('XPVarsGlobal');
 const XP_ACCOUNT_SEED = Buffer.from('XP_Account');
