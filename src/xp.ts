@@ -499,7 +499,6 @@ export const modifyXpIx = async ({
   const instructions = [
     program.instruction.modifyXp(newXpValue, {
       accounts: {
-        user,
         userXpAccount: userXpAccountKey,
         xpAccount: xpAccountKey,
         xpModifierAccount: xpModifierAccountKey,

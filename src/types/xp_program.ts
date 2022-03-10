@@ -278,12 +278,7 @@ export type Xp = {
         },
         {
           name: 'userXpAccount';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'user';
-          isMut: false;
+          isMut: true;
           isSigner: false;
         },
         {
@@ -737,12 +732,7 @@ export const IDL: Xp = {
         },
         {
           name: 'userXpAccount',
-          isMut: false,
-          isSigner: false,
-        },
-        {
-          name: 'user',
-          isMut: false,
+          isMut: true,
           isSigner: false,
         },
         {
