@@ -217,6 +217,42 @@ export const registerXpAccountIx = async ({
   };
 };
 
+/** Params for Deregister XP Account instruction */
+export interface DeregisterXpAccountParams extends BaseParams {
+  admin: PublicKey /** the admin public key */;
+  xpAccountKey: PublicKey /** the Xp Account public key */;
+}
+
+/**
+ * De-registers an XP Account
+ * @param param - the input parameters
+ */
+export const deregisterXpAccountIx = async ({
+  admin,
+  connection,
+  xpAccountKey,
+  programId,
+}: DeregisterXpAccountParams) => {
+  const program = getXpProgram(connection, programId);
+  const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
+  
+  const instructions = [
+    program.instruction.deregisterXpAccount({
+      accounts: {
+        admin,
+        xpVarsAccount: xpVarsAccountKey,
+        xpAccount: xpAccountKey,
+        systemProgram: web3.SystemProgram.programId,
+      },
+    }),
+  ];
+
+  return {
+    xpVarsAccount: xpVarsAccountKey,
+    instructions,
+  };
+};
+
 /** Params for Update XP Account instruction */
 export interface UpdateXpAccountParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
