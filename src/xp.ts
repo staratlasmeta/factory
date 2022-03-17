@@ -235,7 +235,7 @@ export const deregisterXpAccountIx = async ({
 }: DeregisterXpAccountParams) => {
   const program = getXpProgram(connection, programId);
   const [xpVarsAccountKey] = await findXpVarsAccount(program.programId);
-  
+
   const instructions = [
     program.instruction.deregisterXpAccount({
       accounts: {
