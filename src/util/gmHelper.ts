@@ -81,6 +81,7 @@ export async function createAccountTransaction(
 }
 
 export const getOrderSide = (side: any): string => {
+    console.log('Jsonify: ', JSON.stringify(side));
     if (JSON.stringify(side) === JSON.stringify({ buy: {} })) {
         return 'BuySide';
     }

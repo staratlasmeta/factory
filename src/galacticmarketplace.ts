@@ -75,14 +75,14 @@ export async function getMarketVarsAccount(
  */
 export async function getOrderVault(
     orderInitializer: web3.PublicKey,
-    currencyMint: web3.PublicKey,
+    tokenMint: web3.PublicKey,
     programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
     return web3.PublicKey.findProgramAddress(
         [
             Buffer.from('order-vault-account'),
             orderInitializer.toBuffer(),
-            currencyMint.toBuffer(),
+            tokenMint.toBuffer(),
         ],
         programId,
     );
@@ -321,15 +321,21 @@ export async function createCancelOrderInstruction(
     const program = new Program(idl as Idl, programId, provider);
 
     const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
+    const orderSide = getOrderSide(orderAccountInfo.orderSide);
+    console.log('Order Side - factory: ', orderSide);
+    const depositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
+    console.log('Deposit mint - factory: ', depositMint.toString());
     const currencyMint = orderAccountInfo.currencyMint;
 
-    const [orderVaultAccount, _orderVaultBump] = await getOrderVault(orderInitializer, currencyMint, programId);
-    const [orderVaultAuthority, _orderVaultAuthBump] = await getOrderVaultAuth(programId);
+    const [orderVaultAccount] = await getOrderVault(orderInitializer, depositMint, programId);
+    console.log('Order vault - factory: ', orderVaultAccount.toString());
+    const [orderVaultAuthority] = await getOrderVaultAuth(programId);
 
     const ix = program.instruction.processCancel(
         {
             accounts: {
                 orderInitializer,
+                depositMint,
                 initializerDepositTokenAccount,
                 orderVaultAccount,
                 orderVaultAuthority,
@@ -410,9 +416,12 @@ export async function createExchangeInstruction(
 
     const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
 
-    const depositMint = (getOrderSide(orderAccountInfo) === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
+    const orderSide = getOrderSide(orderAccountInfo);
+    const depositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
+    const currencyMint = orderAccountInfo.currencyMint;
+    const assetMint = orderAccountInfo.assetMint;
 
-    const [orderVaultAccount, _orderVaultBump] = await getOrderVault(orderInitializer, depositMint, programId);
+    const [orderVaultAccount] = await getOrderVault(orderInitializer, depositMint, programId);
     const [orderVaultAuthority] = await getOrderVaultAuth(programId);
     const _orderAccount = await program.account.orderAccount.fetch(orderAccount);
     const _currencyMint = _orderAccount.currencyMint;
@@ -425,6 +434,8 @@ export async function createExchangeInstruction(
                 orderTaker,
                 orderTakerDepositTokenAccount,
                 orderTakerReceiveTokenAccount,
+                currencyMint,
+                assetMint,
                 orderInitializer,
                 initializerDepositTokenAccount,
                 initializerReceiveTokenAccount,
