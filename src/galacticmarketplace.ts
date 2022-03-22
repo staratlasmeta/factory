@@ -322,13 +322,9 @@ export async function createCancelOrderInstruction(
 
     const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
     const orderSide = getOrderSide(orderAccountInfo.orderSide);
-    console.log('Order Side - factory: ', orderSide);
     const depositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
-    console.log('Deposit mint - factory: ', depositMint.toString());
-    const currencyMint = orderAccountInfo.currencyMint;
 
     const [orderVaultAccount] = await getOrderVault(orderInitializer, depositMint, programId);
-    console.log('Order vault - factory: ', orderVaultAccount.toString());
     const [orderVaultAuthority] = await getOrderVaultAuth(programId);
 
     const ix = program.instruction.processCancel(
@@ -416,7 +412,7 @@ export async function createExchangeInstruction(
 
     const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
 
-    const orderSide = getOrderSide(orderAccountInfo);
+    const orderSide = getOrderSide(orderAccountInfo.orderSide);
     const depositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
     const currencyMint = orderAccountInfo.currencyMint;
     const assetMint = orderAccountInfo.assetMint;

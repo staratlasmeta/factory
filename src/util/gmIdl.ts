@@ -291,7 +291,7 @@ export const baseIdl: unknown =
       ],
       'args': [
         {
-          'name': 'purchaseQty',
+          'name': 'purchaseQuantity',
           'type': 'u64'
         }
       ]
@@ -444,6 +444,10 @@ export const baseIdl: unknown =
             'type': 'i64'
           },
           {
+            'name': 'orderId',
+            'type': 'i64'
+          },
+          {
             'name': 'bump',
             'type': 'u8'
           }
@@ -570,6 +574,11 @@ export const baseIdl: unknown =
       'code': 6012,
       'name': 'InsufficientOrderQty',
       'msg': 'Insufficient Order Quantity Remaining'
+    },
+    {
+      'code': 6013,
+      'name': 'InvalidRoyalty',
+      'msg': 'Invalid Royalty Value'
     }
   ],
   'metadata': {
