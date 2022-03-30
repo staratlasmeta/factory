@@ -377,6 +377,78 @@ export const baseIdl: unknown =
           'type': 'u64'
         }
       ]
+    },
+    {
+      'name': 'updateCurrencyVault',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'saCurrencyVault',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
+      'name': 'updateCurrencyRoyalty',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'royalty',
+          'type': 'u64'
+        }
+      ]
     }
   ],
   'accounts': [
@@ -446,10 +518,6 @@ export const baseIdl: unknown =
           {
             'name': 'orderId',
             'type': 'i64'
-          },
-          {
-            'name': 'bump',
-            'type': 'u8'
           }
         ]
       }

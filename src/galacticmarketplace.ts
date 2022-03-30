@@ -644,3 +644,80 @@ export async function createRegisterCurrencyInstruction(
     )
     return ix;
 }
+
+/**
+ * Returns and instruction which updates the royalty associated with a registered currency
+ *
+ * @param connection
+ * @param updateAuthorityAccount - Signer must be update authority registered in marketVars
+ * @param royalty - Associated royalty fee with 1,000,000 equaling 100%
+ * @param currencyMint - Mint address of currency being registered
+ * @param programId - Deployed program ID for GM program
+ */
+export async function createUpdateRegisteredCurrencyRoyaltyInstruction(
+    connection: web3.Connection,
+    updateAuthorityAccount: web3.PublicKey,
+    royalty: number,
+    currencyMint: web3.PublicKey,
+    programId: web3.PublicKey,
+): Promise<web3.TransactionInstruction> {
+    const idl = getGmIDL(programId);
+    const provider = new Provider(connection, null, null);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [registeredCurrency] = await getRegisteredCurrencyAccount(programId, currencyMint);
+    const [marketVarsAccount] = await getMarketVarsAccount(programId);
+
+    const ix = program.instruction.updateCurrencyRoyalty(
+        new BN(royalty),
+        {
+            accounts: {
+                updateAuthorityAccount,
+                marketVarsAccount,
+                registeredCurrency,
+                currencyMint,
+                systemProgram: web3.SystemProgram.programId,
+            },
+            signers: [],
+        }
+    )
+    return ix;
+}
+
+/**
+ * Returns and instruction which updates the royalty associated with a registered currency
+ *
+ * @param connection
+ * @param updateAuthorityAccount - Signer must be update authority registered in marketVars
+ * @param currencyMint - Mint address of currency being registered
+ * @param programId - Deployed program ID for GM program
+ */
+export async function createUpdateRegisteredCurrencyVaultInstruction(
+    connection: web3.Connection,
+    updateAuthorityAccount: web3.PublicKey,
+    currencyMint: web3.PublicKey,
+    saCurrencyVault: web3.PublicKey,
+    programId: web3.PublicKey,
+): Promise<web3.TransactionInstruction> {
+    const idl = getGmIDL(programId);
+    const provider = new Provider(connection, null, null);
+    const program = new Program(idl as Idl, programId, provider);
+
+    const [registeredCurrency] = await getRegisteredCurrencyAccount(programId, currencyMint);
+    const [marketVarsAccount] = await getMarketVarsAccount(programId);
+
+    const ix = program.instruction.updateCurrencyVault(
+        {
+            accounts: {
+                updateAuthorityAccount,
+                marketVarsAccount,
+                registeredCurrency,
+                currencyMint,
+                saCurrencyVault,
+                systemProgram: web3.SystemProgram.programId,
+            },
+            signers: [],
+        }
+    )
+    return ix;
+}
