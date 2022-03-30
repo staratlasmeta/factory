@@ -2,4 +2,4 @@ export * from './factions';
 export * from './gumdrop';
 export * from './score';
 export * from './util/scoreHelpers';
-export * from './xp';
+export * from './points';
