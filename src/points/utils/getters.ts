@@ -9,7 +9,6 @@ import {
 } from '../types/points_accounts';
 import { BaseParams } from '../instruction_builders'
 import { 
-  findDomainAccount,
   findPointsModifierAccount,
   findUserPointsAccount
 } from '../pda_finders'
@@ -18,18 +17,20 @@ import { getPointsProgram } from './getPointsProgram'
 
 
 
-
+export interface GetDomainAccountParams extends BaseParams {
+  domainAccountKey: PublicKey /** the Domain Account public key */;
+}
 
 /**
  * Gets a Domain account
  * @param param - the input parameters
  */
 export const getDomainAccount = async ({
+  domainAccountKey,
   connection,
   programId,
-}: BaseParams) => {
+}: GetDomainAccountParams) => {
   const program = getPointsProgram(connection, programId);
-  const [domainAccountKey] = await findDomainAccount(program.programId);
   const domainAccount = await program.account.domainAccount.fetch(domainAccountKey);
 
   return {
@@ -39,7 +40,7 @@ export const getDomainAccount = async ({
 };
 
 /** Params for Points Account getter */
-export interface GetXpAccountParams extends BaseParams {
+export interface GetPointsAccountParams extends BaseParams {
   pointCategoryAccountKey: PublicKey /** the Points Account public key */;
 }
 
@@ -47,20 +48,20 @@ export interface GetXpAccountParams extends BaseParams {
  * Gets an Points account
  * @param param - the input parameters
  */
-export const getPointCategoryAccountKey = async ({
+export const getPointCategoryAccount = async ({
   pointCategoryAccountKey,
   connection,
   programId,
-}: GetXpAccountParams) => {
+}: GetPointsAccountParams) => {
   const program = getPointsProgram(connection, programId);
-  const xpAccount = await program.account.pointCategoryAccount.fetch(pointCategoryAccountKey);
+  const pointAccount = await program.account.pointCategoryAccount.fetch(pointCategoryAccountKey);
 
-  return xpAccount as PointCategoryAccount;
+  return pointAccount as PointCategoryAccount;
 };
 
 /** Params for User Points Account Getter */
-export interface GetUserXpAccountParams extends BaseParams {
-  userXpAccountKey: PublicKey /** the Points Account public key */;
+export interface GetUserPointsAccountParams extends BaseParams {
+  userPointsAccountKey: PublicKey /** the Points Account public key */;
 }
 
 /**
@@ -68,52 +69,52 @@ export interface GetUserXpAccountParams extends BaseParams {
  * @param param - the input parameters
  */
 export const getUserPointsAccount = async ({
-  userXpAccountKey,
+  userPointsAccountKey,
   connection,
   programId,
-}: GetUserXpAccountParams) => {
+}: GetUserPointsAccountParams) => {
   const program = getPointsProgram(connection, programId);
-  const userXpAccount = await program.account.userPointsAccount.fetch(
-    userXpAccountKey
+  const userPointsAccount = await program.account.userPointsAccount.fetch(
+    userPointsAccountKey
   );
 
-  return userXpAccount as UserPointsAccount;
+  return userPointsAccount as UserPointsAccount;
 };
 
 /** Params for User Points Account Getter */
-export interface GetUserXpAccountViaUserAndXpKeysParams extends BaseParams {
+export interface GetUserPointsAccountViaUserAndPointsKeysParams extends BaseParams {
   user: PublicKey /** the Points Account public key */;
-  xpAccountKey: PublicKey /** the Points Account public key */;
+  pointAccountKey: PublicKey /** the Points Account public key */;
 }
 
 /**
- * Gets a user's Points account using the user and XP Account
+ * Gets a user's Points account using the user and Points Account
  * @param param - the input parameters
  */
-export const getUserPointsAccountViaUserAndXpKeys = async ({
+export const getUserPointsAccountViaUserAndPointsKeys = async ({
   user,
-  xpAccountKey,
+  pointAccountKey,
   connection,
   programId,
-}: GetUserXpAccountViaUserAndXpKeysParams) => {
+}: GetUserPointsAccountViaUserAndPointsKeysParams) => {
   const program = getPointsProgram(connection, programId);
-  const [userXpAccountKey] = await findUserPointsAccount(
-    xpAccountKey,
+  const [userPointsAccountKey] = await findUserPointsAccount(
+    pointAccountKey,
     user,
     programId
   );
-  const userXpAccount = await program.account.userPointsAccount.fetch(
-    userXpAccountKey
+  const userPointsAccount = await program.account.userPointsAccount.fetch(
+    userPointsAccountKey
   );
 
   return {
-    userXpAccountKey,
-    userXpAccount: userXpAccount as UserPointsAccount,
+    userPointsAccountKey,
+    userPointsAccount: userPointsAccount as UserPointsAccount,
   };
 };
 
 /** Params for User Points Accounts Getter */
-export interface GetUserXpAccountsParams extends BaseParams {
+export interface GetUserPointsAccountsParams extends BaseParams {
   user: PublicKey /** the Points Account public key */;
 }
 
@@ -125,9 +126,9 @@ export const getUserPointsAccounts = async ({
   user,
   connection,
   programId,
-}: GetUserXpAccountsParams) => {
+}: GetUserPointsAccountsParams) => {
   const program = getPointsProgram(connection, programId);
-  const userXpAccounts: UserPointsAccountItem[] =
+  const userPointsAccounts: UserPointsAccountItem[] =
     await program.account.userPointsAccount.all([
       {
         memcmp: {
@@ -137,12 +138,12 @@ export const getUserPointsAccounts = async ({
       },
     ]);
 
-  return userXpAccounts;
+  return userPointsAccounts;
 };
 
 /** Params for Points Modifier account getter */
-export interface GetXpModifierAccountParams extends BaseParams {
-  xpModifierAccountKey: PublicKey /** the Points Account public key */;
+export interface GetPointsModifierAccountParams extends BaseParams {
+  pointsModifierAccountKey: PublicKey /** the Points Account public key */;
 }
 
 /**
@@ -150,54 +151,54 @@ export interface GetXpModifierAccountParams extends BaseParams {
  * @param param - the input parameters
  */
 export const getPointsModifierAccount = async ({
-  xpModifierAccountKey,
+  pointsModifierAccountKey,
   connection,
   programId,
-}: GetXpModifierAccountParams) => {
+}: GetPointsModifierAccountParams) => {
   const program = getPointsProgram(connection, programId);
-  const xpModifierAccount = await program.account.pointsModifier.fetch(
-    xpModifierAccountKey
+  const pointsModifierAccount = await program.account.pointsModifier.fetch(
+    pointsModifierAccountKey
   );
 
-  return xpModifierAccount as PointsModifier;
+  return pointsModifierAccount as PointsModifier;
 };
 
 /** Params for User Points Account Getter */
-export interface GetXpModifierAccountViaModifierAndXpKeysParams
+export interface GetPointsModifierAccountViaModifierAndPointsKeysParams
   extends BaseParams {
-  modifier: PublicKey /** the Xp Account public key */;
-  xpAccountKey: PublicKey /** the Xp Account public key */;
+  modifier: PublicKey /** the Points Account public key */;
+  pointAccountKey: PublicKey /** the Points Account public key */;
 }
 
 /**
  * Gets a user's Points account using the user and Points Account
  * @param param - the input parameters
  */
-export const getPointsModifierAccountViaModifierAndXpKeys = async ({
+export const getPointsModifierAccountViaModifierAndPointsKeys = async ({
   modifier,
-  xpAccountKey,
+  pointAccountKey,
   connection,
   programId,
-}: GetXpModifierAccountViaModifierAndXpKeysParams) => {
+}: GetPointsModifierAccountViaModifierAndPointsKeysParams) => {
   const program = getPointsProgram(connection, programId);
-  const [xpModifierAccountKey] = await findPointsModifierAccount(
-    xpAccountKey,
+  const [pointsModifierAccountKey] = await findPointsModifierAccount(
+    pointAccountKey,
     modifier,
     programId
   );
-  const xpModifierAccount = await program.account.userPointsAccount.fetch(
-    xpModifierAccountKey
+  const pointsModifierAccount = await program.account.userPointsAccount.fetch(
+    pointsModifierAccountKey
   );
 
   return {
-    xpModifierAccountKey,
-    xpModifierAccount: xpModifierAccount as PointsModifier,
+    pointsModifierAccountKey,
+    pointsModifierAccount: pointsModifierAccount as PointsModifier,
   };
 };
 
 /** Params for Points Account modifierss Getter */
-export interface GetXpAccountModifiersParams extends BaseParams {
-  xpAccountKey: PublicKey /** the Xp Account public key */;
+export interface GetPointsAccountModifiersParams extends BaseParams {
+  pointAccountKey: PublicKey /** the Points Account public key */;
 }
 
 /**
@@ -205,16 +206,16 @@ export interface GetXpAccountModifiersParams extends BaseParams {
  * @param param - the input parameters
  */
 export const getPointsAccountModifiers = async ({
-  xpAccountKey,
+  pointAccountKey,
   connection,
   programId,
-}: GetXpAccountModifiersParams) => {
+}: GetPointsAccountModifiersParams) => {
   const program = getPointsProgram(connection, programId);
   const modifiers = await program.account.pointsModifier.all([
     {
       memcmp: {
         offset: 40,
-        bytes: xpAccountKey.toBase58(),
+        bytes: pointAccountKey.toBase58(),
       },
     },
   ]);
@@ -223,7 +224,7 @@ export const getPointsAccountModifiers = async ({
 };
 
 /** Params for modifier Points Accounts Getter */
-export interface GetModifierXpAccountsParams extends BaseParams {
+export interface GetModifierPointsAccountsParams extends BaseParams {
   modifier: PublicKey /** the Points Account public key */;
 }
 
@@ -235,7 +236,7 @@ export const getModifierPointsAccounts = async ({
   modifier,
   connection,
   programId,
-}: GetModifierXpAccountsParams) => {
+}: GetModifierPointsAccountsParams) => {
   const program = getPointsProgram(connection, programId);
   const modifiers = await program.account.pointsModifier.all([
     {

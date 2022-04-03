@@ -24,7 +24,7 @@ export const modifyPointsIx = async ({
   const program = getPointsProgram(connection, programId);
 
   const instructions = [
-    program.methods
+    await program.methods
       .modifyPoints(newXpValue)
       .accounts({
         userPointsAccount: user,

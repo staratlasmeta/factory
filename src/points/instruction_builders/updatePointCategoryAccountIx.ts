@@ -30,7 +30,7 @@ export const updatePointCategoryAccountIx = async ({
   tokenMintKey,
   connection,
   programId,
-}: UpdatePointCategoryAccountParams): Promise<{ accounts: web3.PublicKey[], instructions: Promise<web3.TransactionInstruction>[] }> => {
+}: UpdatePointCategoryAccountParams): Promise<{ accounts: web3.PublicKey[], instructions: web3.TransactionInstruction[] }> => {
   const program = getPointsProgram(connection, programId);
   let remainingAccounts = []
 
@@ -41,7 +41,7 @@ export const updatePointCategoryAccountIx = async ({
   }
   
   const instructions = [
-    program.methods
+    await program.methods
       .updatePointCategoryAccount(
         pointLimit,
         tokenQty,

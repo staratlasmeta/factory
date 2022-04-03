@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { web3, BN } from '@project-serum/anchor';
 import { BaseParams } from './BaseParams'
 import { getPointsProgram } from '../utils'
+import { findDomainAccount } from '../pda_finders';
 
 /** Params for Register Point Category Account instruction */
 export interface RegisterPointCategoryAccountParams extends BaseParams {
@@ -12,6 +13,7 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
   tokenQty: BN /** The token quantity to burn*/;
   tokenMintKey?: PublicKey /** The required token mint */;
   isSpendable: boolean /** Deployed program ID for the Points program */
+  domain: string /** The class of the related domain */
 }
 
 /**
@@ -23,6 +25,7 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
  * @param tokenQty - The token quantity to burn
  * @param tokenMintKey - The required token mint 
  * @param isSpendable - Wheter the type of point is spendable or not
+ * @param domain - The class of the related domain
  * @param connection - the Solana connection objec
  * @param programId - Deployed program ID for the Points program
  */
@@ -34,10 +37,17 @@ export const registerPointCategoryAccountIx = async ({
   tokenQty,
   tokenMintKey,
   isSpendable,
+  domain,
   connection,
   programId,
-}: RegisterPointCategoryAccountParams): Promise<{ accounts: web3.PublicKey[], instructions: Promise<web3.TransactionInstruction>[] }> => {
+}: RegisterPointCategoryAccountParams): Promise<{ 
+  accounts: web3.PublicKey[], 
+  instructions: web3.TransactionInstruction[], 
+  domainAccount: PublicKey 
+}> => {
   const program = getPointsProgram(connection, programId);
+  const [domainAccount] = await findDomainAccount(domain, programId)
+
   let remainingAccounts = []
 
   if (tokenRequired && !tokenMintKey) {
@@ -47,14 +57,17 @@ export const registerPointCategoryAccountIx = async ({
   }
   
   const instructions = [
-    program.methods
+    await program.methods
       .registerPointCategoryAccount(
         label,
         tokenRequired,
         tokenQty,
         pointLimit,
         isSpendable
-      ).accounts({ admin })
+      ).accounts({ 
+        admin,
+        domainAccount
+      })
       .remainingAccounts(remainingAccounts)
       .instruction()
   ]
@@ -62,5 +75,6 @@ export const registerPointCategoryAccountIx = async ({
   return {
     accounts: [],
     instructions,
+    domainAccount
   };
 };
