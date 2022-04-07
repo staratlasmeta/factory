@@ -5,7 +5,8 @@ import {
     web3
 } from '@project-serum/anchor';
 import { SystemProgram, Transaction, TransactionInstruction } from '@solana/web3.js';
-import { getGmIDL } from '..';
+// import { getGmIDL } from '..';
+import { getGmIDL } from './../marketplace/utils/getMarketplaceProgram';
 
 /**
  * Creates an instruction to initialize an order account which can be passed into an initialize offer instruction.
@@ -80,10 +81,10 @@ export async function createAccountTransaction(
     return tx;
 }
 
-export const getOrderSide = (side: any): string => {
-    console.log('Jsonify: ', JSON.stringify(side));
-    if (JSON.stringify(side) === JSON.stringify({ buy: {} })) {
-        return 'BuySide';
-    }
-    return 'SellSide';
-}
+// export const getOrderSide = (side: any): string => {
+//     console.log('Jsonify: ', JSON.stringify(side));
+//     if (JSON.stringify(side) === JSON.stringify({ buy: {} })) {
+//         return 'BuySide';
+//     }
+//     return 'SellSide';
+// }
