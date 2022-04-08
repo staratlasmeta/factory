@@ -1,5 +1,4 @@
 export * from './factions';
-// export * from './galacticmarketplace';
 export * from './gumdrop';
 export * from './marketplace'
 export * from './score';
