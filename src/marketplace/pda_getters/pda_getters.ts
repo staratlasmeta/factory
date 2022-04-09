@@ -74,3 +74,18 @@ export async function getRegisteredCurrencyAccount(
         programId,
     )
 }
+
+export async function getOpenOrdersCounter(
+    playerPubkey: PublicKey,
+    depositMint: PublicKey,
+    programId: PublicKey,
+): Promise<[PublicKey, number]> {
+    return PublicKey.findProgramAddress(
+        [
+            Seeds.OPEN_ORDERS_COUNTER,
+            playerPubkey.toBuffer(),
+            depositMint.toBuffer(),
+        ],
+        programId,
+    )
+}

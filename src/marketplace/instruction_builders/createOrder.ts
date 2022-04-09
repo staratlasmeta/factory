@@ -4,6 +4,8 @@ import {
 } from '@project-serum/anchor';
 import { getMarketplaceProgram } from '../utils';
 import { BaseParams } from './BaseParams';
+import { getOpenOrdersCounter } from '../pda_getters';
+import { createOrderCounterInstruction } from './createOrderCounter';
 
 /**  Params for Register Currency instruction */
 export interface InitializeOrderParameters extends BaseParams {
@@ -46,10 +48,30 @@ export async function createInitializeBuyOrderInstruction({
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {
+    const instructions: web3.TransactionInstruction[] = [];
     const program = getMarketplaceProgram({connection, programId})
 
-    const instructions = [
-        await program.methods
+    const [counterAddress] = await getOpenOrdersCounter(
+        initializerMainAccount,
+        depositMint,
+        programId
+    );
+    const orderCounter = await connection.getAccountInfo(counterAddress);
+    if (orderCounter === null) {
+        console.log('WE MUST INITIALIZE');
+        const createCounterIx = await createOrderCounterInstruction({
+            connection,
+            initializerMainAccount,
+            depositMint,
+            programId
+        });
+        instructions.push(createCounterIx);
+    } else {
+        console.log('WE HAVE THE ACCOUNT');
+    }
+
+
+    const ix = await program.methods
             .processInitializeBuy(
                 new BN(price),
                 new BN(originationQty)
@@ -63,8 +85,9 @@ export async function createInitializeBuyOrderInstruction({
                 receiveMint,
             })
             .signers([orderAccount])
-            .instruction()
-    ]
+            .instruction();
+
+    instructions.push(ix);
     return {
         accounts: [],
         instructions
@@ -100,10 +123,29 @@ export async function createInitializeSellOrderInstruction({
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {
+    const instructions: web3.TransactionInstruction[] = [];
     const program = getMarketplaceProgram({connection, programId})
 
-    const instructions = [
-        await program.methods
+    const [counterAddress] = await getOpenOrdersCounter(
+        initializerMainAccount,
+        depositMint,
+        programId
+    );
+    const orderCounter = await connection.getAccountInfo(counterAddress);
+    if (orderCounter === null) {
+        console.log('WE MUST INITIALIZE');
+        const createCounterIx = await createOrderCounterInstruction({
+            connection,
+            initializerMainAccount,
+            depositMint,
+            programId
+        });
+        instructions.push(createCounterIx);
+    } else {
+        console.log('WE HAVE THE ACCOUNT');
+    }
+
+    const ix = await program.methods
             .processInitializeSell(
                 new BN(price),
                 new BN(originationQty)
@@ -118,7 +160,8 @@ export async function createInitializeSellOrderInstruction({
             })
             .signers([orderAccount])
             .instruction()
-    ]
+
+    instructions.push(ix);
     return {
         accounts: [],
         instructions

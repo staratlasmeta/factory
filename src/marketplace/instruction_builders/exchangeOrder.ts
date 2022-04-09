@@ -8,7 +8,10 @@ import {
 } from '../utils';
 import { getOrderVault } from '../pda_getters/pda_getters';
 import { BaseParams } from './BaseParams';
-import { getRegisteredCurrencyAccountInfo } from '../pda_getters';
+import {
+    getRegisteredCurrencyAccountInfo,
+    getOpenOrdersCounter,
+} from '../pda_getters';
 
 /**  Params for Exchange instruction */
 export interface exchangeOrderParams extends BaseParams {
@@ -17,6 +20,7 @@ export interface exchangeOrderParams extends BaseParams {
     orderTaker: web3.PublicKey
     orderTakerDepositTokenAccount: web3.PublicKey
     orderTakerReceiveTokenAccount: web3.PublicKey
+    openOrdersCounter: web3.PublicKey
 }
 
 /**
@@ -52,6 +56,7 @@ export async function createExchangeInstruction ({
     const initializerDepositTokenAccount = (orderSide === 'SellSide') ? orderAccountInfo.initializerAssetTokenAccount : orderAccountInfo.initializerCurrencyTokenAccount;
     const initializerReceiveTokenAccount = (orderSide === 'SellSide') ? orderAccountInfo.initializerCurrencyTokenAccount : orderAccountInfo.initializerAssetTokenAccount;
     const [orderVaultAccount] = await getOrderVault(orderAccountInfo.orderInitializerPubkey, depositMint, programId);
+    const [openOrdersCounter] = await getOpenOrdersCounter(orderAccountInfo.orderInitializerPubkey, depositMint, programId);
 
     const instructions = [
         await program.methods
@@ -67,6 +72,7 @@ export async function createExchangeInstruction ({
                 initializerReceiveTokenAccount,
                 orderVaultAccount,
                 orderAccount,
+                openOrdersCounter,
                 saVault: registeredCurrencyInfo.saCurrencyVault,
             })
             .instruction()

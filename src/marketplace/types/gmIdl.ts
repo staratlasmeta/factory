@@ -89,6 +89,52 @@ export const baseIdl: unknown =
       'args': []
     },
     {
+      'name': 'initializeOpenOrdersCounter',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'openOrdersCounter',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'open-orders-counter'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'deposit_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'depositMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
       'name': 'processInitializeBuy',
       'accounts': [
         {
@@ -189,6 +235,31 @@ export const baseIdl: unknown =
                 'kind': 'const',
                 'type': 'string',
                 'value': 'registered-currency'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'deposit_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'openOrdersCounter',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'open-orders-counter'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'order_initializer'
               },
               {
                 'kind': 'account',
@@ -338,6 +409,31 @@ export const baseIdl: unknown =
           }
         },
         {
+          'name': 'openOrdersCounter',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'open-orders-counter'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'order_initializer'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'deposit_mint'
+              }
+            ]
+          }
+        },
+        {
           'name': 'systemProgram',
           'isMut': false,
           'isSigner': false
@@ -463,6 +559,11 @@ export const baseIdl: unknown =
           }
         },
         {
+          'name': 'openOrdersCounter',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
@@ -541,6 +642,31 @@ export const baseIdl: unknown =
           'name': 'orderAccount',
           'isMut': true,
           'isSigner': false
+        },
+        {
+          'name': 'openOrdersCounter',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'open-orders-counter'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'order_initializer'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'deposit_mint'
+              }
+            ]
+          }
         },
         {
           'name': 'tokenProgram',
@@ -754,6 +880,22 @@ export const baseIdl: unknown =
       }
     },
     {
+      'name': 'OpenOrdersCounter',
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'openOrderCount',
+            'type': 'u64'
+          },
+          {
+            'name': 'bump',
+            'type': 'u8'
+          }
+        ]
+      }
+    },
+    {
       'name': 'OrderAccount',
       'type': {
         'kind': 'struct',
@@ -928,6 +1070,11 @@ export const baseIdl: unknown =
       'code': 6013,
       'name': 'InvalidRoyalty',
       'msg': 'Invalid Royalty Value'
+    },
+    {
+      'code': 6014,
+      'name': 'InvalidCounter',
+      'msg': 'Invalid Open Order Counter'
     }
   ],
   'metadata': {
