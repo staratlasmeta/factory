@@ -1075,6 +1075,11 @@ export const baseIdl: unknown =
       'code': 6014,
       'name': 'InvalidCounter',
       'msg': 'Invalid Open Order Counter'
+    },
+    {
+      'code': 6015,
+      'name': 'MintDecimalError',
+      'msg': 'Mint must be zero decimal'
     }
   ],
   'metadata': {
