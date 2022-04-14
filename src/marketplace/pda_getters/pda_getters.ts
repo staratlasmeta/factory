@@ -1,3 +1,4 @@
+import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { PublicKey } from '@solana/web3.js';
 import * as Seeds from './seeds';
 

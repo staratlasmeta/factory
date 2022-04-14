@@ -12,15 +12,14 @@ import {
     getRegisteredCurrencyAccountInfo,
     getOpenOrdersCounter,
 } from '../pda_getters';
+import { initializeAtaForMint } from '../utils/gmHelper';
 
 /**  Params for Exchange instruction */
-export interface exchangeOrderParams extends BaseParams {
+export interface ExchangeOrderParams extends BaseParams {
     orderAccount: web3.PublicKey
     purchaseQty: number
     orderTaker: web3.PublicKey
     orderTakerDepositTokenAccount: web3.PublicKey
-    orderTakerReceiveTokenAccount: web3.PublicKey
-    openOrdersCounter: web3.PublicKey
 }
 
 /**
@@ -40,25 +39,34 @@ export async function createExchangeInstruction ({
     purchaseQty,
     orderTaker,
     orderTakerDepositTokenAccount,
-    orderTakerReceiveTokenAccount,
     programId,
-}: exchangeOrderParams): Promise<{
+}: ExchangeOrderParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {
     const program = getMarketplaceProgram({connection, programId})
+    const instructions = [];
 
     const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
     const registeredCurrencyInfo = await getRegisteredCurrencyAccountInfo(connection, programId, orderAccountInfo.currencyMint);
 
     const orderSide = getOrderSide(orderAccountInfo);
-    const depositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
+    const initializerDepositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
     const initializerDepositTokenAccount = (orderSide === 'SellSide') ? orderAccountInfo.initializerAssetTokenAccount : orderAccountInfo.initializerCurrencyTokenAccount;
     const initializerReceiveTokenAccount = (orderSide === 'SellSide') ? orderAccountInfo.initializerCurrencyTokenAccount : orderAccountInfo.initializerAssetTokenAccount;
-    const [orderVaultAccount] = await getOrderVault(orderAccountInfo.orderInitializerPubkey, depositMint, programId);
-    const [openOrdersCounter] = await getOpenOrdersCounter(orderAccountInfo.orderInitializerPubkey, depositMint, programId);
+    const [orderVaultAccount] = await getOrderVault(orderAccountInfo.orderInitializerPubkey, initializerDepositMint, programId);
+    const [openOrdersCounter] = await getOpenOrdersCounter(orderAccountInfo.orderInitializerPubkey, initializerDepositMint, programId);
 
-    const instructions = [
+    const {account: orderTakerReceiveTokenAccount, instructions: ataInitIx} = await initializeAtaForMint({mint: initializerDepositMint, owner: orderTaker, connection});
+    console.log(`orderTakerReceiveTokenAccount found: ${orderTakerReceiveTokenAccount}`);
+
+    if (Array.isArray(ataInitIx) && ataInitIx.length > 0) {
+        console.log('Initializing token account');
+        instructions.push(...ataInitIx);
+    }
+
+    console.log('Creating exchange ix');
+    const exchangeIx =
         await program.methods
             .processExchange(new BN(purchaseQty))
             .accounts({
@@ -75,8 +83,9 @@ export async function createExchangeInstruction ({
                 openOrdersCounter,
                 saVault: registeredCurrencyInfo.saCurrencyVault,
             })
-            .instruction()
-    ];
+            .instruction();
+
+    instructions.push(exchangeIx);
 
     return {
         accounts: [],

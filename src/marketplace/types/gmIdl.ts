@@ -135,6 +135,52 @@ export const baseIdl: unknown =
       'args': []
     },
     {
+      'name': 'migrateToAta',
+      'accounts': [
+        {
+          'name': 'userAccount',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'tokenAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenAta',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
       'name': 'processInitializeBuy',
       'accounts': [
         {
@@ -217,7 +263,7 @@ export const baseIdl: unknown =
         },
         {
           'name': 'initializerReceiveTokenAccount',
-          'isMut': false,
+          'isMut': true,
           'isSigner': false
         },
         {
@@ -277,6 +323,11 @@ export const baseIdl: unknown =
         },
         {
           'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
           'isMut': false,
           'isSigner': false
         },
@@ -380,7 +431,7 @@ export const baseIdl: unknown =
         },
         {
           'name': 'initializerReceiveTokenAccount',
-          'isMut': false,
+          'isMut': true,
           'isSigner': false
         },
         {
@@ -440,6 +491,11 @@ export const baseIdl: unknown =
         },
         {
           'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
           'isMut': false,
           'isSigner': false
         },
@@ -667,6 +723,11 @@ export const baseIdl: unknown =
               }
             ]
           }
+        },
+        {
+          'name': 'associatedTokenProgram',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'tokenProgram',
@@ -1080,6 +1141,11 @@ export const baseIdl: unknown =
       'code': 6015,
       'name': 'MintDecimalError',
       'msg': 'Mint must be zero decimal'
+    },
+    {
+      'code': 6016,
+      'name': 'InvalidOrderAccountError',
+      'msg': 'Order Account does not match provided account'
     }
   ],
   'metadata': {

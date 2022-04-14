@@ -6,12 +6,13 @@ import { getMarketplaceProgram } from '../utils';
 import { BaseParams } from './BaseParams';
 import { getOpenOrdersCounter } from '../pda_getters';
 import { createOrderCounterInstruction } from './createOrderCounter';
+import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { migrateToAta } from './migrateToAta';
 
 /**  Params for Register Currency instruction */
 export interface InitializeOrderParameters extends BaseParams {
     initializerMainAccount: web3.PublicKey,
     initializerDepositTokenAccount: web3.PublicKey,
-    initializerReceiveTokenAccount: web3.PublicKey,
     orderAccount: web3.Keypair,
     price: number,
     originationQty: number,
@@ -37,7 +38,6 @@ export async function createInitializeBuyOrderInstruction({
     connection,
     initializerMainAccount,
     initializerDepositTokenAccount,
-    initializerReceiveTokenAccount,
     orderAccount,
     price,
     originationQty,
@@ -51,6 +51,28 @@ export async function createInitializeBuyOrderInstruction({
     const instructions: web3.TransactionInstruction[] = [];
     const program = getMarketplaceProgram({connection, programId})
 
+    // Derive ATAs for deposit and receive mints
+    const depositTokenAta = await associatedAddress({owner: initializerMainAccount, mint: depositMint});
+    const initializerReceiveTokenAccount = await associatedAddress({owner: initializerMainAccount, mint: receiveMint});
+
+    console.log('Token - Deposit account: ', initializerDepositTokenAccount.toString());
+    console.log('ATA - Deposit account: ', depositTokenAta.toString());
+    console.log('ATA - Receive account: ', initializerReceiveTokenAccount.toString());
+    // If the deposit token account passed in is not an ATA, migrate tokens to a user associated ATA
+    if (depositTokenAta.toBase58() != initializerDepositTokenAccount.toBase58()) {
+        console.log(`Not equal. depositTokenATA: ${depositTokenAta}, initializerDepositTokenAccount: ${initializerDepositTokenAccount}`);
+        const migrationIx = await migrateToAta({
+            connection,
+            userAccount: initializerMainAccount,
+            tokenAccount: initializerDepositTokenAccount,
+            tokenMint: depositMint,
+            programId
+        });
+
+        instructions.push(migrationIx);
+    }
+
+    // Derive the open orders counter, initializing if necessary
     const [counterAddress] = await getOpenOrdersCounter(
         initializerMainAccount,
         depositMint,
@@ -70,7 +92,6 @@ export async function createInitializeBuyOrderInstruction({
         console.log('WE HAVE THE ACCOUNT');
     }
 
-
     const ix = await program.methods
             .processInitializeBuy(
                 new BN(price),
@@ -78,7 +99,7 @@ export async function createInitializeBuyOrderInstruction({
             )
             .accounts({
                 orderInitializer: initializerMainAccount,
-                initializerDepositTokenAccount,
+                initializerDepositTokenAccount: depositTokenAta,
                 initializerReceiveTokenAccount,
                 orderAccount: orderAccount.publicKey,
                 depositMint,
@@ -94,7 +115,7 @@ export async function createInitializeBuyOrderInstruction({
     }
 }
 
-/**
+/*
  * Returns an instruction which creates an offer to sell originationQty of DepositToke;n at 'price' value per unit
  *
  * @param connection
@@ -112,7 +133,6 @@ export async function createInitializeSellOrderInstruction({
     connection,
     initializerMainAccount,
     initializerDepositTokenAccount,
-    initializerReceiveTokenAccount,
     orderAccount,
     price,
     originationQty,
@@ -126,6 +146,29 @@ export async function createInitializeSellOrderInstruction({
     const instructions: web3.TransactionInstruction[] = [];
     const program = getMarketplaceProgram({connection, programId})
 
+    // Derive ATAs for deposit and receive mints
+    const depositTokenAta = await associatedAddress({owner: initializerMainAccount, mint: depositMint});
+    const initializerReceiveTokenAccount = await associatedAddress({owner: initializerMainAccount, mint: receiveMint});
+
+    // If the deposit token account passed in is not an ATA, migrate tokens to a user associated ATA
+    if (depositTokenAta.toBase58() != initializerDepositTokenAccount.toBase58()) {
+        console.log(`Not equal. depositTokenATA: ${depositTokenAta}, initializerDepositTokenAccount: ${initializerDepositTokenAccount}`);
+        const migrationIx = await migrateToAta({
+            connection,
+            userAccount: initializerMainAccount,
+            tokenAccount: initializerDepositTokenAccount,
+            tokenMint: depositMint,
+            programId
+        });
+
+        instructions.push(migrationIx);
+    }
+
+    console.log('Token - Deposit account: ', initializerDepositTokenAccount.toString());
+    console.log('ATA - Deposit account: ', depositTokenAta.toString());
+    console.log('ATA - Receive account: ', initializerReceiveTokenAccount.toString());
+
+    // Derive the open orders counter, initializing if necessary
     const [counterAddress] = await getOpenOrdersCounter(
         initializerMainAccount,
         depositMint,
@@ -152,7 +195,7 @@ export async function createInitializeSellOrderInstruction({
             )
             .accounts({
                 orderInitializer: initializerMainAccount,
-                initializerDepositTokenAccount,
+                initializerDepositTokenAccount: depositTokenAta,
                 initializerReceiveTokenAccount,
                 orderAccount: orderAccount.publicKey,
                 depositMint,
