@@ -482,6 +482,12 @@ export type Points = {
           'type': {
             'option': 'bool'
           }
+        },
+        {
+          'name': 'canSpend',
+          'type': {
+            'option': 'bool'
+          }
         }
       ]
     },
@@ -749,6 +755,10 @@ export type Points = {
             'type': 'bool'
           },
           {
+            'name': 'canSpend',
+            'type': 'bool'
+          },
+          {
             'name': 'bump',
             'type': 'u8'
           }
@@ -986,6 +996,11 @@ export type Points = {
         },
         {
           'name': 'canDecrement',
+          'type': 'bool',
+          'index': false
+        },
+        {
+          'name': 'canSpend',
           'type': 'bool',
           'index': false
         },
@@ -1625,6 +1640,12 @@ export const IDL: Points = {
           'type': {
             'option': 'bool'
           }
+        },
+        {
+          'name': 'canSpend',
+          'type': {
+            'option': 'bool'
+          }
         }
       ]
     },
@@ -1892,6 +1913,10 @@ export const IDL: Points = {
             'type': 'bool'
           },
           {
+            'name': 'canSpend',
+            'type': 'bool'
+          },
+          {
             'name': 'bump',
             'type': 'u8'
           }
@@ -2129,6 +2154,11 @@ export const IDL: Points = {
         },
         {
           'name': 'canDecrement',
+          'type': 'bool',
+          'index': false
+        },
+        {
+          'name': 'canSpend',
           'type': 'bool',
           'index': false
         },

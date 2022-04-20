@@ -10,7 +10,7 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
   label: string /** The XP account label */;
   pointLimit: BN /** The XP limit */;
   tokenRequired: boolean /** Whether a token is required */;
-  tokenQty: BN /** The token quantity to burn*/;
+  tokenQty?: BN /** The token quantity to burn*/;
   tokenMintKey?: PublicKey /** The required token mint */;
   isSpendable: boolean /** Deployed program ID for the Points program */
   domain: string /** The class of the related domain */
@@ -34,7 +34,7 @@ export const registerPointCategoryAccountIx = async ({
   label,
   pointLimit,
   tokenRequired,
-  tokenQty,
+  tokenQty = null,
   tokenMintKey,
   isSpendable,
   domain,
