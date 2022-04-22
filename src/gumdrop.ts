@@ -1,4 +1,4 @@
-import { Idl, Program, Provider, web3, BN } from '@project-serum/anchor';
+import { Idl, Program, AnchorProvider, web3, BN } from '@project-serum/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
@@ -85,7 +85,7 @@ export const getClaimStatusAccount = async (
   programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
 ): Promise<ClaimStatusAccount | null> => {
   // Wallet not required to query accounts
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(gumDropIdl as Idl, programId, provider);
   const claimStatusResult = await getClaimStatusKey(
     index,
@@ -119,7 +119,7 @@ export const getMultipleClaimStatusAccounts = async (
   programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
 ): Promise<Array<ClaimStatusAccount | null>> => {
   // Wallet not required to query accounts
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(gumDropIdl as Idl, programId, provider);
 
   const claimStatusPromises = indexArray.map((it) => {
@@ -211,7 +211,7 @@ export const claimTokenInstructions = async (
     programId
   );
 
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(gumDropIdl as Idl, programId, provider);
 
   const instructions = [];

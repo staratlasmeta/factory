@@ -1,7 +1,7 @@
 import {
   Idl,
   Program,
-  Provider,
+  AnchorProvider,
   web3
 } from '@project-serum/anchor';
 
@@ -139,7 +139,7 @@ export async function enlistToFaction(
   const [playerFactionPda, bump] = await getPlayerFactionPDA(playerPublicKey, programId);
 
   const idl = getIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const txInstruction = await program.instruction.processEnlistPlayer(bump, factionID, {
     accounts: {
@@ -163,13 +163,13 @@ export async function getPlayer(
 ): Promise<PlayerFaction> {
 
   // Wallet not required to query player faction account
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
-  return <PlayerFaction>obj;
+  return obj as unknown as PlayerFaction;
 }
 
 /**
@@ -181,13 +181,13 @@ export async function getAllPlayers(
 ): Promise<PlayerFaction[]> {
 
   // Wallet not required to query player faction accounts
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
   
   const players = programAccounts
-    .map(player => <PlayerFaction>player.account);
+    .map(player => player.account as unknown as PlayerFaction);
   
   return players;
 }
@@ -202,13 +202,13 @@ export async function getPlayersOfFaction(
 ): Promise<PlayerFaction[]> {
   
   // Wallet not required to query player faction accounts
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
   
   const filtered = programAccounts
-    .map(player => <PlayerFaction>player.account)
+    .map(player => player.account as unknown as PlayerFaction)
     .filter(player => player.factionId == factionID);
 
   return filtered;

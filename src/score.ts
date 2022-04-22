@@ -2,11 +2,11 @@ import {
   BN,
   Idl,
   Program,
-  Provider,
+  AnchorProvider,
   web3
 } from '@project-serum/anchor'
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
-import { SystemProgram } from '@solana/web3.js';
+import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { getPlayerFactionPDA } from '.';
 import { baseIdl } from './util/scoreIdl';
 import { scoreLogBaseIdl } from './util/scoreLogIdl';
@@ -237,13 +237,13 @@ export async function getScoreVarsInfo(
   connection: web3.Connection,
   programId: web3.PublicKey,
 ): Promise<ScoreVarsInfo> {
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getScoreIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
 
   const [scoreVarsAccount] = await getScoreVarsAccount(programId);
   const obj = await program.account.scoreVars.fetch(scoreVarsAccount);
-  return <ScoreVarsInfo>obj;
+  return obj as unknown as ScoreVarsInfo;
 }
 
 /**
@@ -261,13 +261,13 @@ export async function getShipStakingAccountInfo(
   playerPublicKey: web3.PublicKey
 ): Promise<ShipStakingInfo> {
 
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getScoreIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
 
   const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
   const obj = await program.account.shipStaking.fetch(shipStakingAccount);
-  return <ShipStakingInfo>obj;
+  return obj as unknown as ShipStakingInfo;
 }
 
 /**
@@ -282,7 +282,7 @@ export async function getShipStakingAccountInfo(
   programId: web3.PublicKey,
   event: string
 ): Promise<any> {
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>scoreLogBaseIdl, programId, provider);
   return program.coder.events.decode(event);
 }
@@ -300,13 +300,13 @@ export async function getScoreVarsShipInfo(
   shipMint: web3.PublicKey
 ): Promise<ScoreVarsShipInfo> {
 
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getScoreIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
 
   const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
   const obj = await program.account.scoreVarsShip.fetch(scoreVarsShipAccount);
-  return <ScoreVarsShipInfo>obj;
+  return obj as unknown as ScoreVarsShipInfo;
 }
 
 /**
@@ -357,13 +357,13 @@ export async function getScoreTreasuryAuthAccount(
 ): Promise<ScoreVarsShipInfo[]> {
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const _shipsRegistered = await program.account.scoreVarsShip.all();
   const shipsRegistered = [];
   for(const ship of _shipsRegistered) {
-    shipsRegistered.push(<ScoreVarsShipInfo>ship.account);
+    shipsRegistered.push(ship.account as unknown as ScoreVarsShipInfo);
   }
   return shipsRegistered;
 }
@@ -381,13 +381,13 @@ export async function getScoreTreasuryAuthAccount(
 ): Promise<ShipStakingInfo[]> {
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const _shipStakingAccounts = await program.account.shipStaking.all();
   const shipStakingAccounts = [];
   for(const stakingAccount of _shipStakingAccounts) {
-    shipStakingAccounts.push(<ShipStakingInfo>stakingAccount.account);
+    shipStakingAccounts.push(stakingAccount.account as unknown as ShipStakingInfo);
   }
   return shipStakingAccounts;
 }
@@ -407,7 +407,7 @@ export async function getScoreTreasuryAuthAccount(
 ): Promise<ShipStakingInfo[]> {
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const shipsRegistered = await program.account.scoreVarsShip.all();
@@ -416,7 +416,7 @@ export async function getScoreTreasuryAuthAccount(
   for(const ship of shipsRegistered) {
     const [playerShipStakingAccount] = await getShipStakingAccount(
       programId,
-      ship.account.shipMint,
+      ship.account.shipMint as unknown as PublicKey,
       playerPublicKey
     );
     playerShipStakingAccounts.push(playerShipStakingAccount);
@@ -453,7 +453,7 @@ export async function createScoreVarsInitializeInstruction(
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const [treasuryTokenAccount, treasuryBump] = await getScoreTreasuryTokenAccount(programId);
@@ -518,7 +518,7 @@ export async function createRegisterShipInstruction(
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
@@ -566,7 +566,7 @@ export async function createRegisterShipInstruction(
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
@@ -605,7 +605,7 @@ export async function createRegisterShipInstruction(
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
@@ -653,7 +653,7 @@ export async function createInitialDepositInstruction(
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, factionProgramId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processInitialDeposit(
     stakingBump,
@@ -705,7 +705,7 @@ export async function createInitialDepositInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processPartialDeposit(
     stakingBump,
@@ -760,7 +760,7 @@ export async function createRearmInstruction(
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processRearm(
     stakingBump,
@@ -821,7 +821,7 @@ export async function createRefeedInstruction(
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processRefeed(
     stakingBump,
@@ -882,7 +882,7 @@ export async function createRefuelInstruction(
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processRefuel(
     stakingBump,
@@ -941,7 +941,7 @@ export async function createRepairInstruction(
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processRepair(
     stakingBump,
@@ -990,7 +990,7 @@ export async function createSettleInstruction(
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId); 
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processSettle(
     stakingBump,
@@ -1034,7 +1034,7 @@ export async function createHarvestInstruction(
   const [treasuryAuthorityAccount, treasuryAuthBump] = await getScoreTreasuryAuthAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const instructions = [];
@@ -1106,7 +1106,7 @@ export async function createHarvestInstruction(
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const instructions = [];
@@ -1182,7 +1182,7 @@ export async function createHarvestInstruction(
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const instructions = [];
@@ -1257,7 +1257,7 @@ export async function createHarvestInstruction(
   const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const instructions = [];
@@ -1338,7 +1338,7 @@ export async function createHarvestInstruction(
   const [treasuryAuthorityAccount, treasuryAuthBump] = await getScoreTreasuryAuthAccount(programId);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
   const instructions = [];
@@ -1461,7 +1461,7 @@ export async function createHarvestInstruction(
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
 
   const idl = getScoreIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const ix = await program.instruction.processCloseAccounts(
     stakingBump,

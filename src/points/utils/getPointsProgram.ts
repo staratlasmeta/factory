@@ -1,4 +1,4 @@
-import { Program, Provider, web3 } from '@project-serum/anchor';
+import { Program, AnchorProvider, web3 } from '@project-serum/anchor';
 import { Connection } from '@solana/web3.js';
 import { IDL } from '../types/points_program';
 import type { Points } from '../types/points_program';
@@ -26,7 +26,7 @@ export function getPointsProgram (
   programId: web3.PublicKey
 ){
   const idl = getPointsIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Points>idl, programId, provider);
   return program;
 }
