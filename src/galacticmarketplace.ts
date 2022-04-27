@@ -1,5 +1,4 @@
 import {
-    BN,
     Idl,
     Program,
     Provider,
