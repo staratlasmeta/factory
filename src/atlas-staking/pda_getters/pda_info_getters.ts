@@ -33,12 +33,11 @@ export async function getStakingAccountInfo(
     connection: web3.Connection,
     programId: web3.PublicKey,
     user: web3.PublicKey,
-    stakeToken: web3.PublicKey,
-    rewardToken: web3.PublicKey,
+    registeredStake: web3.PublicKey,
 ): Promise<StakingAccountInfo> {
     const program = getStakingProgram({connection, programId});
 
-    const [stakingAccount] = await getStakingAccount(programId, user, stakeToken, rewardToken);
+    const [stakingAccount] = await getStakingAccount(programId, user, registeredStake);
     const stakingAccountInfo = await program.account.stakingAccount.fetch(stakingAccount);
     return stakingAccountInfo as StakingAccountInfo
 }

@@ -27,15 +27,13 @@ export async function getRegisteredStake(
 export async function getStakingAccount(
     programId: PublicKey,
     user: PublicKey,
-    stakeToken: PublicKey,
-    rewardToken: PublicKey
+    registeredStake: PublicKey,
 ): Promise<[PublicKey, number]> {
     return PublicKey.findProgramAddress(
         [
             STAKING_ACCOUNT,
             user.toBuffer(),
-            stakeToken.toBuffer(),
-            rewardToken.toBuffer(),
+            registeredStake.toBuffer()
         ],
         programId,
     );

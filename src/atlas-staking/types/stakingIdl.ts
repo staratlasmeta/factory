@@ -199,6 +199,62 @@ export type Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
+      'name': 'stakeTokens',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
                 'account': 'Mint',
                 'path': 'stake_mint'
               },
@@ -212,12 +268,37 @@ export type Staking =
           }
         },
         {
-          'name': 'systemProgram',
+          'name': 'stakingAccount',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'stakeAmount',
+          'type': 'u64'
+        }
+      ]
     }
   ],
   'accounts': [
@@ -512,6 +593,62 @@ export const baseIdl: Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
+      'name': 'stakeTokens',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
                 'account': 'Mint',
                 'path': 'stake_mint'
               },
@@ -525,12 +662,37 @@ export const baseIdl: Staking =
           }
         },
         {
-          'name': 'systemProgram',
+          'name': 'stakingAccount',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'stakeAmount',
+          'type': 'u64'
+        }
+      ]
     }
   ],
   'accounts': [
