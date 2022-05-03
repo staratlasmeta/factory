@@ -218,7 +218,7 @@ export type Staking =
       'accounts': [
         {
           'name': 'user',
-          'isMut': false,
+          'isMut': true,
           'isSigner': true
         },
         {
@@ -234,6 +234,11 @@ export type Staking =
         {
           'name': 'rewardMint',
           'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenSource',
+          'isMut': true,
           'isSigner': false
         },
         {
@@ -269,7 +274,7 @@ export type Staking =
         },
         {
           'name': 'stakingAccount',
-          'isMut': false,
+          'isMut': true,
           'isSigner': false,
           'pda': {
             'seeds': [
@@ -291,6 +296,65 @@ export type Staking =
               }
             ]
           }
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'escrow-auth'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenEscrow',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-escrow'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
         }
       ],
       'args': [
@@ -385,6 +449,38 @@ export type Staking =
           }
         ]
       }
+    }
+  ],
+  'errors': [
+    {
+      'code': 6000,
+      'name': 'InvalidMint',
+      'msg': 'Invalid Token Mint'
+    },
+    {
+      'code': 6001,
+      'name': 'InvalidOwner',
+      'msg': 'Account now owned by user'
+    },
+    {
+      'code': 6002,
+      'name': 'InsufficientFunds',
+      'msg': 'Insufficient token balance'
+    },
+    {
+      'code': 6003,
+      'name': 'InvalidAuthority',
+      'msg': 'Invalid authority for this account'
+    },
+    {
+      'code': 6004,
+      'name': 'InvalidDepositQty',
+      'msg': 'Invalid deposit quantity'
+    },
+    {
+      'code': 6005,
+      'name': 'NumericalOverflowError',
+      'msg': 'Numerical overflow error'
     }
   ],
   'metadata': {
@@ -612,7 +708,7 @@ export const baseIdl: Staking =
       'accounts': [
         {
           'name': 'user',
-          'isMut': false,
+          'isMut': true,
           'isSigner': true
         },
         {
@@ -628,6 +724,11 @@ export const baseIdl: Staking =
         {
           'name': 'rewardMint',
           'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenSource',
+          'isMut': true,
           'isSigner': false
         },
         {
@@ -663,7 +764,7 @@ export const baseIdl: Staking =
         },
         {
           'name': 'stakingAccount',
-          'isMut': false,
+          'isMut': true,
           'isSigner': false,
           'pda': {
             'seeds': [
@@ -685,6 +786,65 @@ export const baseIdl: Staking =
               }
             ]
           }
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'escrow-auth'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenEscrow',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-escrow'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
         }
       ],
       'args': [
@@ -779,6 +939,38 @@ export const baseIdl: Staking =
           }
         ]
       }
+    }
+  ],
+  'errors': [
+    {
+      'code': 6000,
+      'name': 'InvalidMint',
+      'msg': 'Invalid Token Mint'
+    },
+    {
+      'code': 6001,
+      'name': 'InvalidOwner',
+      'msg': 'Account now owned by user'
+    },
+    {
+      'code': 6002,
+      'name': 'InsufficientFunds',
+      'msg': 'Insufficient token balance'
+    },
+    {
+      'code': 6003,
+      'name': 'InvalidAuthority',
+      'msg': 'Invalid authority for this account'
+    },
+    {
+      'code': 6004,
+      'name': 'InvalidDepositQty',
+      'msg': 'Invalid deposit quantity'
+    },
+    {
+      'code': 6005,
+      'name': 'NumericalOverflowError',
+      'msg': 'Numerical overflow error'
     }
   ],
   'metadata': {
