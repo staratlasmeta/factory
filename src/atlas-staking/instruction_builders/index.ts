@@ -4,3 +4,4 @@ export * from './unstakeTokens';
 export * from './updateStake';
 export * from './createStakeAccount';
 export * from './stakeTokens';
+export * from './withdrawTokens';

@@ -445,6 +445,142 @@ export type Staking =
         }
       ],
       'args': []
+    },
+    {
+      'name': 'withdrawTokens',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenSource',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'escrow-auth'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenEscrow',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-escrow'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
     }
   ],
   'accounts': [
@@ -1019,6 +1155,142 @@ export const baseIdl: Staking =
               }
             ]
           }
+        }
+      ],
+      'args': []
+    },
+    {
+      'name': 'withdrawTokens',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenSource',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'escrowAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'escrow-auth'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenEscrow',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-escrow'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
         }
       ],
       'args': []
