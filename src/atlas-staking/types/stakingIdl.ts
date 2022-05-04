@@ -363,6 +363,88 @@ export type Staking =
           'type': 'u64'
         }
       ]
+    },
+    {
+      'name': 'unstakeTokens',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        }
+      ],
+      'args': []
     }
   ],
   'accounts': [
@@ -481,6 +563,11 @@ export type Staking =
       'code': 6005,
       'name': 'NumericalOverflowError',
       'msg': 'Numerical overflow error'
+    },
+    {
+      'code': 6006,
+      'name': 'StakeOnCooldown',
+      'msg': 'Cannot stake while account is on cooldown'
     }
   ],
   'metadata': {
@@ -853,6 +940,88 @@ export const baseIdl: Staking =
           'type': 'u64'
         }
       ]
+    },
+    {
+      'name': 'unstakeTokens',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        }
+      ],
+      'args': []
     }
   ],
   'accounts': [
@@ -971,6 +1140,11 @@ export const baseIdl: Staking =
       'code': 6005,
       'name': 'NumericalOverflowError',
       'msg': 'Numerical overflow error'
+    },
+    {
+      'code': 6006,
+      'name': 'StakeOnCooldown',
+      'msg': 'Cannot stake while account is on cooldown'
     }
   ],
   'metadata': {
