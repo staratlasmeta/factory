@@ -5,9 +5,9 @@ import {
 } from './pda_getters';
 import { getMarketplaceProgram } from './../utils/getMarketplaceProgram'
 import {
-    MarketVarsInfo,
-    RegisteredCurrencyInfo,
-} from './../types/marketplace_accounts';
+    MarketVarsAccountInfo,
+    RegisteredCurrencyInfo
+} from '../types/marketplace_accounts';
 
 /**
  * Returns the contents of the market vars account as detailed in the MarketVarsInfo interface
@@ -18,12 +18,12 @@ import {
 export async function getMarketVarsAccountInfo(
     connection: web3.Connection,
     programId: web3.PublicKey,
-): Promise<MarketVarsInfo> {
+): Promise<MarketVarsAccountInfo> {
     const program = getMarketplaceProgram({connection: connection, programId: programId})
 
     const [marketVarsAccount] = await getMarketVarsAccount(programId);
     const marketVarsInfo = await program.account.marketVars.fetch(marketVarsAccount);
-    return marketVarsInfo as MarketVarsInfo;
+    return marketVarsInfo as MarketVarsAccountInfo;
 }
 
 /**

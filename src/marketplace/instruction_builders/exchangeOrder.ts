@@ -6,6 +6,7 @@ import {
     getMarketplaceProgram,
     getOrderSide,
 } from '../utils';
+import { OrderAccountInfo } from '../types/marketplace_accounts';
 import { getOrderVault } from '../pda_getters/pda_getters';
 import { BaseParams } from './BaseParams';
 import {
@@ -47,7 +48,7 @@ export async function createExchangeInstruction ({
     const program = getMarketplaceProgram({connection, programId})
     const instructions = [];
 
-    const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
+    const orderAccountInfo = (await program.account.orderAccount.fetch(orderAccount)) as OrderAccountInfo;
     const registeredCurrencyInfo = await getRegisteredCurrencyAccountInfo(connection, programId, orderAccountInfo.currencyMint);
 
     const orderSide = getOrderSide(orderAccountInfo);

@@ -1,29 +1,18 @@
-import {
-    BN,
-    web3,
-} from '@project-serum/anchor';
+import { web3 } from '@project-serum/anchor';
+import type { AnchorTypes } from '@saberhq/anchor-contrib';
 export interface MarketVarsInfo {
 updateAuthorityMaster: web3.PublicKey,
 }
+import * as GM_TYPES from './gmIdl';
 
-export interface RegisteredCurrencyInfo {
-tokenMint: web3.PublicKey,
-saCurrencyVault: web3.PublicKey,
-royalty: BN,
-}
+export type GM_PROGRAM = GM_TYPES.GmIdl;
+export type GmTypes = AnchorTypes<GM_PROGRAM>;
+type Account = GmTypes['Accounts'];
 
-export interface OrderAccountInfo {
-    orderInitializerPubkey: web3.PublicKey,
-    currencyMint: web3.PublicKey,
-    assetMint: web3.PublicKey,
-    initializerCurrencyTokenAccount: web3.PublicKey,
-    initializerAssetTokenAccount: web3.PublicKey,
-    orderSide: OrderSide,
-    price: BN,
-    orderOriginationQty: BN,
-    orderRemainingQty: BN,
-    createdAtTimestamp: BN,
-}
+export type MarketVarsAccountInfo = Account['MarketVars'];
+export type OpenOrdersCounterInfo = Account['OpenOrdersCounter'];
+export type OrderAccountInfo = Account['OrderAccount'];
+export type RegisteredCurrencyInfo = Account['RegisteredCurrency'];
 
 export interface OrderSide {
     Buy,

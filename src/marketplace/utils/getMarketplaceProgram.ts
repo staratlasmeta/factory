@@ -1,7 +1,7 @@
 import {
     Idl,
     Program,
-    Provider,
+    AnchorProvider,
     web3,
 } from '@project-serum/anchor';
 import {
@@ -31,7 +31,7 @@ export function getMarketplaceProgram(
 { connection, programId }: { connection: web3.Connection; programId: web3.PublicKey; },
 ): Program<Idl> {
     const idl = getGmIDL(programId);
-    const provider = new Provider(connection, null, null);
+    const provider = new AnchorProvider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
     return program

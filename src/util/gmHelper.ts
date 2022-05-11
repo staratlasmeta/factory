@@ -1,7 +1,7 @@
 import {
     Idl,
     Program,
-    Provider,
+    AnchorProvider,
     web3
 } from '@project-serum/anchor';
 import { SystemProgram, Transaction, TransactionInstruction } from '@solana/web3.js';
@@ -26,7 +26,7 @@ export async function createAccountInstruction(
     programId: web3.PublicKey,
 ): Promise<TransactionInstruction> {
     const idl = getGmIDL(programId);
-    const provider = new Provider(connection, null, null);
+    const provider = new AnchorProvider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
     return SystemProgram.createAccount({
@@ -59,7 +59,7 @@ export async function createAccountTransaction(
     programId: web3.PublicKey,
 ): Promise<Transaction> {
     const idl = getGmIDL(programId);
-    const provider = new Provider(connection, null, null);
+    const provider = new AnchorProvider(connection, null, null);
     const program = new Program(idl as Idl, programId, provider);
 
     const tx = new Transaction(

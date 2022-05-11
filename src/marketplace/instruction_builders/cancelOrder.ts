@@ -4,6 +4,7 @@ import {
     getOrderSide,
 } from '../utils';
 import { BaseParams } from './BaseParams';
+import { OrderAccountInfo } from '../types/marketplace_accounts';
 
 /**  Params for Register Currency instruction */
 export interface cancelOrderParams extends BaseParams {
@@ -32,7 +33,7 @@ export async function createCancelOrderInstruction({
 }> {
     const program = getMarketplaceProgram({connection, programId})
 
-    const orderAccountInfo = await program.account.orderAccount.fetch(orderAccount);
+    const orderAccountInfo = (await program.account.orderAccount.fetch(orderAccount)) as OrderAccountInfo;
     const orderSide = getOrderSide(orderAccountInfo);
     const depositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
     const initializerDepositTokenAccount = (orderSide === 'SellSide') ? orderAccountInfo.initializerAssetTokenAccount : orderAccountInfo.initializerCurrencyTokenAccount;
