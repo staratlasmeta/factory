@@ -4,13 +4,11 @@ import {
     AnchorProvider,
     web3
 } from '@project-serum/anchor';
+import { GetProgramAccountsFilter } from '@solana/web3.js';
 import {
     OrderAccountInfo,
-} from './marketplace/types/marketplace_accounts';
-import { getGmIDL } from './marketplace/utils/getMarketplaceProgram'
-
-
-
+} from './../types/marketplace_accounts';
+import { getGmIDL } from './../utils/getMarketplaceProgram'
 
 /**
  * Get an array of all open orders
@@ -45,10 +43,21 @@ export async function getOpenOrdersForPlayer(
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
-    const orderAccounts = await program.account.orderAccount.all();
+    const filter = [
+        {
+            dataSize:  201
+        },
+        {
+            memcmp: {
+                offset: 8,
+                bytes: playerPublicKey.toBase58(),
+            },
+        } as GetProgramAccountsFilter,
+    ];
+    const orderAccounts = await program.account.orderAccount.all(filter);
     const filtered = orderAccounts
         .map(order => order.account as OrderAccountInfo)
-        .filter(order => order.orderInitializerPubkey.toString() === playerPublicKey.toString());
+        // .filter(order => order.orderInitializerPubkey.toString() === playerPublicKey.toString());
 
     return filtered;
 }
@@ -67,10 +76,20 @@ export async function getOpenOrdersForCurrency(
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
-    const orderAccounts = await program.account.orderAccount.all();
+    const filter = [
+        {
+            dataSize:  201
+        },
+        {
+            memcmp: {
+                offset: 40,
+                bytes: currencyMint.toBase58(),
+            },
+        } as GetProgramAccountsFilter,
+    ];
+    const orderAccounts = await program.account.orderAccount.all(filter);
     const filtered = orderAccounts
         .map(order => order.account as OrderAccountInfo)
-        .filter(order => order.currencyMint.toString() === currencyMint.toString());
 
     return filtered;
 }
@@ -89,10 +108,20 @@ export async function getOpenOrdersForAsset(
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
-    const orderAccounts = await program.account.orderAccount.all();
+    const filter = [
+        {
+            dataSize:  201
+        },
+        {
+            memcmp: {
+                offset: 72,
+                bytes: assetMint.toBase58(),
+            },
+        } as GetProgramAccountsFilter,
+    ];
+    const orderAccounts = await program.account.orderAccount.all(filter);
     const filtered = orderAccounts
         .map(order => order.account as OrderAccountInfo)
-        .filter(order => order.assetMint.toString() === assetMint.toString());
 
     return filtered;
 }
@@ -113,11 +142,26 @@ export async function getOpenOrdersForPlayerAndCurrency(
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
-    const orderAccounts = await program.account.orderAccount.all();
+    const filter = [
+        {
+            dataSize:  201
+        },
+        {
+            memcmp: {
+                offset: 40,
+                bytes: currencyMint.toBase58(),
+            },
+        },
+        {
+            memcmp: {
+                offset: 8,
+                bytes: playerPublicKey.toBase58(),
+            },
+        }
+    ];
+    const orderAccounts = await program.account.orderAccount.all(filter);
     const filtered = orderAccounts
         .map(order => order.account as OrderAccountInfo)
-        .filter(order => order.orderInitializerPubkey.toString() === playerPublicKey.toString()
-        && order.currencyMint.toString() === currencyMint.toString());
 
     return filtered;
 }
@@ -138,11 +182,26 @@ export async function getOpenOrdersForPlayerAndAsset(
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
-    const orderAccounts = await program.account.orderAccount.all();
+    const filter = [
+        {
+            dataSize:  201
+        },
+        {
+            memcmp: {
+                offset: 72,
+                bytes: assetMint.toBase58(),
+            },
+        },
+        {
+            memcmp: {
+                offset: 8,
+                bytes: playerPublicKey.toBase58(),
+            },
+        }
+    ];
+    const orderAccounts = await program.account.orderAccount.all(filter);
     const filtered = orderAccounts
         .map(order => order.account as OrderAccountInfo)
-        .filter(order => order.orderInitializerPubkey.toString() === playerPublicKey.toString()
-        && order.assetMint.toString() === assetMint.toString());
 
     return filtered;
 }
