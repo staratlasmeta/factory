@@ -1,4 +1,6 @@
 import { web3 } from '@project-serum/anchor';
+import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from  '@solana/spl-token';
 import { getStakingProgram } from '../utils';
 import { BaseParams } from './baseParams';
 
@@ -35,8 +37,29 @@ export async function withdrawTokensInstruction({
 }> {
     const program = getStakingProgram({connection, programId});
 
-    const instructions = [
-        await program.methods
+    const instructions = [];
+    const possibleTokenSource = await connection.getParsedTokenAccountsByOwner(
+        user,
+        {
+            mint: stakeMint,
+        }
+    );
+
+    if (possibleTokenSource.value.length === 0) {
+        tokenSource = await associatedAddress({owner: user, mint: stakeMint});
+        instructions.push(
+            Token.createAssociatedTokenAccountInstruction(
+                ASSOCIATED_TOKEN_PROGRAM_ID,
+                TOKEN_PROGRAM_ID,
+                stakeMint,
+                tokenSource,
+                user,
+                user
+            )
+        )
+    }
+
+    const ix = await program.methods
             .withdrawTokens()
             .accounts({
                 user,
@@ -45,8 +68,10 @@ export async function withdrawTokensInstruction({
                 rewardMint,
                 tokenSource,
             })
-            .instruction()
-    ];
+            .instruction();
+
+    instructions.push(ix);
+
     return {
         accounts: [],
         instructions,
