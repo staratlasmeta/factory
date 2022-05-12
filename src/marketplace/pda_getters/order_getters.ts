@@ -22,12 +22,16 @@ export async function getAllOpenOrders(
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
-    const orderAccounts = await program.account.orderAccount.all();
+    const filter = [
+        {
+            dataSize:  201
+        }
+    ];
+    const orderAccounts = await program.account.orderAccount.all(filter);
+    const filtered = orderAccounts
+        .map(order => order.account as OrderAccountInfo)
 
-    const orders = orderAccounts
-        .map(order => order.account as OrderAccountInfo);
-
-    return orders;
+    return filtered;
 }
 
 /**
@@ -57,7 +61,6 @@ export async function getOpenOrdersForPlayer(
     const orderAccounts = await program.account.orderAccount.all(filter);
     const filtered = orderAccounts
         .map(order => order.account as OrderAccountInfo)
-        // .filter(order => order.orderInitializerPubkey.toString() === playerPublicKey.toString());
 
     return filtered;
 }
