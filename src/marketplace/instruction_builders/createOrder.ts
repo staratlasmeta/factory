@@ -14,7 +14,7 @@ export interface InitializeOrderParameters extends BaseParams {
     initializerMainAccount: web3.PublicKey,
     initializerDepositTokenAccount: web3.PublicKey,
     orderAccount: web3.Keypair,
-    price: number,
+    price: BN,
     originationQty: number,
     depositMint: web3.PublicKey,
     receiveMint: web3.PublicKey,
@@ -94,7 +94,7 @@ export async function createInitializeBuyOrderInstruction({
 
     const ix = await program.methods
             .processInitializeBuy(
-                new BN(price),
+                price,
                 new BN(originationQty)
             )
             .accounts({
@@ -190,7 +190,7 @@ export async function createInitializeSellOrderInstruction({
 
     const ix = await program.methods
             .processInitializeSell(
-                new BN(price),
+                price,
                 new BN(originationQty)
             )
             .accounts({
