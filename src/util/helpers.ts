@@ -1,7 +1,6 @@
 import { FactionType} from '..';
 import { PublicKey } from '@solana/web3.js';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
-import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 
 export function byteArrayToString(array: number[]): string {
   return String.fromCharCode(...array);
