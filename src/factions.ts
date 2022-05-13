@@ -1,7 +1,6 @@
 import {
   AnchorProvider,
   Idl,
-  IdlTypes,
   Program,
   web3
 } from '@project-serum/anchor';
