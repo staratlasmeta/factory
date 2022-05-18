@@ -53,7 +53,57 @@ export type Staking =
           }
         },
         {
+          'name': 'rewardPda',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rewardVaultAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-vault-authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
           'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
         }
@@ -70,7 +120,7 @@ export type Staking =
       ]
     },
     {
-      'name': 'updateStake',
+      'name': 'updateRewardMultiplier',
       'accounts': [
         {
           'name': 'authority',
@@ -442,6 +492,11 @@ export type Staking =
               }
             ]
           }
+        },
+        {
+          'name': 'tokenSource',
+          'isMut': true,
+          'isSigner': false
         }
       ],
       'args': []
@@ -650,7 +705,11 @@ export type Staking =
             'type': 'i64'
           },
           {
-            'name': 'lastClaimTs',
+            'name': 'lastPendingRewardCalcTs',
+            'type': 'i64'
+          },
+          {
+            'name': 'lastHarvestTs',
             'type': 'i64'
           },
           {
@@ -704,6 +763,16 @@ export type Staking =
       'code': 6006,
       'name': 'StakeOnCooldown',
       'msg': 'Cannot stake while account is on cooldown'
+    },
+    {
+      'code': 6007,
+      'name': 'InvalidEscrowAuth',
+      'msg': 'Invalid escrow authority'
+    },
+    {
+      'code': 6008,
+      'name': 'WithdrawOnCooldown',
+      'msg': 'Cannot withdraw before cooldown period has elapsed'
     }
   ],
   'metadata': {
@@ -766,7 +835,57 @@ export const baseIdl: Staking =
           }
         },
         {
+          'name': 'rewardPda',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rewardVaultAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-vault-authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
           'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
         }
@@ -783,7 +902,7 @@ export const baseIdl: Staking =
       ]
     },
     {
-      'name': 'updateStake',
+      'name': 'updateRewardMultiplier',
       'accounts': [
         {
           'name': 'authority',
@@ -1155,6 +1274,11 @@ export const baseIdl: Staking =
               }
             ]
           }
+        },
+        {
+          'name': 'tokenSource',
+          'isMut': true,
+          'isSigner': false
         }
       ],
       'args': []
@@ -1363,7 +1487,11 @@ export const baseIdl: Staking =
             'type': 'i64'
           },
           {
-            'name': 'lastClaimTs',
+            'name': 'lastPendingRewardCalcTs',
+            'type': 'i64'
+          },
+          {
+            'name': 'lastHarvestTs',
             'type': 'i64'
           },
           {
@@ -1417,6 +1545,16 @@ export const baseIdl: Staking =
       'code': 6006,
       'name': 'StakeOnCooldown',
       'msg': 'Cannot stake while account is on cooldown'
+    },
+    {
+      'code': 6007,
+      'name': 'InvalidEscrowAuth',
+      'msg': 'Invalid escrow authority'
+    },
+    {
+      'code': 6008,
+      'name': 'WithdrawOnCooldown',
+      'msg': 'Cannot withdraw before cooldown period has elapsed'
     }
   ],
   'metadata': {
