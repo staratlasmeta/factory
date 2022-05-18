@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import {REGISTERED_STAKE, STAKING_ACCOUNT, STAKING_ESCROW} from './seeds';
+import {REGISTERED_STAKE, REWARD_ACCOUNT, REWARD_AUTH, STAKING_ACCOUNT, STAKING_ESCROW} from './seeds';
 
 /**
  * Returns the public key and bump seed for a registered stake account
@@ -51,6 +51,38 @@ export async function getTokenEscrow(
         [
             STAKING_ESCROW,
             user.toBuffer(),
+            registeredStake.toBuffer()
+        ],
+        programId,
+    );
+}
+
+/**
+ * Returns the public key and bump seed for a registered stake's reward vault authority
+ * */
+export async function getRewardAuth(
+    programId: PublicKey,
+    registeredStake: PublicKey,
+): Promise<[PublicKey, number]> {
+    return PublicKey.findProgramAddress(
+        [
+            REWARD_AUTH,
+            registeredStake.toBuffer()
+        ],
+        programId,
+    );
+}
+
+/**
+ * Returns the public key and bump seed for a registered stake's reward vault
+ * */
+export async function getRewardTreasury(
+    programId: PublicKey,
+    registeredStake: PublicKey,
+): Promise<[PublicKey, number]> {
+    return PublicKey.findProgramAddress(
+        [
+            REWARD_ACCOUNT,
             registeredStake.toBuffer()
         ],
         programId,

@@ -7,6 +7,7 @@ export interface unstakeTokensParams extends BaseParams {
     authority: web3.PublicKey
     stakeMint: web3.PublicKey,
     rewardMint: web3.PublicKey,
+    tokenSource: web3.PublicKey,
 }
 
 /**
@@ -25,6 +26,7 @@ export async function unstakeTokensInstruction({
     user,
     stakeMint,
     rewardMint,
+    tokenSource,
     programId
 }: unstakeTokensParams): Promise<{
     accounts: web3.PublicKey[],
@@ -40,6 +42,7 @@ export async function unstakeTokensInstruction({
                 authority,
                 stakeMint,
                 rewardMint,
+                tokenSource,
             })
             .instruction()
     ];
