@@ -1,4 +1,5 @@
-import { BN, web3 } from '@project-serum/anchor';
+import { web3 } from '@project-serum/anchor';
+import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { getStakingProgram } from '../utils';
 import { BaseParams } from './baseParams';
 
@@ -7,7 +8,6 @@ export interface unstakeTokensParams extends BaseParams {
     authority: web3.PublicKey
     stakeMint: web3.PublicKey,
     rewardMint: web3.PublicKey,
-    tokenSource: web3.PublicKey,
 }
 
 /**
@@ -26,13 +26,15 @@ export async function unstakeTokensInstruction({
     user,
     stakeMint,
     rewardMint,
-    tokenSource,
     programId
 }: unstakeTokensParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {
     const program = getStakingProgram({connection, programId});
+
+    // Derive ATA for user's reward account
+    const userRewardAccount = await associatedAddress({owner: user, mint: rewardMint});
 
     const instructions = [
         await program.methods
@@ -42,7 +44,7 @@ export async function unstakeTokensInstruction({
                 authority,
                 stakeMint,
                 rewardMint,
-                tokenSource,
+                userRewardAccount,
             })
             .instruction()
     ];

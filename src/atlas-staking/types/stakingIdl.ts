@@ -494,8 +494,68 @@ export type Staking =
           }
         },
         {
-          'name': 'tokenSource',
+          'name': 'userRewardAccount',
           'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardPda',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rewardVaultAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-vault-authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
           'isSigner': false
         }
       ],
@@ -666,6 +726,14 @@ export type Staking =
           },
           {
             'name': 'bump',
+            'type': 'u8'
+          },
+          {
+            'name': 'rewardBump',
+            'type': 'u8'
+          },
+          {
+            'name': 'authBump',
             'type': 'u8'
           }
         ]
@@ -1276,8 +1344,68 @@ export const baseIdl: Staking =
           }
         },
         {
-          'name': 'tokenSource',
+          'name': 'userRewardAccount',
           'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardPda',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rewardVaultAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-vault-authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
           'isSigner': false
         }
       ],
@@ -1448,6 +1576,14 @@ export const baseIdl: Staking =
           },
           {
             'name': 'bump',
+            'type': 'u8'
+          },
+          {
+            'name': 'rewardBump',
+            'type': 'u8'
+          },
+          {
+            'name': 'authBump',
             'type': 'u8'
           }
         ]
