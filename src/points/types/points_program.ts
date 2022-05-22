@@ -117,6 +117,17 @@ export type Points = {
         {
           'name': 'isSpendable',
           'type': 'bool'
+        },
+        {
+          'name': 'lvlCalculationParams',
+          'type': {
+            'option': {
+              'array': [
+                'u64',
+                3
+              ]
+            }
+          }
         }
       ]
     },
@@ -668,6 +679,93 @@ export type Points = {
           'type': 'u64'
         }
       ]
+    },
+    {
+      'name': 'spendPoints',
+      'accounts': [
+        {
+          'name': 'spender',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'pointCategoryAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'string',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.label'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'userPointsAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'UserPointsAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'UserPointsAccount',
+                'path': 'user_points_account.owner'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'pointsModifierAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'PointModifier'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'spender'
+              }
+            ]
+          }
+        }
+      ],
+      'args': [
+        {
+          'name': 'pointsAmount',
+          'type': 'u64'
+        }
+      ]
     }
   ],
   'accounts': [
@@ -727,6 +825,19 @@ export type Points = {
             'type': 'bool'
           },
           {
+            'name': 'lvlCalculationParams',
+            'type': {
+              'array': [
+                'u64',
+                3
+              ]
+            }
+          },
+          {
+            'name': 'initialLvlRequiredPoints',
+            'type': 'u64'
+          },
+          {
             'name': 'bump',
             'type': 'u8'
           }
@@ -784,6 +895,14 @@ export type Points = {
           },
           {
             'name': 'spentPoints',
+            'type': 'u64'
+          },
+          {
+            'name': 'level',
+            'type': 'u64'
+          },
+          {
+            'name': 'previousLvlPoints',
             'type': 'u64'
           },
           {
@@ -1081,6 +1200,36 @@ export type Points = {
         },
         {
           'name': 'modifiedAt',
+          'type': 'i64',
+          'index': false
+        }
+      ]
+    },
+    {
+      'name': 'SpendPointsEvent',
+      'fields': [
+        {
+          'name': 'spender',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'pointsCategory',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'userPointsAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'spendedPointsAmount',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'timestamp',
           'type': 'i64',
           'index': false
         }
@@ -1275,6 +1424,17 @@ export const IDL: Points = {
         {
           'name': 'isSpendable',
           'type': 'bool'
+        },
+        {
+          'name': 'lvlCalculationParams',
+          'type': {
+            'option': {
+              'array': [
+                'u64',
+                3
+              ]
+            }
+          }
         }
       ]
     },
@@ -1826,6 +1986,93 @@ export const IDL: Points = {
           'type': 'u64'
         }
       ]
+    },
+    {
+      'name': 'spendPoints',
+      'accounts': [
+        {
+          'name': 'spender',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'pointCategoryAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'string',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.label'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'userPointsAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'UserPointsAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'UserPointsAccount',
+                'path': 'user_points_account.owner'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'pointsModifierAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'PointModifier'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'spender'
+              }
+            ]
+          }
+        }
+      ],
+      'args': [
+        {
+          'name': 'pointsAmount',
+          'type': 'u64'
+        }
+      ]
     }
   ],
   'accounts': [
@@ -1885,6 +2132,19 @@ export const IDL: Points = {
             'type': 'bool'
           },
           {
+            'name': 'lvlCalculationParams',
+            'type': {
+              'array': [
+                'u64',
+                3
+              ]
+            }
+          },
+          {
+            'name': 'initialLvlRequiredPoints',
+            'type': 'u64'
+          },
+          {
             'name': 'bump',
             'type': 'u8'
           }
@@ -1942,6 +2202,14 @@ export const IDL: Points = {
           },
           {
             'name': 'spentPoints',
+            'type': 'u64'
+          },
+          {
+            'name': 'level',
+            'type': 'u64'
+          },
+          {
+            'name': 'previousLvlPoints',
             'type': 'u64'
           },
           {
@@ -2239,6 +2507,36 @@ export const IDL: Points = {
         },
         {
           'name': 'modifiedAt',
+          'type': 'i64',
+          'index': false
+        }
+      ]
+    },
+    {
+      'name': 'SpendPointsEvent',
+      'fields': [
+        {
+          'name': 'spender',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'pointsCategory',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'userPointsAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'spendedPointsAmount',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'timestamp',
           'type': 'i64',
           'index': false
         }

@@ -11,9 +11,10 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
   pointLimit: BN /** The XP limit */;
   tokenRequired: boolean /** Whether a token is required */;
   tokenQty?: BN /** The token quantity to burn*/;
-  tokenMintKey?: PublicKey /** The required token mint */;
+  tokenMintKey?: PublicKey | undefined/** The required token mint */;
   isSpendable: boolean /** Deployed program ID for the Points program */
   domain: string /** The class of the related domain */
+  lvlCalculationParams?: Array<number> | undefined
 }
 
 /**
@@ -26,6 +27,7 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
  * @param tokenMintKey - The required token mint 
  * @param isSpendable - Wheter the type of point is spendable or not
  * @param domain - The class of the related domain
+ * @param lvlCalculationParams - 
  * @param connection - the Solana connection objec
  * @param programId - Deployed program ID for the Points program
  */
@@ -38,6 +40,7 @@ export const registerPointCategoryAccountIx = async ({
   tokenMintKey,
   isSpendable,
   domain,
+  lvlCalculationParams = null,
   connection,
   programId,
 }: RegisterPointCategoryAccountParams): Promise<{ 
@@ -63,7 +66,8 @@ export const registerPointCategoryAccountIx = async ({
         tokenRequired,
         tokenQty,
         pointLimit,
-        isSpendable
+        isSpendable,
+        lvlCalculationParams
       ).accounts({ 
         admin,
         domainAccount
