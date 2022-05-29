@@ -1,11 +1,12 @@
 import {
+  AnchorProvider,
   Idl,
   Program,
-  Provider,
   web3
 } from '@project-serum/anchor';
+import { AnchorTypes } from '@saberhq/anchor-contrib';
 
-const baseIdl = {
+export type FactionEnlistment = {
   'version': '0.0.0',
   'name': 'enlist_to_faction',
   'instructions': [
@@ -88,11 +89,100 @@ const baseIdl = {
     }
   ],
   'metadata': {
-    'address': ''
+  }
+};
+
+const baseIdl: FactionEnlistment = {
+  'version': '0.0.0',
+  'name': 'enlist_to_faction',
+  'instructions': [
+    {
+      'name': 'processEnlistPlayer',
+      'accounts': [
+        {
+          'name': 'playerFactionAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'bump',
+          'type': 'u8'
+        },
+        {
+          'name': 'factionId',
+          'type': 'u8'
+        }
+      ]
+    }
+  ],
+  'accounts': [
+    {
+      'name': 'PlayerFactionData',
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'owner',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'enlistedAtTimestamp',
+            'type': 'i64'
+          },
+          {
+            'name': 'factionId',
+            'type': 'u8'
+          },
+          {
+            'name': 'bump',
+            'type': 'u8'
+          },
+          {
+            'name': 'padding',
+            'type': {
+              'array': [
+                'u64',
+                5
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  'errors': [
+    {
+      'code': 300,
+      'name': 'FactionTypeError',
+      'msg': 'Faction ID must be 0, 1, or 2.'
+    }
+  ],
+  'metadata': {
   }
 };
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
+
+type FactionEnlistmentTypes = AnchorTypes<FactionEnlistment>;
+type Accounts = FactionEnlistmentTypes['Accounts'];
+export type PlayerFaction = Accounts['PlayerFactionData']
 
 export enum FactionType {
   Unenlisted = -1,
@@ -101,17 +191,9 @@ export enum FactionType {
   Ustur = 2,
 }
 
-export interface PlayerFaction {
-  owner: web3.PublicKey;
-  enlistedAtTimestamp: number;
-  factionId: number;
-  bump: number;
-  padding: Buffer;
-}
-
 export function getIDL(
   programId: web3.PublicKey,
-): any {
+): unknown {
   const _tmp = baseIdl;
   _tmp['metadata']['address'] = programId.toBase58();
   return _tmp;
@@ -139,7 +221,7 @@ export async function enlistToFaction(
   const [playerFactionPda, bump] = await getPlayerFactionPDA(playerPublicKey, programId);
 
   const idl = getIDL(programId);
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
   const txInstruction = await program.instruction.processEnlistPlayer(bump, factionID, {
     accounts: {
@@ -163,13 +245,13 @@ export async function getPlayer(
 ): Promise<PlayerFaction> {
 
   // Wallet not required to query player faction account
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
-  return <PlayerFaction>obj;
+  return obj as PlayerFaction;
 }
 
 /**
@@ -181,7 +263,7 @@ export async function getAllPlayers(
 ): Promise<PlayerFaction[]> {
 
   // Wallet not required to query player faction accounts
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
@@ -202,7 +284,7 @@ export async function getPlayersOfFaction(
 ): Promise<PlayerFaction[]> {
   
   // Wallet not required to query player faction accounts
-  const provider = new Provider(connection, null, null);
+  const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();

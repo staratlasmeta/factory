@@ -1,5 +1,5 @@
 import {
-  Provider,
+  AnchorProvider,
     web3
 } from '@project-serum/anchor'
 import { ASSOCIATED_TOKEN_PROGRAM_ID, MintLayout, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
@@ -34,7 +34,7 @@ export async function getAtaForMint(
  * @param owner (Optional - if not provided, defaults to provider wallet)
  */
 export async function createATokenAccount(
-  provider: Provider,
+  provider: AnchorProvider,
   mint: web3.PublicKey,
   payer?: web3.PublicKey,
   owner?: web3.PublicKey
@@ -52,7 +52,7 @@ export async function createATokenAccount(
     mint
   );
   tx.add(ix);
-  const txid = await provider.send(tx);
+  const txid = await provider.sendAndConfirm(tx);
   
   console.log('Created Token Account: ', txid);
 
@@ -178,7 +178,7 @@ export async function createAssociatedTokenAccountInstruction(
  * @param mintAuthority - Publickey of mint authority
  */
 export async function mintTokens(
-  provider: Provider,
+  provider: AnchorProvider,
   mint: web3.PublicKey,
   destinationTokenAccount: web3.PublicKey,
   amount: number,
@@ -196,7 +196,7 @@ export async function mintTokens(
     [],
     amount,
   ));
-  const txid = await provider.send(tx);
+  const txid = await provider.sendAndConfirm(tx);
   return txid;
 }
 
@@ -207,7 +207,7 @@ export async function mintTokens(
  * @param decimals - Number of decimals in token account amount 
  */
 export async function createMint(
-  provider: Provider,
+  provider: AnchorProvider,
   decimals: number,
   mintAuthority?: web3.PublicKey,
   freezeAuthority?: web3.PublicKey,
@@ -239,7 +239,7 @@ export async function createMint(
   );
   tx.add(initialInstruction);
 
-  const txid = await provider.send(tx, [account]);
+  const txid = await provider.sendAndConfirm(tx, [account]);
   console.log('Created mint: ', txid);
 
   return account.publicKey;
@@ -253,7 +253,7 @@ export async function createMint(
  * @param expectedQuantity - Expected number of tokens in account
  */
 export async function confirmTokenBalance(
-  provider: Provider,
+  provider: AnchorProvider,
   tokenAccount: web3.PublicKey,
   expectedQuantity: number,
   confirmClosed?: boolean
@@ -283,7 +283,7 @@ export async function confirmTokenBalance(
  * @param amount - Number of tokens to transfer
  */
 export async function sendTokens(
-  provider: Provider, // Keep provider or add connection and pass in owner?
+  provider: AnchorProvider, // Keep provider or add connection and pass in owner?
   fromWallet: web3.PublicKey,
   toWallet: web3.PublicKey,
   amount: number
@@ -298,6 +298,6 @@ export async function sendTokens(
     amount,
   ))
 
-  const txid = await provider.send(tx);
+  const txid = await provider.sendAndConfirm(tx);
   return txid
 }
