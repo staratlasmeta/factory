@@ -1,5 +1,5 @@
 import { web3 } from '@project-serum/anchor';
-import type { AnchorTypes } from '@saberhq/anchor-contrib';
+import type { AnchorTypes } from '../../anchor/types';
 export interface MarketVarsInfo {
 updateAuthorityMaster: web3.PublicKey,
 }
