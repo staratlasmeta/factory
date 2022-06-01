@@ -165,7 +165,7 @@ export async function getScoreVarsInfo(
 
   const [scoreVarsAccount] = await getScoreVarsAccount(programId);
   const obj = await program.account.scoreVars.fetch(scoreVarsAccount);
-  return obj as unknown as ScoreVarsInfo;
+  return <ScoreVarsInfo>obj;
 }
 
 /**
@@ -189,7 +189,7 @@ export async function getShipStakingAccountInfo(
 
   const [shipStakingAccount] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
   const obj = await program.account.shipStaking.fetch(shipStakingAccount);
-  return obj as unknown as ShipStakingInfo;
+  return <ShipStakingInfo>obj;
 }
 
 /**
@@ -228,7 +228,7 @@ export async function getScoreVarsShipInfo(
 
   const [scoreVarsShipAccount] = await getScoreVarsShipAccount(programId, shipMint);
   const obj = await program.account.scoreVarsShip.fetch(scoreVarsShipAccount);
-  return obj as unknown as ScoreVarsShipInfo;
+  return <ScoreVarsShipInfo>obj;
 }
 
 /**
@@ -285,7 +285,7 @@ export async function getScoreTreasuryAuthAccount(
   const _shipsRegistered = await program.account.scoreVarsShip.all();
   const shipsRegistered = [];
   for(const ship of _shipsRegistered) {
-    shipsRegistered.push(ship.account as unknown as ScoreVarsShipInfo);
+    shipsRegistered.push(<ScoreVarsShipInfo>ship.account);
   }
   return shipsRegistered;
 }
@@ -309,7 +309,7 @@ export async function getScoreTreasuryAuthAccount(
   const _shipStakingAccounts = await program.account.shipStaking.all();
   const shipStakingAccounts = [];
   for(const stakingAccount of _shipStakingAccounts) {
-    shipStakingAccounts.push(stakingAccount.account as unknown as ShipStakingInfo);
+    shipStakingAccounts.push(<ShipStakingInfo>stakingAccount.account);
   }
   return shipStakingAccounts;
 }

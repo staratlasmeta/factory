@@ -269,7 +269,7 @@ export async function getAllPlayers(
   const programAccounts = await program.account.playerFactionData.all();
   
   const players = programAccounts
-    .map(player => player.account as unknown as PlayerFaction);
+    .map(player => <PlayerFaction>player.account);
   
   return players;
 }
@@ -290,7 +290,7 @@ export async function getPlayersOfFaction(
   const programAccounts = await program.account.playerFactionData.all();
   
   const filtered = programAccounts
-    .map(player => player.account as unknown as PlayerFaction)
+    .map(player => <PlayerFaction>player.account)
     .filter(player => player.factionId == factionID);
 
   return filtered;
