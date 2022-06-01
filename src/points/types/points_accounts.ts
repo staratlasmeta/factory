@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { IDL as PROGRAM_IDL } from './points_program';
-import type { AnchorTypes } from '@saberhq/anchor-contrib';
+import type { AnchorTypes } from '../../anchor/types';
 
 export type XpTypes = AnchorTypes<typeof PROGRAM_IDL>;
 type Accounts = XpTypes['Accounts'];

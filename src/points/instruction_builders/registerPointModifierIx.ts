@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { web3 } from '@project-serum/anchor';
-import { BaseParams } from './BaseParams'
+import { BaseParams } from '../../util/BaseParams'
 import { getPointsProgram } from '../utils'
 
 /** Params for Register Point Modifier instruction */

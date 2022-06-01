@@ -1,4 +1,3 @@
-export * from './BaseParams'
 export * from './createUserPointAccountIx'
 export * from './createUserPointAccountWithLicenseIx'
 export * from './deregisterPointCategoryAccountIx'

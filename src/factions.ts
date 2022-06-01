@@ -4,8 +4,9 @@ import {
   AnchorProvider,
   web3
 } from '@project-serum/anchor';
+import { AnchorTypes } from './anchor/types';
 
-const baseIdl = {
+export type FactionEnlistment = {
   'version': '0.0.0',
   'name': 'enlist_to_faction',
   'instructions': [
@@ -88,11 +89,100 @@ const baseIdl = {
     }
   ],
   'metadata': {
-    'address': ''
+  }
+};
+
+const baseIdl: FactionEnlistment = {
+  'version': '0.0.0',
+  'name': 'enlist_to_faction',
+  'instructions': [
+    {
+      'name': 'processEnlistPlayer',
+      'accounts': [
+        {
+          'name': 'playerFactionAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'playerAccount',
+          'isMut': false,
+          'isSigner': true
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'clock',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'bump',
+          'type': 'u8'
+        },
+        {
+          'name': 'factionId',
+          'type': 'u8'
+        }
+      ]
+    }
+  ],
+  'accounts': [
+    {
+      'name': 'PlayerFactionData',
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'owner',
+            'type': 'publicKey'
+          },
+          {
+            'name': 'enlistedAtTimestamp',
+            'type': 'i64'
+          },
+          {
+            'name': 'factionId',
+            'type': 'u8'
+          },
+          {
+            'name': 'bump',
+            'type': 'u8'
+          },
+          {
+            'name': 'padding',
+            'type': {
+              'array': [
+                'u64',
+                5
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  'errors': [
+    {
+      'code': 300,
+      'name': 'FactionTypeError',
+      'msg': 'Faction ID must be 0, 1, or 2.'
+    }
+  ],
+  'metadata': {
   }
 };
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
+
+type FactionEnlistmentTypes = AnchorTypes<FactionEnlistment>;
+type Accounts = FactionEnlistmentTypes['Accounts'];
+export type PlayerFaction = Accounts['PlayerFactionData']
 
 export enum FactionType {
   Unenlisted = -1,
@@ -101,17 +191,9 @@ export enum FactionType {
   Ustur = 2,
 }
 
-export interface PlayerFaction {
-  owner: web3.PublicKey;
-  enlistedAtTimestamp: number;
-  factionId: number;
-  bump: number;
-  padding: Buffer;
-}
-
 export function getIDL(
   programId: web3.PublicKey,
-): any {
+): unknown {
   const _tmp = baseIdl;
   _tmp['metadata']['address'] = programId.toBase58();
   return _tmp;
@@ -169,7 +251,7 @@ export async function getPlayer(
   
   const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
-  return obj as unknown as PlayerFaction;
+  return obj as PlayerFaction;
 }
 
 /**

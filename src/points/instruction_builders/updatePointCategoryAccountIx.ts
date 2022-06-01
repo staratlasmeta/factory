@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { web3, BN } from '@project-serum/anchor';
-import { BaseParams } from './BaseParams'
+import { BaseParams } from '../../util/BaseParams'
 import { getPointsProgram } from '../utils'
 
 /** Params for Update Point Category Account instruction */

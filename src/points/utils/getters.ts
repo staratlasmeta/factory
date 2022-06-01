@@ -7,7 +7,7 @@ import {
   UserPointsAccountItem,
   PointsModifierItem,
 } from '../types/points_accounts';
-import { BaseParams } from '../instruction_builders'
+import { BaseParams } from '../../util/BaseParams';
 import { 
   findPointsModifierAccount,
   findUserPointsAccount
