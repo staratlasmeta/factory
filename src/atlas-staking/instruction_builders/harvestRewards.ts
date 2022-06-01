@@ -1,49 +1,50 @@
-import { BN, web3 } from '@project-serum/anchor';
+import { web3 } from '@project-serum/anchor';
+import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { getStakingProgram } from '../utils';
 import { BaseParams } from './baseParams';
 
-export interface updateRewardMultiplierParams extends BaseParams {
+export interface harvestRewardsParams extends BaseParams {
+    user: web3.PublicKey,
     authority: web3.PublicKey
     stakeMint: web3.PublicKey,
     rewardMint: web3.PublicKey,
-    rewardMultiplier: number,
-    newStakingPeriod: number,
 }
 
 /**
- * Returns an instruction which updates the reward multiplier associated with a registered stake
+ * Returns an instruction which transfers a user's pending rewards to their wallet
  *
  * @param connection
  * @param authority- Public key of account which registered the stake
- * @param rewardMultiplier - New reward rate multiplier
- * @param stakeMint - Public key of token mint associated with stake
- * @param rewardMint - Public key of token mint being rewarded by stake
+ * @param user - Public key of user creating the staking account
+ * @param stakeMint - Public key for mint of tokens being staked
+ * @param rewardMint - Public key for mint of tokens being received in reward
  * @param programId - Deployed program ID for Staking program
  */
-export async function updateRewardMultiplierInstruction({
+export async function harvestRewardsInstruction({
     connection,
     authority,
-    rewardMultiplier,
+    user,
     stakeMint,
     rewardMint,
-    newStakingPeriod,
     programId
-}: updateRewardMultiplierParams): Promise<{
+}: harvestRewardsParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {
     const program = getStakingProgram({connection, programId});
 
+    // Derive ATA for user's reward account
+    const userRewardAccount = await associatedAddress({owner: user, mint: rewardMint});
+
     const instructions = [
         await program.methods
-            .updateRewardMultiplier(
-                new BN(rewardMultiplier),
-                newStakingPeriod,
-            )
+            .harvest()
             .accounts({
+                user,
                 authority,
                 stakeMint,
                 rewardMint,
+                userRewardAccount,
             })
             .instruction()
     ];

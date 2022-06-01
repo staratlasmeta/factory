@@ -4,6 +4,240 @@ export type Staking =
   'name': 'atlas_staking',
   'instructions': [
     {
+      'name': 'createStakingAccount',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
+      'name': 'harvest',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'userRewardAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardPda',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rewardVaultAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-vault-authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
       'name': 'registerStake',
       'accounts': [
         {
@@ -120,72 +354,15 @@ export type Staking =
       ]
     },
     {
-      'name': 'updateRewardMultiplier',
+      'name': 'settle',
       'accounts': [
         {
           'name': 'authority',
           'isMut': true,
           'isSigner': true
         },
-        {
-          'name': 'stakeMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rewardMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'registeredStake',
-          'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-stake'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'authority'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'stake_mint'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'reward_mint'
-              }
-            ]
-          }
-        }
-      ],
-      'args': [
-        {
-          'name': 'rewardMultiplier',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'createStakingAccount',
-      'accounts': [
         {
           'name': 'user',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          'name': 'authority',
           'isMut': false,
           'isSigner': false
         },
@@ -254,14 +431,14 @@ export type Staking =
               }
             ]
           }
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'updatedStakingPeriod',
+          'type': 'u16'
+        }
+      ]
     },
     {
       'name': 'stakeTokens',
@@ -562,6 +739,67 @@ export type Staking =
       'args': []
     },
     {
+      'name': 'updateRewardMultiplier',
+      'accounts': [
+        {
+          'name': 'authority',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        }
+      ],
+      'args': [
+        {
+          'name': 'rewardMultiplier',
+          'type': 'u64'
+        },
+        {
+          'name': 'newStakingPeriod',
+          'type': 'u16'
+        }
+      ]
+    },
+    {
       'name': 'withdrawTokens',
       'accounts': [
         {
@@ -717,6 +955,10 @@ export type Staking =
             'type': 'publicKey'
           },
           {
+            'name': 'currentPeriod',
+            'type': 'u16'
+          },
+          {
             'name': 'rewardMultiplier',
             'type': 'u64'
           },
@@ -767,6 +1009,10 @@ export type Staking =
           {
             'name': 'paidRewards',
             'type': 'u64'
+          },
+          {
+            'name': 'currentPeriod',
+            'type': 'u16'
           },
           {
             'name': 'stakedAtTs',
@@ -841,6 +1087,11 @@ export type Staking =
       'code': 6008,
       'name': 'WithdrawOnCooldown',
       'msg': 'Cannot withdraw before cooldown period has elapsed'
+    },
+    {
+      'code': 6009,
+      'name': 'InvalidPeriod',
+      'msg': 'Staking account must be in the same period as the Registered Stake'
     }
   ],
   'metadata': {
@@ -854,6 +1105,240 @@ export const baseIdl: Staking =
   'name': 'atlas_staking',
   'instructions': [
     {
+      'name': 'createStakingAccount',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
+      'name': 'harvest',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'authority',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'userRewardAccount',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardPda',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'rewardVaultAuthority',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'reward-vault-authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rent',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
       'name': 'registerStake',
       'accounts': [
         {
@@ -970,72 +1455,15 @@ export const baseIdl: Staking =
       ]
     },
     {
-      'name': 'updateRewardMultiplier',
+      'name': 'settle',
       'accounts': [
         {
           'name': 'authority',
           'isMut': true,
           'isSigner': true
         },
-        {
-          'name': 'stakeMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rewardMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'registeredStake',
-          'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-stake'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'authority'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'stake_mint'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'reward_mint'
-              }
-            ]
-          }
-        }
-      ],
-      'args': [
-        {
-          'name': 'rewardMultiplier',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'createStakingAccount',
-      'accounts': [
         {
           'name': 'user',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          'name': 'authority',
           'isMut': false,
           'isSigner': false
         },
@@ -1104,14 +1532,14 @@ export const baseIdl: Staking =
               }
             ]
           }
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'updatedStakingPeriod',
+          'type': 'u16'
+        }
+      ]
     },
     {
       'name': 'stakeTokens',
@@ -1412,6 +1840,67 @@ export const baseIdl: Staking =
       'args': []
     },
     {
+      'name': 'updateRewardMultiplier',
+      'accounts': [
+        {
+          'name': 'authority',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'stakeMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'rewardMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'reward_mint'
+              }
+            ]
+          }
+        }
+      ],
+      'args': [
+        {
+          'name': 'rewardMultiplier',
+          'type': 'u64'
+        },
+        {
+          'name': 'newStakingPeriod',
+          'type': 'u16'
+        }
+      ]
+    },
+    {
       'name': 'withdrawTokens',
       'accounts': [
         {
@@ -1567,6 +2056,10 @@ export const baseIdl: Staking =
             'type': 'publicKey'
           },
           {
+            'name': 'currentPeriod',
+            'type': 'u16'
+          },
+          {
             'name': 'rewardMultiplier',
             'type': 'u64'
           },
@@ -1617,6 +2110,10 @@ export const baseIdl: Staking =
           {
             'name': 'paidRewards',
             'type': 'u64'
+          },
+          {
+            'name': 'currentPeriod',
+            'type': 'u16'
           },
           {
             'name': 'stakedAtTs',
@@ -1691,6 +2188,11 @@ export const baseIdl: Staking =
       'code': 6008,
       'name': 'WithdrawOnCooldown',
       'msg': 'Cannot withdraw before cooldown period has elapsed'
+    },
+    {
+      'code': 6009,
+      'name': 'InvalidPeriod',
+      'msg': 'Staking account must be in the same period as the Registered Stake'
     }
   ],
   'metadata': {
