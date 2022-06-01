@@ -128,6 +128,12 @@ export type Points = {
               ]
             }
           }
+        },
+        {
+          'name': 'initialLvlRequiredPoints',
+          'type': {
+            'option': 'u64'
+          }
         }
       ]
     },
@@ -1434,6 +1440,12 @@ export const IDL: Points = {
                 3
               ]
             }
+          }
+        },
+        {
+          'name': 'initialLvlRequiredPoints',
+          'type': {
+            'option': 'u64'
           }
         }
       ]

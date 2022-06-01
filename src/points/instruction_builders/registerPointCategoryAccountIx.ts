@@ -14,7 +14,8 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
   tokenMintKey?: PublicKey | undefined/** The required token mint */;
   isSpendable: boolean /** Deployed program ID for the Points program */
   domain: string /** The class of the related domain */
-  lvlCalculationParams?: Array<number> | undefined
+  lvlCalculationParams?: Array<BN> | undefined
+  initialLvlRequiredPoints?: BN | undefined
 }
 
 /**
@@ -41,6 +42,7 @@ export const registerPointCategoryAccountIx = async ({
   isSpendable,
   domain,
   lvlCalculationParams = null,
+  initialLvlRequiredPoints = null,
   connection,
   programId,
 }: RegisterPointCategoryAccountParams): Promise<{ 
@@ -67,7 +69,8 @@ export const registerPointCategoryAccountIx = async ({
         tokenQty,
         pointLimit,
         isSpendable,
-        lvlCalculationParams
+        lvlCalculationParams,
+        initialLvlRequiredPoints
       ).accounts({ 
         admin,
         domainAccount
