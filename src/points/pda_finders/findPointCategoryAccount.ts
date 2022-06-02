@@ -10,10 +10,11 @@ import { POINT_CATEGORY_ACCOUNT_SEED } from './seeds'
  */
  export async function findPointCategoryAccount(
   label: string,
+  domainKey: PublicKey,
   programId: PublicKey
 ): Promise<[PublicKey, number]> {
   return await PublicKey.findProgramAddress(
-    [POINT_CATEGORY_ACCOUNT_SEED, Buffer.from(label)],
+    [POINT_CATEGORY_ACCOUNT_SEED, domainKey.toBuffer(), Buffer.from(label)],
     programId
   );
 }
