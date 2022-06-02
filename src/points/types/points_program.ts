@@ -24,7 +24,7 @@ export type Points = {
               {
                 'kind': 'arg',
                 'type': 'string',
-                'path': 'points_class'
+                'path': 'name'
               }
             ]
           }
@@ -65,7 +65,7 @@ export type Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -80,6 +80,12 @@ export type Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'arg',
@@ -160,7 +166,7 @@ export type Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -175,6 +181,12 @@ export type Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'account',
@@ -216,7 +228,7 @@ export type Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -231,6 +243,12 @@ export type Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'account',
@@ -286,6 +304,12 @@ export type Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.domain'
               },
               {
                 'kind': 'account',
@@ -347,6 +371,12 @@ export type Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.domain'
               },
               {
                 'kind': 'account',
@@ -428,7 +458,7 @@ export type Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -443,6 +473,12 @@ export type Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'account',
@@ -531,7 +567,7 @@ export type Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -546,6 +582,12 @@ export type Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'account',
@@ -612,6 +654,12 @@ export type Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.domain'
               },
               {
                 'kind': 'account',
@@ -707,6 +755,12 @@ export type Points = {
               },
               {
                 'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.domain'
+              },
+              {
+                'kind': 'account',
                 'type': 'string',
                 'account': 'PointCategoryAccount',
                 'path': 'point_category_account.label'
@@ -781,7 +835,7 @@ export type Points = {
         'kind': 'struct',
         'fields': [
           {
-            'name': 'pointsClass',
+            'name': 'name',
             'type': 'string'
           },
           {
@@ -1306,7 +1360,17 @@ export type Points = {
     {
       'code': 6012,
       'name': 'LabelTooLong',
-      'msg': 'Label string above max lenght.'
+      'msg': 'Label string above max length.'
+    },
+    {
+      'code': 6013,
+      'name': 'SpendingNotAllowed',
+      'msg': 'Points modifier not allowed to spend points.'
+    },
+    {
+      'code': 6014,
+      'name': 'TokenQuantityExpected',
+      'msg': 'The token quantity must be provided.'
     }
   ]
 };
@@ -1337,7 +1401,7 @@ export const IDL: Points = {
               {
                 'kind': 'arg',
                 'type': 'string',
-                'path': 'points_class'
+                'path': 'name'
               }
             ]
           }
@@ -1378,7 +1442,7 @@ export const IDL: Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -1393,6 +1457,12 @@ export const IDL: Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'arg',
@@ -1473,7 +1543,7 @@ export const IDL: Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -1488,6 +1558,12 @@ export const IDL: Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'account',
@@ -1529,7 +1605,7 @@ export const IDL: Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -1544,6 +1620,12 @@ export const IDL: Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'account',
@@ -1599,6 +1681,12 @@ export const IDL: Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.domain'
               },
               {
                 'kind': 'account',
@@ -1660,6 +1748,12 @@ export const IDL: Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.domain'
               },
               {
                 'kind': 'account',
@@ -1741,7 +1835,7 @@ export const IDL: Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -1756,6 +1850,12 @@ export const IDL: Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'account',
@@ -1844,7 +1944,7 @@ export const IDL: Points = {
                 'kind': 'account',
                 'type': 'string',
                 'account': 'DomainAccount',
-                'path': 'domain_account.points_class'
+                'path': 'domain_account.name'
               }
             ]
           }
@@ -1859,6 +1959,12 @@ export const IDL: Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'DomainAccount',
+                'path': 'domain_account'
               },
               {
                 'kind': 'account',
@@ -1925,6 +2031,12 @@ export const IDL: Points = {
                 'kind': 'const',
                 'type': 'string',
                 'value': 'PointCategoryAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.domain'
               },
               {
                 'kind': 'account',
@@ -2020,6 +2132,12 @@ export const IDL: Points = {
               },
               {
                 'kind': 'account',
+                'type': 'publicKey',
+                'account': 'PointCategoryAccount',
+                'path': 'point_category_account.domain'
+              },
+              {
+                'kind': 'account',
                 'type': 'string',
                 'account': 'PointCategoryAccount',
                 'path': 'point_category_account.label'
@@ -2094,7 +2212,7 @@ export const IDL: Points = {
         'kind': 'struct',
         'fields': [
           {
-            'name': 'pointsClass',
+            'name': 'name',
             'type': 'string'
           },
           {
@@ -2619,7 +2737,17 @@ export const IDL: Points = {
     {
       'code': 6012,
       'name': 'LabelTooLong',
-      'msg': 'Label string above max lenght.'
+      'msg': 'Label string above max length.'
+    },
+    {
+      'code': 6013,
+      'name': 'SpendingNotAllowed',
+      'msg': 'Points modifier not allowed to spend points.'
+    },
+    {
+      'code': 6014,
+      'name': 'TokenQuantityExpected',
+      'msg': 'The token quantity must be provided.'
     }
   ]
 };
