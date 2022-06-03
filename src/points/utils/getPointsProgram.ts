@@ -21,10 +21,10 @@ function getPointsIDL(programId: web3.PublicKey): unknown {
  * @param programId - Deployed program ID for the Points program
  * @returns the Points anchor program
  */
-export function getPointsProgram (
+export function getPointsProgram(
   connection: Connection,
   programId: web3.PublicKey
-){
+) {
   const idl = getPointsIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Points>idl, programId, provider);

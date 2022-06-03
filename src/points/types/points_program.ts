@@ -37,7 +37,7 @@ export type Points = {
       ],
       'args': [
         {
-          'name': 'pointsClass',
+          'name': 'name',
           'type': 'string'
         }
       ]
@@ -1414,7 +1414,7 @@ export const IDL: Points = {
       ],
       'args': [
         {
-          'name': 'pointsClass',
+          'name': 'name',
           'type': 'string'
         }
       ]

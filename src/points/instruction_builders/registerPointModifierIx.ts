@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { web3 } from '@project-serum/anchor';
-import { BaseParams } from '../../util/BaseParams'
-import { getPointsProgram } from '../utils'
+import { BaseParams } from '../../util/BaseParams';
+import { getPointsProgram } from '../utils';
 
 /** Params for Register Point Modifier instruction */
 export interface RegisterPointModifierParams extends BaseParams {
@@ -10,8 +10,8 @@ export interface RegisterPointModifierParams extends BaseParams {
   canDecrement?: boolean /** whether the modifier can decrement Points */;
   canSpend?: boolean /** whether the modifier can spend Points (in case points are spendable) */;
   modifierKey: PublicKey /** the modifier public key */;
-  domainAccount: PublicKey /** The related Domain Account PublicKey */
-  pointCategoryAccount: PublicKey /** The Point Category Account PublicKey */
+  domainAccount: PublicKey /** The related Domain Account PublicKey */;
+  pointCategoryAccount: PublicKey /** The Point Category Account PublicKey */;
 }
 
 /**
@@ -23,7 +23,7 @@ export interface RegisterPointModifierParams extends BaseParams {
  * @param canDecrement - whether the modifier can decrement Points
  * @param canSpend - whether the modifier can spend Points (in case points are spendable)
  * @param modifierKey - the modifier public key
- * @param connection - the Solana connection objec
+ * @param connection - the Solana connection object
  * @param programId - Deployed program ID for the Points program
  */
 export const registerPointModifierIx = async ({
@@ -36,7 +36,10 @@ export const registerPointModifierIx = async ({
   modifierKey,
   connection,
   programId,
-}: RegisterPointModifierParams): Promise<{ accounts: web3.PublicKey[], instructions: web3.TransactionInstruction[] }> => {
+}: RegisterPointModifierParams): Promise<{
+  accounts: web3.PublicKey[];
+  instructions: web3.TransactionInstruction[];
+}> => {
   const program = getPointsProgram(connection, programId);
 
   const instructions = [
@@ -48,7 +51,7 @@ export const registerPointModifierIx = async ({
         pointCategoryAccount,
         modifier: modifierKey,
       })
-      .instruction()
+      .instruction(),
   ];
 
   return {

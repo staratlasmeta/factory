@@ -8,14 +8,11 @@ import {
   PointsModifierItem,
 } from '../types/points_accounts';
 import { BaseParams } from '../../util/BaseParams';
-import { 
+import {
   findPointsModifierAccount,
-  findUserPointsAccount
-} from '../pda_finders'
-import { getPointsProgram } from './getPointsProgram'
-
-
-
+  findUserPointsAccount,
+} from '../pda_finders';
+import { getPointsProgram } from './getPointsProgram';
 
 export interface GetDomainAccountParams extends BaseParams {
   domainAccountKey: PublicKey /** the Domain Account public key */;
@@ -31,7 +28,9 @@ export const getDomainAccount = async ({
   programId,
 }: GetDomainAccountParams) => {
   const program = getPointsProgram(connection, programId);
-  const domainAccount = await program.account.domainAccount.fetch(domainAccountKey);
+  const domainAccount = await program.account.domainAccount.fetch(
+    domainAccountKey
+  );
 
   return {
     domainAccount: domainAccount as DomainAccount,
@@ -54,7 +53,9 @@ export const getPointCategoryAccount = async ({
   programId,
 }: GetPointsAccountParams) => {
   const program = getPointsProgram(connection, programId);
-  const pointAccount = await program.account.pointCategoryAccount.fetch(pointCategoryAccountKey);
+  const pointAccount = await program.account.pointCategoryAccount.fetch(
+    pointCategoryAccountKey
+  );
 
   return pointAccount as PointCategoryAccount;
 };
@@ -82,7 +83,8 @@ export const getUserPointsAccount = async ({
 };
 
 /** Params for User Points Account Getter */
-export interface GetUserPointsAccountViaUserAndPointsKeysParams extends BaseParams {
+export interface GetUserPointsAccountViaUserAndPointsKeysParams
+  extends BaseParams {
   user: PublicKey /** the Points Account public key */;
   pointAccountKey: PublicKey /** the Points Account public key */;
 }
@@ -196,7 +198,7 @@ export const getPointsModifierAccountViaModifierAndPointsKeys = async ({
   };
 };
 
-/** Params for Points Account modifierss Getter */
+/** Params for Points Account modifiers Getter */
 export interface GetPointsAccountModifiersParams extends BaseParams {
   pointAccountKey: PublicKey /** the Points Account public key */;
 }

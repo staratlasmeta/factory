@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { BN } from '@project-serum/anchor';
-import { BaseParams } from '../../util/BaseParams'
-import { getPointsProgram } from '../utils'
+import { BaseParams } from '../../util/BaseParams';
+import { getPointsProgram } from '../utils';
 
 /** Params for XP Modify instruction */
 export interface ModifyPointsParams extends BaseParams {
@@ -30,7 +30,7 @@ export const modifyPointsIx = async ({
         userPointsAccount: user,
         modifier: modifierKey,
       })
-      .instruction()
+      .instruction(),
   ];
 
   return {

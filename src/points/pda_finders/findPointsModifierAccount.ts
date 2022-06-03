@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { POINT_MODIFIER_SEED } from './seeds'
+import { POINT_MODIFIER_SEED } from './seeds';
 
 /**
  * Returns the public key and bump seed for the Points Modifier Account
@@ -9,13 +9,17 @@ import { POINT_MODIFIER_SEED } from './seeds'
  * @param programId - deployed program ID for XP program
  * @returns [Points Modifier Account public key, bump seed]
  */
- export async function findPointsModifierAccount(
+export async function findPointsModifierAccount(
   pointsCategoryAccountKey: PublicKey,
   modifierKey: PublicKey,
   programId: PublicKey
 ): Promise<[PublicKey, number]> {
   return await PublicKey.findProgramAddress(
-    [POINT_MODIFIER_SEED, pointsCategoryAccountKey.toBuffer(), modifierKey.toBuffer()],
+    [
+      POINT_MODIFIER_SEED,
+      pointsCategoryAccountKey.toBuffer(),
+      modifierKey.toBuffer(),
+    ],
     programId
   );
 }

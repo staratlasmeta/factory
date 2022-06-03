@@ -6,13 +6,13 @@ import { getPointsProgram } from '../utils'
 /** Params for Init instruction */
 export interface initializeDomainParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
-  domain: string  /**the label of the domain account */
+  domain: string  /**the name of the domain account */
 }
 
 /**
  * Initialize a Domain Account
  * @param admin - the admin public key
- * @param domain - the label of the domain account
+ * @param domain - the name of the domain account
  * @param connection - the Solana connection object
  * @param programId - Deployed program ID for the Points program
  */

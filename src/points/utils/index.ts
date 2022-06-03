@@ -1,2 +1,2 @@
-export * from './getPointsProgram'
-export * from './getters'
+export * from './getPointsProgram';
+export * from './getters';

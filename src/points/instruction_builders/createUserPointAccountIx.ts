@@ -1,12 +1,12 @@
 import { PublicKey } from '@solana/web3.js';
 import { web3 } from '@project-serum/anchor';
-import { BaseParams } from '../../util/BaseParams'
-import { getPointsProgram } from '../utils'
+import { BaseParams } from '../../util/BaseParams';
+import { getPointsProgram } from '../utils';
 
 /** Params for Create User Point Account instruction */
 export interface CreateUserPointAccountParams extends BaseParams {
   user: PublicKey /** the user public key */;
-  pointCategoryAccount: PublicKey /** the Point Category Account PublicKey */
+  pointCategoryAccount: PublicKey /** the Point Category Account PublicKey */;
 }
 
 /**
@@ -21,17 +21,20 @@ export const createUserPointAccountIx = async ({
   pointCategoryAccount,
   connection,
   programId,
-}: CreateUserPointAccountParams): Promise<{ accounts: web3.PublicKey[], instructions: web3.TransactionInstruction[] }> => {
+}: CreateUserPointAccountParams): Promise<{
+  accounts: web3.PublicKey[];
+  instructions: web3.TransactionInstruction[];
+}> => {
   const program = getPointsProgram(connection, programId);
 
   const instructions = [
     await program.methods
       .createUserPointAccount()
-      .accounts({ 
+      .accounts({
         user,
         pointCategoryAccount,
-       })
-      .instruction()
+      })
+      .instruction(),
   ];
 
   return {

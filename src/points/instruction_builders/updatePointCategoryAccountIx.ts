@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import { web3, BN } from '@project-serum/anchor';
-import { BaseParams } from '../../util/BaseParams'
-import { getPointsProgram } from '../utils'
+import { BaseParams } from '../../util/BaseParams';
+import { getPointsProgram } from '../utils';
 
 /** Params for Update Point Category Account instruction */
 export interface UpdatePointCategoryAccountParams extends BaseParams {
@@ -14,12 +14,12 @@ export interface UpdatePointCategoryAccountParams extends BaseParams {
 
 /**
  * Updates a Point Category Account
- * @param admin - the admin public key 
- * @param pointLimit - The XP limit 
- * @param tokenRequired - Whether a token is required 
+ * @param admin - the admin public key
+ * @param pointLimit - The XP limit
+ * @param tokenRequired - Whether a token is required
  * @param tokenQty - The token quantity to burn
- * @param tokenMintKey - The required token mint 
- * @param connection - the Solana connection objec
+ * @param tokenMintKey - The required token mint
+ * @param connection - the Solana connection object
  * @param programId - Deployed program ID for the Points program
  */
 export const updatePointCategoryAccountIx = async ({
@@ -30,26 +30,28 @@ export const updatePointCategoryAccountIx = async ({
   tokenMintKey,
   connection,
   programId,
-}: UpdatePointCategoryAccountParams): Promise<{ accounts: web3.PublicKey[], instructions: web3.TransactionInstruction[] }> => {
+}: UpdatePointCategoryAccountParams): Promise<{
+  accounts: web3.PublicKey[];
+  instructions: web3.TransactionInstruction[];
+}> => {
   const program = getPointsProgram(connection, programId);
-  let remainingAccounts = []
+  let remainingAccounts = [];
 
   if (tokenRequired && !tokenMintKey) {
     throw new Error('The token mint is required');
-  }else if(tokenRequired && tokenMintKey){
-    remainingAccounts = [{ pubkey: tokenMintKey, isWritable: false, isSigner: false }]
+  } else if (tokenRequired && tokenMintKey) {
+    remainingAccounts = [
+      { pubkey: tokenMintKey, isWritable: false, isSigner: false },
+    ];
   }
-  
+
   const instructions = [
     await program.methods
-      .updatePointCategoryAccount(
-        pointLimit,
-        tokenQty,
-        tokenRequired,
-      ).accounts({ admin })
+      .updatePointCategoryAccount(pointLimit, tokenQty, tokenRequired)
+      .accounts({ admin })
       .remainingAccounts(remainingAccounts)
-      .instruction()
-  ]
+      .instruction(),
+  ];
 
   return {
     accounts: [],
