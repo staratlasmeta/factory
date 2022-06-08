@@ -24,3 +24,13 @@ export interface PointCategoryAccountItem {
   publicKey: PublicKey;
   account: PointCategoryAccount;
 }
+
+type Events = XpTypes['Events'];
+export type CreatePointCategoryAccountEvent = Events['CreatePointCategoryAccount']['data'];
+export type RemovePointCategoryAccountEvent = Events['RemovePointCategoryAccount']['data'];
+export type UpdatePointCategoryAccountEvent = Events['UpdatePointCategoryAccount']['data'];
+export type CreateUserPointAccountEvent = Events['CreateUserPointAccountEvent']['data'];
+export type CreatePointModifierEvent = Events['CreatePointModifier']['data'];
+export type RemovePointModifierEvent = Events['RemovePointModifier']['data'];
+export type ModifyPointEvent = Events['ModifyPointEvent']['data'];
+export type SpendPointsEvent = Events['SpendPointsEvent']['data'];
