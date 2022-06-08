@@ -125,20 +125,14 @@ export type Points = {
           'type': 'bool'
         },
         {
-          'name': 'lvlCalculationParams',
+          'name': 'lvlRequiredPoints',
           'type': {
             'option': {
               'array': [
                 'u64',
-                3
+                20
               ]
             }
-          }
-        },
-        {
-          'name': 'initialLvlRequiredPoints',
-          'type': {
-            'option': 'u64'
           }
         }
       ]
@@ -885,17 +879,13 @@ export type Points = {
             'type': 'bool'
           },
           {
-            'name': 'lvlCalculationParams',
+            'name': 'lvlRequiredPoints',
             'type': {
               'array': [
                 'u64',
-                3
+                20
               ]
             }
-          },
-          {
-            'name': 'initialLvlRequiredPoints',
-            'type': 'u64'
           },
           {
             'name': 'bump',
@@ -959,10 +949,6 @@ export type Points = {
           },
           {
             'name': 'level',
-            'type': 'u64'
-          },
-          {
-            'name': 'previousLvlPoints',
             'type': 'u64'
           },
           {
@@ -1502,20 +1488,14 @@ export const IDL: Points = {
           'type': 'bool'
         },
         {
-          'name': 'lvlCalculationParams',
+          'name': 'lvlRequiredPoints',
           'type': {
             'option': {
               'array': [
                 'u64',
-                3
+                20
               ]
             }
-          }
-        },
-        {
-          'name': 'initialLvlRequiredPoints',
-          'type': {
-            'option': 'u64'
           }
         }
       ]
@@ -2262,17 +2242,13 @@ export const IDL: Points = {
             'type': 'bool'
           },
           {
-            'name': 'lvlCalculationParams',
+            'name': 'lvlRequiredPoints',
             'type': {
               'array': [
                 'u64',
-                3
+                20
               ]
             }
-          },
-          {
-            'name': 'initialLvlRequiredPoints',
-            'type': 'u64'
           },
           {
             'name': 'bump',
@@ -2336,10 +2312,6 @@ export const IDL: Points = {
           },
           {
             'name': 'level',
-            'type': 'u64'
-          },
-          {
-            'name': 'previousLvlPoints',
             'type': 'u64'
           },
           {
