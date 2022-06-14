@@ -14,6 +14,11 @@ export type OpenOrdersCounterInfo = Account['OpenOrdersCounter'];
 export type OrderAccountInfo = Account['OrderAccount'];
 export type RegisteredCurrencyInfo = Account['RegisteredCurrency'];
 
+export interface OrderAccountItem {
+    publicKey: web3.PublicKey;
+    account: OrderAccountInfo;
+}
+
 export interface OrderSide {
     Buy,
     Sell
