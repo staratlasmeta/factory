@@ -289,22 +289,7 @@ export type Staking =
         {
           'name': 'rewardPda',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-account'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'rewardVaultAuthority',
@@ -333,6 +318,11 @@ export type Staking =
         },
         {
           'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
           'isMut': false,
           'isSigner': false
         },
@@ -1390,22 +1380,7 @@ export const baseIdl: Staking =
         {
           'name': 'rewardPda',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-account'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'rewardVaultAuthority',
@@ -1434,6 +1409,11 @@ export const baseIdl: Staking =
         },
         {
           'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
           'isMut': false,
           'isSigner': false
         },
