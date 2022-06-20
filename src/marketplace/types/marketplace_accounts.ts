@@ -1,4 +1,4 @@
-import { web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@project-serum/anchor';
 import type { AnchorTypes } from '../../anchor/types';
 export interface MarketVarsInfo {
 updateAuthorityMaster: web3.PublicKey,
@@ -17,6 +17,11 @@ export type RegisteredCurrencyInfo = Account['RegisteredCurrency'];
 export interface OrderAccountItem {
     publicKey: web3.PublicKey;
     account: OrderAccountInfo;
+}
+
+export type RegisteredCurrencyItem = {
+    mint: web3.PublicKey;
+    royalty: BN;
 }
 
 export interface OrderSide {
