@@ -1,6 +1,6 @@
 import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
-import { getRegisteredStake } from '../pda_getters';
+import { getRegisteredStake, getStakingAccount } from '../pda_getters';
 import { getStakingProgram } from '../utils';
 import { BaseParams } from './baseParams';
 
@@ -37,6 +37,7 @@ export async function unstakeTokensInstruction({
     // Derive ATA for user's reward account
     const userRewardAccount = await associatedAddress({owner: user, mint: rewardMint});
     const [registeredStake] = await getRegisteredStake(programId, authority, stakeMint, rewardMint);
+    const [stakingAccount] = await getStakingAccount(programId, user, registeredStake);
     const rewardAta = await associatedAddress({owner: registeredStake, mint: rewardMint});
 
     const instructions = [
@@ -44,9 +45,9 @@ export async function unstakeTokensInstruction({
             .unstakeTokens()
             .accounts({
                 user,
-                authority,
-                stakeMint,
                 rewardMint,
+                registeredStake,
+                stakingAccount,
                 userRewardAccount,
                 rewardAta
             })

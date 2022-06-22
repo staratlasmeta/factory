@@ -1,5 +1,5 @@
 import { web3 } from '@project-serum/anchor';
-import { getRegisteredStake } from '../pda_getters';
+import { getRegisteredStake, getStakingAccount } from '../pda_getters';
 import { getStakingProgram } from '../utils';
 import { BaseParams } from './baseParams';
 
@@ -34,6 +34,7 @@ export async function createSettleStakingAccountInstruction({
 }> {
     const program = getStakingProgram({connection, programId});
     const [registeredStake] = await getRegisteredStake(programId, authority, stakeMint, rewardMint);
+    const [stakingAccount] = await getStakingAccount(programId, user, registeredStake);
 
     const instructions = [
         await program.methods
@@ -41,9 +42,9 @@ export async function createSettleStakingAccountInstruction({
                 updatedStakingPeriod
             )
             .accounts({
-                user,
                 authority,
-                registeredStake
+                registeredStake,
+                stakingAccount,
             })
             .instruction()
     ];
