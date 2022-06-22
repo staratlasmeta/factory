@@ -433,27 +433,7 @@ export type Staking =
         {
           'name': 'tokenEscrow',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'staking-escrow'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'rent',
@@ -462,6 +442,11 @@ export type Staking =
         },
         {
           'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
           'isMut': false,
           'isSigner': false
         },
@@ -726,48 +711,9 @@ export type Staking =
           }
         },
         {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'escrow-auth'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
-              }
-            ]
-          }
-        },
-        {
           'name': 'tokenEscrow',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'staking-escrow'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'tokenProgram',
@@ -1367,27 +1313,7 @@ export const baseIdl: Staking =
         {
           'name': 'tokenEscrow',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'staking-escrow'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'rent',
@@ -1396,6 +1322,11 @@ export const baseIdl: Staking =
         },
         {
           'name': 'tokenProgram',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'associatedTokenProgram',
           'isMut': false,
           'isSigner': false
         },
@@ -1660,48 +1591,9 @@ export const baseIdl: Staking =
           }
         },
         {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'escrow-auth'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
-              }
-            ]
-          }
-        },
-        {
           'name': 'tokenEscrow',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'staking-escrow'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'tokenProgram',

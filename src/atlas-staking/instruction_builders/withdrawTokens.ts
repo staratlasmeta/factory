@@ -1,8 +1,9 @@
+import { BaseParams } from './baseParams';
+import { getRegisteredStake, getStakingAccount } from '../pda_getters';
 import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from  '@solana/spl-token';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
 
 export interface withdrawTokensParams extends BaseParams {
     user: web3.PublicKey,
@@ -36,6 +37,9 @@ export async function withdrawTokensInstruction({
     instructions: web3.TransactionInstruction[]
 }> {
     const program = getStakingProgram({connection, programId});
+    const [registeredStake] = await getRegisteredStake(programId, authority, stakeMint, rewardMint);
+    const [stakingAccount] = await getStakingAccount(programId, user, registeredStake);
+    const tokenEscrow = await associatedAddress({ owner: stakingAccount, mint: stakeMint});
 
     const instructions = [];
     const possibleTokenSource = await connection.getParsedTokenAccountsByOwner(
@@ -67,6 +71,7 @@ export async function withdrawTokensInstruction({
                 stakeMint,
                 rewardMint,
                 tokenSource,
+                tokenEscrow,
             })
             .instruction();
 
