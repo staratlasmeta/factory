@@ -1,4 +1,5 @@
 import { FactionType} from '..';
+import { web3 } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
@@ -71,4 +72,34 @@ export async function convertFactionStringToNum(
       ASSOCIATED_TOKEN_PROGRAM_ID,
   );
   return address;
+}
+
+export async function getTokenAccount(
+  connection: web3.Connection,
+  wallet: web3.PublicKey,
+  mint: web3.PublicKey,
+  newAccountFunder: web3.PublicKey = wallet,
+  amountNeededHeuristic?: number
+) {
+  // Get all parsed token accounts for a given owner and mint
+  const { value: tokenAccounts } = await connection.getParsedTokenAccountsByOwner(wallet, { mint });
+  let tokenAccount: web3.PublicKey | null = null;
+  if (amountNeededHeuristic === undefined) {
+    let maxTokens: number | null = null;
+    for (const account of tokenAccounts) {
+      if (account.account.data.parsed.type === "account") {
+        const parsedAccount = account.account.data.parsed as TokenAccount;
+        console.log(account.account.data.parsed)
+      }
+    }
+  }
+};
+
+export async function getAccountInfo(
+  connection: web3.Connection,
+  account: web3.PublicKey,
+) {
+  const { value: accountInfo } = await connection.getParsedAccountInfo(account);
+  const someInfo = accountInfo.data as web3.ParsedAccountData;
+  console.log(someInfo.parsed);
 }
