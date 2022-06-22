@@ -1,4 +1,5 @@
 import { web3 } from '@project-serum/anchor';
+import { getRegisteredStake } from '../pda_getters';
 import { getStakingProgram } from '../utils';
 import { BaseParams } from './baseParams';
 
@@ -31,15 +32,14 @@ export async function createStakingAccountInstruction({
     instructions: web3.TransactionInstruction[]
 }> {
     const program = getStakingProgram({connection, programId});
+    const [registeredStake] = await getRegisteredStake(programId, authority, stakeMint, rewardMint);
 
     const instructions = [
         await program.methods
             .createStakingAccount()
             .accounts({
                 user,
-                authority,
-                stakeMint,
-                rewardMint,
+                registeredStake
             })
             .instruction()
     ];
