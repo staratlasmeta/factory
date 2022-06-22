@@ -180,26 +180,6 @@ export type Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardVaultAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-vault-authority'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
-        },
-        {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
@@ -275,26 +255,6 @@ export type Staking =
           'name': 'rewardAta',
           'isMut': true,
           'isSigner': false
-        },
-        {
-          'name': 'rewardVaultAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-vault-authority'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
         },
         {
           'name': 'rent',
@@ -656,26 +616,6 @@ export type Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardVaultAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-vault-authority'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
-        },
-        {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
@@ -928,10 +868,6 @@ export type Staking =
           },
           {
             'name': 'bump',
-            'type': 'u8'
-          },
-          {
-            'name': 'authBump',
             'type': 'u8'
           }
         ]
@@ -1237,26 +1173,6 @@ export const baseIdl: Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardVaultAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-vault-authority'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
-        },
-        {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
@@ -1332,26 +1248,6 @@ export const baseIdl: Staking =
           'name': 'rewardAta',
           'isMut': true,
           'isSigner': false
-        },
-        {
-          'name': 'rewardVaultAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-vault-authority'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
         },
         {
           'name': 'rent',
@@ -1713,26 +1609,6 @@ export const baseIdl: Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardVaultAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-vault-authority'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
-        },
-        {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
@@ -1985,10 +1861,6 @@ export const baseIdl: Staking =
           },
           {
             'name': 'bump',
-            'type': 'u8'
-          },
-          {
-            'name': 'authBump',
             'type': 'u8'
           }
         ]
