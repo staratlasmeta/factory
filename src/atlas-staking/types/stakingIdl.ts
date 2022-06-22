@@ -370,11 +370,6 @@ export type Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'tokenSource',
           'isMut': true,
           'isSigner': false
@@ -398,14 +393,14 @@ export type Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'stake_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.stake_mint'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'reward_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.reward_mint'
               }
             ]
           }
@@ -431,25 +426,6 @@ export type Staking =
                 'type': 'publicKey',
                 'account': 'RegisteredStake',
                 'path': 'registered_stake'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'escrow-auth'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
               }
             ]
           }
@@ -956,7 +932,6 @@ export type Staking =
   }
 }
 
-
 export const baseIdl: Staking =
 {
   'version': '0.1.0',
@@ -1329,11 +1304,6 @@ export const baseIdl: Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'tokenSource',
           'isMut': true,
           'isSigner': false
@@ -1357,14 +1327,14 @@ export const baseIdl: Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'stake_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.stake_mint'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'reward_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.reward_mint'
               }
             ]
           }
@@ -1390,25 +1360,6 @@ export const baseIdl: Staking =
                 'type': 'publicKey',
                 'account': 'RegisteredStake',
                 'path': 'registered_stake'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'escrowAuthority',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'escrow-auth'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
               }
             ]
           }

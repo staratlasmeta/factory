@@ -1,4 +1,5 @@
 import { BN, web3 } from '@project-serum/anchor';
+import { getRegisteredStake } from '../pda_getters';
 import { getStakingProgram } from '../utils';
 import { BaseParams } from './baseParams';
 
@@ -37,6 +38,7 @@ export async function stakeTokensInstruction({
     instructions: web3.TransactionInstruction[]
 }> {
     const program = getStakingProgram({connection, programId});
+    const [registeredStake] = await getRegisteredStake(programId, authority, stakeMint, rewardMint);
 
     const instructions = [
         await program.methods
@@ -45,8 +47,8 @@ export async function stakeTokensInstruction({
                 user,
                 authority,
                 stakeMint,
-                rewardMint,
                 tokenSource,
+                registeredStake,
             })
             .instruction()
     ];
