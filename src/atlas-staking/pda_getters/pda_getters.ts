@@ -72,19 +72,3 @@ export async function getRewardAuth(
         programId,
     );
 }
-
-/**
- * Returns the public key and bump seed for a registered stake's reward vault
- * */
-export async function getRewardTreasury(
-    programId: PublicKey,
-    registeredStake: PublicKey,
-): Promise<[PublicKey, number]> {
-    return PublicKey.findProgramAddress(
-        [
-            REWARD_ACCOUNT,
-            registeredStake.toBuffer()
-        ],
-        programId,
-    );
-}

@@ -175,24 +175,9 @@ export type Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardPda',
+          'name': 'rewardAta',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-account'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'rewardVaultAuthority',
@@ -287,7 +272,7 @@ export type Staking =
           }
         },
         {
-          'name': 'rewardPda',
+          'name': 'rewardAta',
           'isMut': true,
           'isSigner': false
         },
@@ -666,24 +651,9 @@ export type Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardPda',
+          'name': 'rewardAta',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-account'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'rewardVaultAuthority',
@@ -958,10 +928,6 @@ export type Staking =
           },
           {
             'name': 'bump',
-            'type': 'u8'
-          },
-          {
-            'name': 'rewardBump',
             'type': 'u8'
           },
           {
@@ -1266,24 +1232,9 @@ export const baseIdl: Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardPda',
+          'name': 'rewardAta',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-account'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'rewardVaultAuthority',
@@ -1378,7 +1329,7 @@ export const baseIdl: Staking =
           }
         },
         {
-          'name': 'rewardPda',
+          'name': 'rewardAta',
           'isMut': true,
           'isSigner': false
         },
@@ -1757,24 +1708,9 @@ export const baseIdl: Staking =
           'isSigner': false
         },
         {
-          'name': 'rewardPda',
+          'name': 'rewardAta',
           'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'reward-account'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredStake',
-                'path': 'registered_stake'
-              }
-            ]
-          }
+          'isSigner': false
         },
         {
           'name': 'rewardVaultAuthority',
@@ -2049,10 +1985,6 @@ export const baseIdl: Staking =
           },
           {
             'name': 'bump',
-            'type': 'u8'
-          },
-          {
-            'name': 'rewardBump',
             'type': 'u8'
           },
           {
