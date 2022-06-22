@@ -302,16 +302,6 @@ export type Staking =
           'isSigner': false
         },
         {
-          'name': 'stakeMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rewardMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'registeredStake',
           'isMut': false,
           'isSigner': false,
@@ -330,14 +320,14 @@ export type Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'stake_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.stake_mint'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'reward_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.reward_mint'
               }
             ]
           }
@@ -647,16 +637,6 @@ export type Staking =
           'isSigner': true
         },
         {
-          'name': 'stakeMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rewardMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'registeredStake',
           'isMut': true,
           'isSigner': false,
@@ -675,14 +655,14 @@ export type Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'stake_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.stake_mint'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'reward_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.reward_mint'
               }
             ]
           }
@@ -1295,16 +1275,6 @@ export const baseIdl: Staking =
           'isSigner': false
         },
         {
-          'name': 'stakeMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rewardMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'registeredStake',
           'isMut': false,
           'isSigner': false,
@@ -1323,14 +1293,14 @@ export const baseIdl: Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'stake_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.stake_mint'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'reward_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.reward_mint'
               }
             ]
           }
@@ -1640,16 +1610,6 @@ export const baseIdl: Staking =
           'isSigner': true
         },
         {
-          'name': 'stakeMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rewardMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'registeredStake',
           'isMut': true,
           'isSigner': false,
@@ -1668,14 +1628,14 @@ export const baseIdl: Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'stake_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.stake_mint'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'reward_mint'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.reward_mint'
               }
             ]
           }

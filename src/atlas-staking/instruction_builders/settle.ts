@@ -1,4 +1,5 @@
 import { web3 } from '@project-serum/anchor';
+import { getRegisteredStake } from '../pda_getters';
 import { getStakingProgram } from '../utils';
 import { BaseParams } from './baseParams';
 
@@ -17,8 +18,6 @@ export interface SettleParams extends BaseParams {
  * @param connection
  * @param authority- Public key of account which registered the stake
  * @param user - Public key of user whose staking account is being updated
- * @param stakeMint - Public key for mint of tokens being staked
- * @param rewardMint - Public key for mint of tokens being received in reward
  * @param programId - Deployed program ID for Staking program
  */
 export async function createSettleStakingAccountInstruction({
@@ -34,6 +33,7 @@ export async function createSettleStakingAccountInstruction({
     instructions: web3.TransactionInstruction[]
 }> {
     const program = getStakingProgram({connection, programId});
+    const [registeredStake] = await getRegisteredStake(programId, authority, stakeMint, rewardMint);
 
     const instructions = [
         await program.methods
@@ -43,8 +43,7 @@ export async function createSettleStakingAccountInstruction({
             .accounts({
                 user,
                 authority,
-                stakeMint,
-                rewardMint,
+                registeredStake
             })
             .instruction()
     ];
