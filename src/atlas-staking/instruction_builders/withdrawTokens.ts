@@ -69,8 +69,9 @@ export async function withdrawTokensInstruction({
                 user,
                 authority,
                 stakeMint,
-                rewardMint,
                 tokenSource,
+                registeredStake,
+                stakingAccount,
                 tokenEscrow,
             })
             .instruction();
