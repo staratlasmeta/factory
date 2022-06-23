@@ -88,7 +88,7 @@ export async function getTokenAccount(
     let maxTokens: number | null = null;
     for (const account of tokenAccounts) {
       if (account.account.data.parsed.type === "account") {
-        const parsedAccount = account.account.data.parsed as TokenAccount;
+        const parsedAccount = account.account.data.parsed;
         console.log(account.account.data.parsed)
       }
     }
