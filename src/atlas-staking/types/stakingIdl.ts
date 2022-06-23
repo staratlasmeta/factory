@@ -4,6 +4,74 @@ export type Staking =
   'name': 'atlas_staking',
   'instructions': [
     {
+      'name': 'cancelUnstake',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        }
+      ],
+      'args': []
+    },
+    {
       'name': 'createStakingAccount',
       'accounts': [
         {
@@ -852,6 +920,74 @@ export const baseIdl: Staking =
   'version': '0.1.0',
   'name': 'atlas_staking',
   'instructions': [
+    {
+      'name': 'cancelUnstake',
+      'accounts': [
+        {
+          'name': 'user',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-stake'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.authority'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.stake_mint'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.reward_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'staking-account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'RegisteredStake',
+                'path': 'registered_stake'
+              }
+            ]
+          }
+        }
+      ],
+      'args': []
+    },
     {
       'name': 'createStakingAccount',
       'accounts': [

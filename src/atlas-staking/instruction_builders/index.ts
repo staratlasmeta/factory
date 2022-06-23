@@ -1,4 +1,5 @@
 export * from './baseParams';
+export * from './cancelUnstake';
 export * from './createStakeAccount';
 export * from './harvestRewards';
 export * from './registerStake';
