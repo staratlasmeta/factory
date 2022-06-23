@@ -348,11 +348,6 @@ export type Staking =
           'isSigner': true
         },
         {
-          'name': 'authority',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'stakeMint',
           'isMut': false,
           'isSigner': false
@@ -376,7 +371,8 @@ export type Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'path': 'authority'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.authority'
               },
               {
                 'kind': 'account',
@@ -1200,11 +1196,6 @@ export const baseIdl: Staking =
           'isSigner': true
         },
         {
-          'name': 'authority',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'stakeMint',
           'isMut': false,
           'isSigner': false
@@ -1228,7 +1219,8 @@ export const baseIdl: Staking =
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'path': 'authority'
+                'account': 'RegisteredStake',
+                'path': 'registered_stake.authority'
               },
               {
                 'kind': 'account',

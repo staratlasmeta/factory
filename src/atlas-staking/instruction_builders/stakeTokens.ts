@@ -48,7 +48,6 @@ export async function stakeTokensInstruction({
             .stakeTokens(new BN(stakeQuantity))
             .accounts({
                 user,
-                authority,
                 stakeMint,
                 tokenSource,
                 registeredStake,
