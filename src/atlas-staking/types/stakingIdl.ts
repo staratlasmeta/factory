@@ -779,10 +779,6 @@ export type Staking =
             'type': 'i64'
           },
           {
-            'name': 'onCoolDown',
-            'type': 'bool'
-          },
-          {
             'name': 'bump',
             'type': 'u8'
           }
@@ -840,6 +836,11 @@ export type Staking =
       'code': 6009,
       'name': 'InvalidPeriod',
       'msg': 'Staking account must be in the same period as the Registered Stake'
+    },
+    {
+      'code': 6010,
+      'name': 'NotOnCooldown',
+      'msg': 'Staking account is not on cooldown'
     }
   ],
   'metadata': {
@@ -1627,10 +1628,6 @@ export const baseIdl: Staking =
             'type': 'i64'
           },
           {
-            'name': 'onCoolDown',
-            'type': 'bool'
-          },
-          {
             'name': 'bump',
             'type': 'u8'
           }
@@ -1688,6 +1685,11 @@ export const baseIdl: Staking =
       'code': 6009,
       'name': 'InvalidPeriod',
       'msg': 'Staking account must be in the same period as the Registered Stake'
+    },
+    {
+      'code': 6010,
+      'name': 'NotOnCooldown',
+      'msg': 'Staking account is not on cooldown'
     }
   ],
   'metadata': {
