@@ -110,3 +110,6 @@ dist
 # VScode
 .vscode
 *.code-workspace
+
+# JetBrains
+.idea
