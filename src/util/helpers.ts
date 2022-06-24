@@ -4,12 +4,12 @@ import { PublicKey, SystemProgram } from '@solana/web3.js';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
 
 type TokenAccount = {
-  type: "account";
+  type: 'account';
   info: {
     isNative: boolean;
     mint: string;
     owner: string;
-    state: "initialized";
+    state: 'initialized';
     tokenAmount: {
       amount: string;
       decimals: number;
@@ -111,7 +111,7 @@ export async function getTokenAccount(
   if (amountNeededHeuristic === undefined) {
     let maxTokens: BN | null = null;
     for (const account of tokenAccounts) {
-      if (account.account.data.parsed.type === "account") {
+      if (account.account.data.parsed.type === 'account') {
         const parsedAccount = account.account.data.parsed as TokenAccount;
         const tokenAmount = new BN(parsedAccount.info.tokenAmount.amount);
         if (maxTokens === null || tokenAmount.gt(maxTokens)) {
@@ -123,7 +123,7 @@ export async function getTokenAccount(
   } else {
     let minTokens: BN | null = null;
     for (const account of tokenAccounts) {
-      if (account.account.data.parsed.type === "account") {
+      if (account.account.data.parsed.type === 'account') {
         const parsedAccount = account.account.data.parsed as TokenAccount;
         const tokenAmount = new BN(parsedAccount.info.tokenAmount.amount);
         if (
@@ -144,7 +144,7 @@ export async function getTokenAccount(
     );
     const { value: account } = await connection.getParsedAccountInfo(
       associatedTokenAddress,
-      "confirmed"
+      'confirmed'
     );
     if (account === null || account.owner.equals(SystemProgram.programId)) {
       return {
@@ -161,8 +161,8 @@ export async function getTokenAccount(
     }
 
     if (
-      "program" in account.data &&
-      account.data.parsed.type === "account" &&
+      'program' in account.data &&
+      account.data.parsed.type === 'account' &&
       new PublicKey((account.data.parsed as TokenAccount).info.owner).equals(
         wallet
       )
@@ -187,7 +187,7 @@ export async function getTokenAccount(
       tokenAccount
     };
   }
-};
+}
 
 export async function getAccountInfo(
   connection: web3.Connection,
