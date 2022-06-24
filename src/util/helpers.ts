@@ -1,7 +1,23 @@
 import { FactionType} from '..';
-import { web3 } from '@project-serum/anchor';
-import { PublicKey } from '@solana/web3.js';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import { BN, web3 } from '@project-serum/anchor';
+import { PublicKey, SystemProgram } from '@solana/web3.js';
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
+
+type TokenAccount = {
+  type: "account";
+  info: {
+    isNative: boolean;
+    mint: string;
+    owner: string;
+    state: "initialized";
+    tokenAmount: {
+      amount: string;
+      decimals: number;
+      uiAmount: number;
+      uiAmountString: string;
+    };
+  };
+};
 
 export function byteArrayToString(array: number[]): string {
   return String.fromCharCode(...array);
@@ -80,18 +96,96 @@ export async function getTokenAccount(
   mint: web3.PublicKey,
   newAccountFunder: web3.PublicKey = wallet,
   amountNeededHeuristic?: number
-) {
+): Promise<
+  | {
+    tokenAccount: web3.PublicKey;
+  }
+  | {
+    tokenAccount: web3.Keypair | web3.PublicKey;
+    createInstruction: web3.TransactionInstruction;
+  }
+> {
   // Get all parsed token accounts for a given owner and mint
   const { value: tokenAccounts } = await connection.getParsedTokenAccountsByOwner(wallet, { mint });
   let tokenAccount: web3.PublicKey | null = null;
   if (amountNeededHeuristic === undefined) {
-    let maxTokens: number | null = null;
+    let maxTokens: BN | null = null;
     for (const account of tokenAccounts) {
       if (account.account.data.parsed.type === "account") {
-        const parsedAccount = account.account.data.parsed;
-        console.log(account.account.data.parsed)
+        const parsedAccount = account.account.data.parsed as TokenAccount;
+        const tokenAmount = new BN(parsedAccount.info.tokenAmount.amount);
+        if (maxTokens === null || tokenAmount.gt(maxTokens)) {
+          tokenAccount = account.pubkey;
+          maxTokens = tokenAmount;
+        }
       }
     }
+  } else {
+    let minTokens: BN | null = null;
+    for (const account of tokenAccounts) {
+      if (account.account.data.parsed.type === "account") {
+        const parsedAccount = account.account.data.parsed as TokenAccount;
+        const tokenAmount = new BN(parsedAccount.info.tokenAmount.amount);
+        if (
+          tokenAmount.gt(new BN(amountNeededHeuristic)) &&
+          (minTokens === null || tokenAmount.lt(minTokens))
+        ) {
+          tokenAccount = account.pubkey;
+          minTokens = tokenAmount;
+        }
+      }
+    }
+  }
+
+  if (tokenAccount === null) {
+    const associatedTokenAddress = await getAssociatedTokenAddress(
+      mint,
+      wallet,
+    );
+    const { value: account } = await connection.getParsedAccountInfo(
+      associatedTokenAddress,
+      "confirmed"
+    );
+    if (account === null || account.owner.equals(SystemProgram.programId)) {
+      return {
+        tokenAccount: associatedTokenAddress,
+        createInstruction: Token.createAssociatedTokenAccountInstruction(
+          ASSOCIATED_TOKEN_PROGRAM_ID,
+          TOKEN_PROGRAM_ID,
+          mint,
+          associatedTokenAddress,
+          wallet,
+          newAccountFunder
+        ),
+      };
+    }
+
+    if (
+      "program" in account.data &&
+      account.data.parsed.type === "account" &&
+      new PublicKey((account.data.parsed as TokenAccount).info.owner).equals(
+        wallet
+      )
+    ) {
+      return {
+        tokenAccount: associatedTokenAddress,
+      };
+    } else {
+      const newTokenAccount = web3.Keypair.generate();
+      return {
+        tokenAccount: newTokenAccount,
+        createInstruction: Token.createInitAccountInstruction(
+          TOKEN_PROGRAM_ID,
+          mint,
+          newTokenAccount.publicKey,
+          wallet
+        ),
+      };
+    }
+  } else {
+    return {
+      tokenAccount
+    };
   }
 };
 
@@ -101,5 +195,5 @@ export async function getAccountInfo(
 ) {
   const { value: accountInfo } = await connection.getParsedAccountInfo(account);
   const someInfo = accountInfo.data as web3.ParsedAccountData;
-  console.log(someInfo.parsed);
+  return someInfo
 }
