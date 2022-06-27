@@ -1,4 +1,4 @@
-import { web3 } from "@project-serum/anchor"
+import { web3 } from '@project-serum/anchor'
 
 export type FactoryReturn = {
     signers: web3.Keypair[],
