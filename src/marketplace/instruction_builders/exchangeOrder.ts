@@ -13,7 +13,6 @@ import {
     getRegisteredCurrencyAccountInfo,
     getOpenOrdersCounter,
 } from '../pda_getters';
-import { initializeAtaForMint } from '../utils/gmHelper';
 import { FactoryReturn } from '../../types';
 import { getTokenAccount } from '../../util';
 
