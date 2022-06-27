@@ -6,14 +6,14 @@ import { getMarketplaceProgram } from '../utils';
 import { BaseParams } from './BaseParams';
 
 /**  Params for Register Currency instruction */
-export interface updateCurrencyRoyaltyParams extends BaseParams {
+export interface UpdateCurrencyRoyaltyParams extends BaseParams {
     updateAuthorityAccount: web3.PublicKey
     royalty: number
     currencyMint: web3.PublicKey
 }
 
 /**  Params for Register Currency instruction */
-export interface updateCurrencyVaultParams extends BaseParams {
+export interface UpdateCurrencyVaultParams extends BaseParams {
     updateAuthorityAccount: web3.PublicKey
     saCurrencyVault: web3.PublicKey
     currencyMint: web3.PublicKey
@@ -34,11 +34,11 @@ export async function createUpdateRegisteredCurrencyRoyaltyInstruction({
     royalty,
     currencyMint,
     programId
-}: updateCurrencyRoyaltyParams): Promise<{
+}: UpdateCurrencyRoyaltyParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {
-    const program = getMarketplaceProgram({connection: connection, programId: programId})
+    const program = getMarketplaceProgram({connection, programId})
 
     const instructions = [
         await program.methods
@@ -70,11 +70,11 @@ export async function createUpdateRegisteredCurrencyVaultInstruction({
     saCurrencyVault,
     currencyMint,
     programId
-}: updateCurrencyVaultParams): Promise<{
+}: UpdateCurrencyVaultParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {
-    const program = getMarketplaceProgram({connection: connection, programId: programId})
+    const program = getMarketplaceProgram({connection, programId})
 
     const instructions = [
         await program.methods

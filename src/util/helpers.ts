@@ -139,8 +139,8 @@ export async function getTokenAccount(
 
   if (tokenAccount === null) {
     const associatedTokenAddress = await getAssociatedTokenAddress(
-      mint,
       wallet,
+      mint,
     );
     const { value: account } = await connection.getParsedAccountInfo(
       associatedTokenAddress,
