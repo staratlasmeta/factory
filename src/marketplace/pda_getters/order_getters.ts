@@ -59,7 +59,7 @@ export async function getOpenOrdersForPlayer(
         } as GetProgramAccountsFilter,
     ];
     const orderAccounts = await program.account.orderAccount.all(filter);
-    
+
     return orderAccounts as OrderAccountItem[];
 }
 

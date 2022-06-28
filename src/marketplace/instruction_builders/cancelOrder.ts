@@ -3,11 +3,13 @@ import {
     getMarketplaceProgram,
     getOrderSide,
 } from '../utils';
+import { FactoryReturn } from './../../types';
 import { BaseParams } from './BaseParams';
 import { OrderAccountInfo } from '../types/marketplace_accounts';
+import { getTokenAccount } from '../../util';
 
 /**  Params for Register Currency instruction */
-export interface cancelOrderParams extends BaseParams {
+export interface CancelOrderParams extends BaseParams {
     orderInitializer: web3.PublicKey,
     orderAccount: web3.PublicKey,
 }
@@ -27,18 +29,41 @@ export async function createCancelOrderInstruction({
     orderInitializer,
     orderAccount,
     programId
-}: cancelOrderParams): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: CancelOrderParams): Promise<FactoryReturn> {
     const program = getMarketplaceProgram({connection, programId})
 
+    const ixSet: FactoryReturn = {
+        signers: [],
+        instructions: []
+    };
+
+    // Fetch order account and get order info
     const orderAccountInfo = (await program.account.orderAccount.fetch(orderAccount)) as OrderAccountInfo;
     const orderSide = getOrderSide(orderAccountInfo);
     const depositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
-    const initializerDepositTokenAccount = (orderSide === 'SellSide') ? orderAccountInfo.initializerAssetTokenAccount : orderAccountInfo.initializerCurrencyTokenAccount;
-    const instructions = [
-        await program.methods
+
+    // Get user's token account for deposit mint
+    let tokenAccount: web3.PublicKey | web3.Keypair = null;
+    let initializerDepositTokenAccount: web3.PublicKey = null;
+    const response = await getTokenAccount(
+        connection,
+        orderInitializer,
+        depositMint
+    );
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
+    }
+
+    if (tokenAccount instanceof web3.Keypair) {
+        initializerDepositTokenAccount = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount)
+    } else {
+        initializerDepositTokenAccount = tokenAccount;
+    }
+
+
+    const ix = await program.methods
             .processCancel()
             .accounts({
                 depositMint,
@@ -46,10 +71,8 @@ export async function createCancelOrderInstruction({
                 initializerDepositTokenAccount,
                 orderAccount
             })
-            .instruction()
-    ];
-    return {
-        accounts: [],
-        instructions
-    }
+            .instruction();
+
+    ixSet.instructions.push(ix);
+    return ixSet;
 }
