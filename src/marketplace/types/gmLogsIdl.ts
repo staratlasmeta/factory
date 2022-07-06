@@ -209,7 +209,9 @@ export type GmLogsIdl =
         }
       ]
     }
-  ]
+  ],
+  'metadata': {
+  }
 }
 
 export const baseIdl: GmLogsIdl =
@@ -423,5 +425,7 @@ export const baseIdl: GmLogsIdl =
         }
       ]
     }
-  ]
+  ],
+  'metadata': {
+  }
 }
