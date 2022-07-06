@@ -43,7 +43,7 @@ export type GmLogsIdl =
       'name': 'InitializeMemo',
       'fields': [
         {
-          'name': 'initializerPubkey',
+          'name': 'orderInitializerPubkey',
           'type': 'publicKey',
           'index': false
         },
@@ -83,38 +83,18 @@ export type GmLogsIdl =
           'index': false
         },
         {
-          'name': 'orderId',
-          'type': 'publicKey',
-          'index': false
-        },
-        {
-          'name': 'timestamp',
-          'type': 'i64',
-          'index': false
-        }
-      ]
-    },
-    {
-      'name': 'OpenOrdersMemo',
-      'fields': [
-        {
-          'name': 'initializerPubkey',
-          'type': 'publicKey',
-          'index': false
-        },
-        {
-          'name': 'openOrdersCount',
+          'name': 'orderRemainingQty',
           'type': 'u64',
           'index': false
         },
         {
-          'name': 'depositMint',
-          'type': 'publicKey',
+          'name': 'createdAtTimestamp',
+          'type': 'i64',
           'index': false
         },
         {
-          'name': 'timestamp',
-          'type': 'i64',
+          'name': 'orderId',
+          'type': 'publicKey',
           'index': false
         }
       ]
@@ -123,18 +103,8 @@ export type GmLogsIdl =
       'name': 'ExchangeMemo',
       'fields': [
         {
-          'name': 'orderTaker',
+          'name': 'orderInitializerPubkey',
           'type': 'publicKey',
-          'index': false
-        },
-        {
-          'name': 'orderInitializer',
-          'type': 'publicKey',
-          'index': false
-        },
-        {
-          'name': 'price',
-          'type': 'u64',
           'index': false
         },
         {
@@ -148,18 +118,38 @@ export type GmLogsIdl =
           'index': false
         },
         {
-          'name': 'purchaseQuantity',
+          'name': 'initializerCurrencyTokenAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'initializerAssetTokenAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'orderSide',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'price',
           'type': 'u64',
           'index': false
         },
         {
-          'name': 'orderRemainingQuantity',
+          'name': 'orderOriginationQty',
           'type': 'u64',
           'index': false
         },
         {
-          'name': 'timestamp',
-          'type': 'i64',
+          'name': 'orderRemainingQty',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'orderId',
+          'type': 'publicKey',
           'index': false
         }
       ]
@@ -168,20 +158,58 @@ export type GmLogsIdl =
       'name': 'CancelOrderMemo',
       'fields': [
         {
-          'name': 'initializerPubkey',
+          'name': 'orderInitializerPubkey',
           'type': 'publicKey',
           'index': false
         },
         {
-          'name': 'timestamp',
-          'type': 'i64',
+          'name': 'currencyMint',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'assetMint',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'initializerCurrencyTokenAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'initializerAssetTokenAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'orderSide',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'price',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'orderOriginationQty',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'orderRemainingQty',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'orderId',
+          'type': 'publicKey',
           'index': false
         }
       ]
     }
-  ],
-  'metadata': {
-  }
+  ]
 }
 
 export const baseIdl: GmLogsIdl =
@@ -229,7 +257,7 @@ export const baseIdl: GmLogsIdl =
       'name': 'InitializeMemo',
       'fields': [
         {
-          'name': 'initializerPubkey',
+          'name': 'orderInitializerPubkey',
           'type': 'publicKey',
           'index': false
         },
@@ -269,38 +297,18 @@ export const baseIdl: GmLogsIdl =
           'index': false
         },
         {
-          'name': 'orderId',
-          'type': 'publicKey',
-          'index': false
-        },
-        {
-          'name': 'timestamp',
-          'type': 'i64',
-          'index': false
-        }
-      ]
-    },
-    {
-      'name': 'OpenOrdersMemo',
-      'fields': [
-        {
-          'name': 'initializerPubkey',
-          'type': 'publicKey',
-          'index': false
-        },
-        {
-          'name': 'openOrdersCount',
+          'name': 'orderRemainingQty',
           'type': 'u64',
           'index': false
         },
         {
-          'name': 'depositMint',
-          'type': 'publicKey',
+          'name': 'createdAtTimestamp',
+          'type': 'i64',
           'index': false
         },
         {
-          'name': 'timestamp',
-          'type': 'i64',
+          'name': 'orderId',
+          'type': 'publicKey',
           'index': false
         }
       ]
@@ -309,18 +317,8 @@ export const baseIdl: GmLogsIdl =
       'name': 'ExchangeMemo',
       'fields': [
         {
-          'name': 'orderTaker',
+          'name': 'orderInitializerPubkey',
           'type': 'publicKey',
-          'index': false
-        },
-        {
-          'name': 'orderInitializer',
-          'type': 'publicKey',
-          'index': false
-        },
-        {
-          'name': 'price',
-          'type': 'u64',
           'index': false
         },
         {
@@ -334,18 +332,38 @@ export const baseIdl: GmLogsIdl =
           'index': false
         },
         {
-          'name': 'purchaseQuantity',
+          'name': 'initializerCurrencyTokenAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'initializerAssetTokenAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'orderSide',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'price',
           'type': 'u64',
           'index': false
         },
         {
-          'name': 'orderRemainingQuantity',
+          'name': 'orderOriginationQty',
           'type': 'u64',
           'index': false
         },
         {
-          'name': 'timestamp',
-          'type': 'i64',
+          'name': 'orderRemainingQty',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'orderId',
+          'type': 'publicKey',
           'index': false
         }
       ]
@@ -354,18 +372,56 @@ export const baseIdl: GmLogsIdl =
       'name': 'CancelOrderMemo',
       'fields': [
         {
-          'name': 'initializerPubkey',
+          'name': 'orderInitializerPubkey',
           'type': 'publicKey',
           'index': false
         },
         {
-          'name': 'timestamp',
-          'type': 'i64',
+          'name': 'currencyMint',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'assetMint',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'initializerCurrencyTokenAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'initializerAssetTokenAccount',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'orderSide',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'price',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'orderOriginationQty',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'orderRemainingQty',
+          'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'orderId',
+          'type': 'publicKey',
           'index': false
         }
       ]
     }
-  ],
-  'metadata': {
-  }
+  ]
 }
