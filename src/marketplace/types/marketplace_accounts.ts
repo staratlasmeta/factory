@@ -30,8 +30,8 @@ export interface OrderSide {
 }
 
 export enum GmLogs {
-    CancelOrderMemo,
-    ExchangeMemo,
-    InitializeMemo,
-    RegisterCurrencyMemo,
+    CancelOrderMemo = 'CancelOrderMemo',
+    ExchangeMemo = 'ExchangeMemo',
+    InitializeMemo = 'InitializeMemo',
+    RegisterCurrencyMemo = 'RegisterCurrencyMemo',
 }
