@@ -29,9 +29,13 @@ export function getGmIDL(
  */
 export function getGmLogsIDL(
     programId: web3.PublicKey
-): unknown {
+): Idl {
     const _tmp = gmLogsIdl.baseIdl;
-    _tmp['metadata']['address'] = programId.toBase58();
+    
+    _tmp['metadata'] = {
+        address: programId.toBase58(),
+    };
+
     return _tmp;
 }
 
