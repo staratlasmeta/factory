@@ -28,3 +28,10 @@ export interface OrderSide {
     Buy,
     Sell
 }
+
+export enum GmLogs {
+    CancelOrderMemo,
+    ExchangeMemo,
+    InitializeMemo,
+    RegisterCurrencyMemo,
+}
