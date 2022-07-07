@@ -148,6 +148,11 @@ export type GmLogsIdl =
           'index': false
         },
         {
+          'name': 'createdAtTimestamp',
+          'type': 'i64',
+          'index': false
+        },
+        {
           'name': 'orderId',
           'type': 'publicKey',
           'index': false
@@ -203,13 +208,20 @@ export type GmLogsIdl =
           'index': false
         },
         {
+          'name': 'createdAtTimestamp',
+          'type': 'i64',
+          'index': false
+        },
+        {
           'name': 'orderId',
           'type': 'publicKey',
           'index': false
         }
       ]
     }
-  ]
+  ],
+  'metadata': {
+  }
 }
 
 export const baseIdl: GmLogsIdl =
@@ -362,6 +374,11 @@ export const baseIdl: GmLogsIdl =
           'index': false
         },
         {
+          'name': 'createdAtTimestamp',
+          'type': 'i64',
+          'index': false
+        },
+        {
           'name': 'orderId',
           'type': 'publicKey',
           'index': false
@@ -417,11 +434,18 @@ export const baseIdl: GmLogsIdl =
           'index': false
         },
         {
+          'name': 'createdAtTimestamp',
+          'type': 'i64',
+          'index': false
+        },
+        {
           'name': 'orderId',
           'type': 'publicKey',
           'index': false
         }
       ]
     }
-  ]
+  ],
+  'metadata': {
+  }
 }
