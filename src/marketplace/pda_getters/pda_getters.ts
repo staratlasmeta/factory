@@ -1,5 +1,13 @@
+import {
+    AnchorProvider,
+    Idl,
+    Program,
+    web3
+} from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
+import { RegisteredCurrencyItem } from '../types';
 import * as Seeds from './seeds';
+import { getGmIDL } from './../utils/getMarketplaceProgram'
 
 /**
  * Returns the public key and bump seed for the market variables account
@@ -73,6 +81,33 @@ export async function getRegisteredCurrencyAccount(
         ],
         programId,
     )
+}
+
+export async function getAllRegisteredCurrencies(
+    connection: web3.Connection,
+    programId: web3.PublicKey,
+): Promise<RegisteredCurrencyItem[]> {
+    const provider = new AnchorProvider(connection, null, null);
+    const idl = getGmIDL(programId);
+    const program = new Program(idl as Idl, programId, provider);
+    const filter = [
+        {
+            dataSize:  81
+        }
+    ];
+    const registeredCurrencies = await program.account.registeredCurrency.all(filter);
+    const currencyInfo = [];
+
+    for (const currency of registeredCurrencies) {
+        const someCurrency = {
+            mint: currency.account.tokenMint,
+            royalty: currency.account.royalty
+        }
+
+        currencyInfo.push(someCurrency);
+    }
+
+    return currencyInfo as RegisteredCurrencyItem[]
 }
 
 export async function getOpenOrdersCounter(

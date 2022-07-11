@@ -64,7 +64,7 @@ export async function createAccountTransaction(
 
     const tx = new Transaction(
         {
-            recentBlockhash: (await connection.getRecentBlockhash()).blockhash,
+            recentBlockhash: (await connection.getLatestBlockhash()).blockhash,
             feePayer: payer
         }
     );

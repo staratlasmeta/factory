@@ -135,52 +135,6 @@ export type GmIdl =
       'args': []
     },
     {
-      'name': 'migrateToAta',
-      'accounts': [
-        {
-          'name': 'userAccount',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          'name': 'tokenAccount',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenAta',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'associatedTokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        }
-      ],
-      'args': []
-    },
-    {
       'name': 'processInitializeBuy',
       'accounts': [
         {
@@ -327,11 +281,6 @@ export type GmIdl =
           'isSigner': false
         },
         {
-          'name': 'associatedTokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
@@ -431,7 +380,7 @@ export type GmIdl =
         },
         {
           'name': 'initializerReceiveTokenAccount',
-          'isMut': true,
+          'isMut': false,
           'isSigner': false
         },
         {
@@ -491,11 +440,6 @@ export type GmIdl =
         },
         {
           'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'associatedTokenProgram',
           'isMut': false,
           'isSigner': false
         },
@@ -723,11 +667,6 @@ export type GmIdl =
               }
             ]
           }
-        },
-        {
-          'name': 'associatedTokenProgram',
-          'isMut': false,
-          'isSigner': false
         },
         {
           'name': 'tokenProgram',
@@ -1288,52 +1227,6 @@ export const baseIdl: GmIdl =
       'args': []
     },
     {
-      'name': 'migrateToAta',
-      'accounts': [
-        {
-          'name': 'userAccount',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          'name': 'tokenAccount',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenAta',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'tokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'associatedTokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        }
-      ],
-      'args': []
-    },
-    {
       'name': 'processInitializeBuy',
       'accounts': [
         {
@@ -1480,11 +1373,6 @@ export const baseIdl: GmIdl =
           'isSigner': false
         },
         {
-          'name': 'associatedTokenProgram',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
@@ -1584,7 +1472,7 @@ export const baseIdl: GmIdl =
         },
         {
           'name': 'initializerReceiveTokenAccount',
-          'isMut': true,
+          'isMut': false,
           'isSigner': false
         },
         {
@@ -1644,11 +1532,6 @@ export const baseIdl: GmIdl =
         },
         {
           'name': 'rent',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'associatedTokenProgram',
           'isMut': false,
           'isSigner': false
         },
@@ -1876,11 +1759,6 @@ export const baseIdl: GmIdl =
               }
             ]
           }
-        },
-        {
-          'name': 'associatedTokenProgram',
-          'isMut': false,
-          'isSigner': false
         },
         {
           'name': 'tokenProgram',

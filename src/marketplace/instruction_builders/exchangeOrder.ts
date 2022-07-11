@@ -13,7 +13,8 @@ import {
     getRegisteredCurrencyAccountInfo,
     getOpenOrdersCounter,
 } from '../pda_getters';
-import { initializeAtaForMint } from '../utils/gmHelper';
+import { FactoryReturn } from '../../types';
+import { getTokenAccount } from '../../util';
 
 /**  Params for Exchange instruction */
 export interface ExchangeOrderParams extends BaseParams {
@@ -31,7 +32,6 @@ export interface ExchangeOrderParams extends BaseParams {
  * @param purchaseQty - Number of items to be purchased
  * @param orderTaker - Public key of the order taker
  * @param orderTakerDepositTokenAccount - Public key of token account for token being sent by taker
- * @param orderTakerReceiveTokenAccount - Public key of token account for token being received by taker
  * @param programId - Deployed program ID for GM program
  */
 export async function createExchangeInstruction ({
@@ -41,32 +41,85 @@ export async function createExchangeInstruction ({
     orderTaker,
     orderTakerDepositTokenAccount,
     programId,
-}: ExchangeOrderParams): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: ExchangeOrderParams): Promise<FactoryReturn> {
     const program = getMarketplaceProgram({connection, programId})
-    const instructions = [];
+    const ixSet: FactoryReturn = {
+        signers: [],
+        instructions: []
+    };
 
+    // Get order account and info
     const orderAccountInfo = (await program.account.orderAccount.fetch(orderAccount)) as OrderAccountInfo;
     const registeredCurrencyInfo = await getRegisteredCurrencyAccountInfo(connection, programId, orderAccountInfo.currencyMint);
-
     const orderSide = getOrderSide(orderAccountInfo);
     const initializerDepositMint = (orderSide === 'SellSide') ? orderAccountInfo.assetMint : orderAccountInfo.currencyMint;
-    const initializerDepositTokenAccount = (orderSide === 'SellSide') ? orderAccountInfo.initializerAssetTokenAccount : orderAccountInfo.initializerCurrencyTokenAccount;
-    const initializerReceiveTokenAccount = (orderSide === 'SellSide') ? orderAccountInfo.initializerCurrencyTokenAccount : orderAccountInfo.initializerAssetTokenAccount;
+    const initializerReceiveMint  = (orderSide === 'SellSide') ? orderAccountInfo.currencyMint: orderAccountInfo.assetMint;
+
+    // Get user's token accounts
+    let tokenAccount: web3.PublicKey | web3.Keypair = null;
+    let initializerDepositTokenAccount: web3.PublicKey = null;
+    let initializerReceiveTokenAccount: web3.PublicKey = null;
+    let orderTakerReceiveTokenAccount: web3.PublicKey = null;
+
+    // Get initializer deposit mint token account
+    let response = await getTokenAccount(
+        connection,
+        orderAccountInfo.orderInitializerPubkey,
+        initializerDepositMint,
+        orderTaker
+    );
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
+    }
+
+    if (tokenAccount instanceof web3.Keypair) {
+        initializerDepositTokenAccount = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount)
+    } else {
+        initializerDepositTokenAccount = tokenAccount;
+    }
+
+    // Get initializer receive mint token account
+    response = await getTokenAccount(
+        connection,
+        orderAccountInfo.orderInitializerPubkey,
+        initializerReceiveMint,
+        orderTaker
+    );
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
+    }
+
+    if (tokenAccount instanceof web3.Keypair) {
+        initializerReceiveTokenAccount = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount)
+    } else {
+        initializerReceiveTokenAccount = tokenAccount;
+    }
+
     const [orderVaultAccount] = await getOrderVault(orderAccountInfo.orderInitializerPubkey, initializerDepositMint, programId);
     const [openOrdersCounter] = await getOpenOrdersCounter(orderAccountInfo.orderInitializerPubkey, initializerDepositMint, programId);
 
-    const {account: orderTakerReceiveTokenAccount, instructions: ataInitIx} = await initializeAtaForMint({mint: initializerDepositMint, owner: orderTaker, connection});
-    console.log(`orderTakerReceiveTokenAccount found: ${orderTakerReceiveTokenAccount}`);
-
-    if (Array.isArray(ataInitIx) && ataInitIx.length > 0) {
-        console.log('Initializing token account');
-        instructions.push(...ataInitIx);
+    // Get order taker receive token account
+    response = await getTokenAccount(
+        connection,
+        orderTaker,
+        initializerDepositMint,
+    );
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
     }
 
-    console.log('Creating exchange ix');
+    if (tokenAccount instanceof web3.Keypair) {
+        orderTakerReceiveTokenAccount = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount)
+    } else {
+        orderTakerReceiveTokenAccount = tokenAccount;
+    }
+
     const exchangeIx =
         await program.methods
             .processExchange(new BN(purchaseQty))
@@ -86,10 +139,7 @@ export async function createExchangeInstruction ({
             })
             .instruction();
 
-    instructions.push(exchangeIx);
+    ixSet.instructions.push(exchangeIx);
 
-    return {
-        accounts: [],
-        instructions
-    }
+    return ixSet;
 }

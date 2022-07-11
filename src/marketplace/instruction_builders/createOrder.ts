@@ -4,16 +4,16 @@ import {
 } from '@project-serum/anchor';
 import { getMarketplaceProgram } from '../utils';
 import { BaseParams } from '../../util/BaseParams';
+import { getTokenAccount } from './../../util/helpers'
+import { FactoryReturn } from './../../types'
 import { getOpenOrdersCounter } from '../pda_getters';
 import { createOrderCounterInstruction } from './createOrderCounter';
-import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
-import { migrateToAta } from './migrateToAta';
+import { createAccountInstruction } from '../../util';
 
 /**  Params for Register Currency instruction */
 export interface InitializeOrderParameters extends BaseParams {
     initializerMainAccount: web3.PublicKey,
     initializerDepositTokenAccount: web3.PublicKey,
-    orderAccount: web3.Keypair,
     price: BN,
     originationQty: number,
     depositMint: web3.PublicKey,
@@ -38,40 +38,40 @@ export async function createInitializeBuyOrderInstruction({
     connection,
     initializerMainAccount,
     initializerDepositTokenAccount,
-    orderAccount,
     price,
     originationQty,
     depositMint,
     receiveMint,
     programId
-}: InitializeOrderParameters): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
-    const instructions: web3.TransactionInstruction[] = [];
+}: InitializeOrderParameters): Promise<{orderAccount: web3.PublicKey; ixSet: FactoryReturn}> {
     const program = getMarketplaceProgram({connection, programId})
 
+    const ixSet: FactoryReturn = {
+        signers: [],
+        instructions: []
+    };
+
     // Derive ATAs for deposit and receive mints
-    const depositTokenAta = await associatedAddress({owner: initializerMainAccount, mint: depositMint});
-    const initializerReceiveTokenAccount = await associatedAddress({owner: initializerMainAccount, mint: receiveMint});
+    let tokenAccount: web3.PublicKey | web3.Keypair = null;
+    let initializerReceiveTokenAccount: web3.PublicKey = null;
 
-    console.log('Token - Deposit account: ', initializerDepositTokenAccount.toString());
-    console.log('ATA - Deposit account: ', depositTokenAta.toString());
-    console.log('ATA - Receive account: ', initializerReceiveTokenAccount.toString());
-    // If the deposit token account passed in is not an ATA, migrate tokens to a user associated ATA
-    if (depositTokenAta.toBase58() != initializerDepositTokenAccount.toBase58()) {
-        console.log(`Not equal. depositTokenATA: ${depositTokenAta}, initializerDepositTokenAccount: ${initializerDepositTokenAccount}`);
-        const migrationIx = await migrateToAta({
-            connection,
-            userAccount: initializerMainAccount,
-            tokenAccount: initializerDepositTokenAccount,
-            tokenMint: depositMint,
-            programId
-        });
+    const response = await getTokenAccount(
+        connection,
+        initializerMainAccount,
+        receiveMint
+        );
 
-        instructions.push(migrationIx);
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
     }
 
+    if (tokenAccount instanceof web3.Keypair) {
+        initializerReceiveTokenAccount = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount)
+    } else {
+        initializerReceiveTokenAccount = tokenAccount;
+    }
     // Derive the open orders counter, initializing if necessary
     const [counterAddress] = await getOpenOrdersCounter(
         initializerMainAccount,
@@ -80,17 +80,25 @@ export async function createInitializeBuyOrderInstruction({
     );
     const orderCounter = await connection.getAccountInfo(counterAddress);
     if (orderCounter === null) {
-        console.log('WE MUST INITIALIZE');
         const createCounterIx = await createOrderCounterInstruction({
             connection,
             initializerMainAccount,
             depositMint,
             programId
         });
-        instructions.push(createCounterIx);
-    } else {
-        console.log('WE HAVE THE ACCOUNT');
+        ixSet.instructions.push(createCounterIx);
     }
+
+    const orderAccount = web3.Keypair.generate();
+    ixSet.signers.push(orderAccount);
+
+    const orderAccountIx = await createAccountInstruction(
+        connection,
+        initializerMainAccount,
+        orderAccount,
+        programId
+    );
+    ixSet.instructions.push(orderAccountIx);
 
     const ix = await program.methods
             .processInitializeBuy(
@@ -99,7 +107,7 @@ export async function createInitializeBuyOrderInstruction({
             )
             .accounts({
                 orderInitializer: initializerMainAccount,
-                initializerDepositTokenAccount: depositTokenAta,
+                initializerDepositTokenAccount,
                 initializerReceiveTokenAccount,
                 orderAccount: orderAccount.publicKey,
                 depositMint,
@@ -107,12 +115,8 @@ export async function createInitializeBuyOrderInstruction({
             })
             .signers([orderAccount])
             .instruction();
-
-    instructions.push(ix);
-    return {
-        accounts: [],
-        instructions
-    }
+    ixSet.instructions.push(ix);
+    return {orderAccount: orderAccount.publicKey, ixSet}
 }
 
 /*
@@ -133,40 +137,40 @@ export async function createInitializeSellOrderInstruction({
     connection,
     initializerMainAccount,
     initializerDepositTokenAccount,
-    orderAccount,
     price,
     originationQty,
     depositMint,
     receiveMint,
     programId
-    }: InitializeOrderParameters): Promise <{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
-    const instructions: web3.TransactionInstruction[] = [];
+    }: InitializeOrderParameters): Promise<{orderAccount: web3.PublicKey; ixSet: FactoryReturn}> {
     const program = getMarketplaceProgram({connection, programId})
 
+    const ixSet: FactoryReturn = {
+        signers: [],
+        instructions: []
+    };
+
     // Derive ATAs for deposit and receive mints
-    const depositTokenAta = await associatedAddress({owner: initializerMainAccount, mint: depositMint});
-    const initializerReceiveTokenAccount = await associatedAddress({owner: initializerMainAccount, mint: receiveMint});
+    let tokenAccount: web3.PublicKey | web3.Keypair = null;
+    let initializerReceiveTokenAccount: web3.PublicKey = null;
 
-    // If the deposit token account passed in is not an ATA, migrate tokens to a user associated ATA
-    if (depositTokenAta.toBase58() != initializerDepositTokenAccount.toBase58()) {
-        console.log(`Not equal. depositTokenATA: ${depositTokenAta}, initializerDepositTokenAccount: ${initializerDepositTokenAccount}`);
-        const migrationIx = await migrateToAta({
-            connection,
-            userAccount: initializerMainAccount,
-            tokenAccount: initializerDepositTokenAccount,
-            tokenMint: depositMint,
-            programId
-        });
+    const response = await getTokenAccount(
+        connection,
+        initializerMainAccount,
+        receiveMint
+        );
 
-        instructions.push(migrationIx);
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
     }
 
-    console.log('Token - Deposit account: ', initializerDepositTokenAccount.toString());
-    console.log('ATA - Deposit account: ', depositTokenAta.toString());
-    console.log('ATA - Receive account: ', initializerReceiveTokenAccount.toString());
+    if (tokenAccount instanceof web3.Keypair) {
+        initializerReceiveTokenAccount = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount)
+    } else {
+        initializerReceiveTokenAccount = tokenAccount;
+    }
 
     // Derive the open orders counter, initializing if necessary
     const [counterAddress] = await getOpenOrdersCounter(
@@ -176,17 +180,25 @@ export async function createInitializeSellOrderInstruction({
     );
     const orderCounter = await connection.getAccountInfo(counterAddress);
     if (orderCounter === null) {
-        console.log('WE MUST INITIALIZE');
         const createCounterIx = await createOrderCounterInstruction({
             connection,
             initializerMainAccount,
             depositMint,
             programId
         });
-        instructions.push(createCounterIx);
-    } else {
-        console.log('WE HAVE THE ACCOUNT');
+        ixSet.instructions.push(createCounterIx);
     }
+
+    const orderAccount = web3.Keypair.generate();
+    ixSet.signers.push(orderAccount);
+
+    const orderAccountIx = await createAccountInstruction(
+        connection,
+        initializerMainAccount,
+        orderAccount,
+        programId
+    );
+    ixSet.instructions.push(orderAccountIx);
 
     const ix = await program.methods
             .processInitializeSell(
@@ -195,7 +207,7 @@ export async function createInitializeSellOrderInstruction({
             )
             .accounts({
                 orderInitializer: initializerMainAccount,
-                initializerDepositTokenAccount: depositTokenAta,
+                initializerDepositTokenAccount,
                 initializerReceiveTokenAccount,
                 orderAccount: orderAccount.publicKey,
                 depositMint,
@@ -204,10 +216,6 @@ export async function createInitializeSellOrderInstruction({
             .signers([orderAccount])
             .instruction()
 
-    instructions.push(ix);
-    return {
-        accounts: [],
-        instructions
-    }
-
+    ixSet.instructions.push(ix);
+    return {orderAccount: orderAccount.publicKey, ixSet}
 }

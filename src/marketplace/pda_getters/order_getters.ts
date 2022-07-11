@@ -7,6 +7,7 @@ import {
 import { GetProgramAccountsFilter } from '@solana/web3.js';
 import {
     OrderAccountInfo,
+    OrderAccountItem,
 } from './../types/marketplace_accounts';
 import { getGmIDL } from './../utils/getMarketplaceProgram'
 
@@ -18,7 +19,7 @@ import { getGmIDL } from './../utils/getMarketplaceProgram'
 export async function getAllOpenOrders(
     connection: web3.Connection,
     programId: web3.PublicKey,
-): Promise<OrderAccountInfo[]> {
+): Promise<OrderAccountItem[]> {
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
@@ -28,10 +29,8 @@ export async function getAllOpenOrders(
         }
     ];
     const orderAccounts = await program.account.orderAccount.all(filter);
-    const filtered = orderAccounts
-        .map(order => order.account as OrderAccountInfo)
 
-    return filtered;
+    return orderAccounts as OrderAccountItem[];
 }
 
 /**
@@ -43,7 +42,8 @@ export async function getAllOpenOrders(
 export async function getOpenOrdersForPlayer(
     connection: web3.Connection,
     playerPublicKey: web3.PublicKey,
-    programId: web3.PublicKey,): Promise<OrderAccountInfo[]> {
+    programId: web3.PublicKey,
+): Promise<OrderAccountItem[]> {
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
@@ -59,10 +59,8 @@ export async function getOpenOrdersForPlayer(
         } as GetProgramAccountsFilter,
     ];
     const orderAccounts = await program.account.orderAccount.all(filter);
-    const filtered = orderAccounts
-        .map(order => order.account as OrderAccountInfo)
 
-    return filtered;
+    return orderAccounts as OrderAccountItem[];
 }
 
 /**
@@ -75,7 +73,7 @@ export async function getOpenOrdersForCurrency(
     connection: web3.Connection,
     currencyMint: web3.PublicKey,
     programId: web3.PublicKey,
-): Promise<OrderAccountInfo[]> {
+): Promise<OrderAccountItem[]> {
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
@@ -91,10 +89,8 @@ export async function getOpenOrdersForCurrency(
         } as GetProgramAccountsFilter,
     ];
     const orderAccounts = await program.account.orderAccount.all(filter);
-    const filtered = orderAccounts
-        .map(order => order.account as OrderAccountInfo)
 
-    return filtered;
+    return orderAccounts as OrderAccountItem[];
 }
 
 /**
@@ -107,7 +103,7 @@ export async function getOpenOrdersForAsset(
     connection: web3.Connection,
     assetMint: web3.PublicKey,
     programId: web3.PublicKey,
-): Promise<OrderAccountInfo[]> {
+): Promise<OrderAccountItem[]> {
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
@@ -123,10 +119,8 @@ export async function getOpenOrdersForAsset(
         } as GetProgramAccountsFilter,
     ];
     const orderAccounts = await program.account.orderAccount.all(filter);
-    const filtered = orderAccounts
-        .map(order => order.account as OrderAccountInfo)
 
-    return filtered;
+    return orderAccounts as OrderAccountItem[];
 }
 
 /**
@@ -141,7 +135,7 @@ export async function getOpenOrdersForPlayerAndCurrency(
     playerPublicKey: web3.PublicKey,
     currencyMint: web3.PublicKey,
     programId: web3.PublicKey,
-): Promise<OrderAccountInfo[]> {
+): Promise<OrderAccountItem[]> {
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
@@ -163,10 +157,8 @@ export async function getOpenOrdersForPlayerAndCurrency(
         }
     ];
     const orderAccounts = await program.account.orderAccount.all(filter);
-    const filtered = orderAccounts
-        .map(order => order.account as OrderAccountInfo)
 
-    return filtered;
+    return orderAccounts as OrderAccountItem[];
 }
 
 /**
@@ -181,7 +173,7 @@ export async function getOpenOrdersForPlayerAndAsset(
     playerPublicKey: web3.PublicKey,
     assetMint: web3.PublicKey,
     programId: web3.PublicKey,
-): Promise<OrderAccountInfo[]> {
+): Promise<OrderAccountItem[]> {
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
@@ -203,8 +195,25 @@ export async function getOpenOrdersForPlayerAndAsset(
         }
     ];
     const orderAccounts = await program.account.orderAccount.all(filter);
-    const filtered = orderAccounts
-        .map(order => order.account as OrderAccountInfo)
 
-    return filtered;
+    return orderAccounts as OrderAccountItem[];
+}
+
+/**
+ * Takes an order account's public key as a parameter and returns the deserialized contents of the data account.
+ * @param connection
+ * @param orderAccount - Public key of order account to be deserialized
+ * @param programId - Deployed program ID for GM program
+ */
+export async function getSingleOrder(
+    connection: web3.Connection,
+    orderAccount: web3.PublicKey,
+    programId: web3.PublicKey,
+): Promise<OrderAccountInfo> {
+    const provider = new AnchorProvider(connection, null, null);
+    const idl = getGmIDL(programId);
+    const program = new Program(idl as Idl, programId, provider);
+    const obj = await program.account.orderAccount.fetch(orderAccount);
+
+    return obj as OrderAccountInfo;
 }
