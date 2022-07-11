@@ -8,31 +8,26 @@ export type Points = {
         {
           'name': 'admin',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity calling this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': true,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'arg',
-                'type': 'string',
-                'path': 'name'
-              }
-            ]
-          }
+          'docs': [
+            'The [DomainAccount] account'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'Solana System program'
+          ]
         }
       ],
       'args': [
@@ -43,96 +38,68 @@ export type Points = {
       ]
     },
     {
+      'name': 'deregisterDomain',
+      'accounts': [
+        {
+          'name': 'admin',
+          'isMut': false,
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
+        },
+        {
+          'name': 'domainAccount',
+          'isMut': true,
+          'isSigner': false,
+          'docs': [
+            'the [DomainAccount] account'
+          ]
+        }
+      ],
+      'args': []
+    },
+    {
       'name': 'registerPointCategoryAccount',
       'accounts': [
         {
           'name': 'admin',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': true,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'arg',
-                'type': 'string',
-                'path': 'label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': [
         {
-          'name': 'label',
-          'type': 'string'
-        },
-        {
-          'name': 'tokenRequired',
-          'type': 'bool'
-        },
-        {
-          'name': 'tokenQty',
+          'name': 'input',
           'type': {
-            'option': 'u64'
-          }
-        },
-        {
-          'name': 'pointLimit',
-          'type': 'u64'
-        },
-        {
-          'name': 'isSpendable',
-          'type': 'bool'
-        },
-        {
-          'name': 'lvlRequiredPoints',
-          'type': {
-            'option': {
-              'array': [
-                'u64',
-                20
-              ]
-            }
+            'defined': 'RegisterPointCategoryAccountInput'
           }
         }
       ]
@@ -143,58 +110,34 @@ export type Points = {
         {
           'name': 'admin',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': true,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': []
@@ -205,78 +148,85 @@ export type Points = {
         {
           'name': 'admin',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
-          'isMut': false,
+          'isMut': true,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': [
         {
-          'name': 'pointLimit',
+          'name': 'input',
           'type': {
-            'option': 'u64'
+            'defined': 'UpdatePointCategoryAccountInput'
           }
+        }
+      ]
+    },
+    {
+      'name': 'addPointCategoryAccountLevel',
+      'accounts': [
+        {
+          'name': 'admin',
+          'isMut': false,
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
-          'name': 'tokenQty',
-          'type': {
-            'option': 'u64'
-          }
+          'name': 'domainAccount',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
-          'name': 'tokenRequired',
-          'type': {
-            'option': 'bool'
-          }
+          'name': 'pointCategoryAccount',
+          'isMut': true,
+          'isSigner': false,
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
+        }
+      ],
+      'args': [
+        {
+          'name': 'newLevel',
+          'type': 'u64'
         }
       ]
     },
@@ -286,38 +236,26 @@ export type Points = {
         {
           'name': 'user',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that called this instruction'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.domain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'userPointsAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
           'pda': {
             'seeds': [
               {
@@ -328,7 +266,6 @@ export type Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -342,7 +279,10 @@ export type Points = {
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System Program'
+          ]
         }
       ],
       'args': []
@@ -353,38 +293,26 @@ export type Points = {
         {
           'name': 'user',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that called this instruction'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.domain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'userPointsAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
           'pda': {
             'seeds': [
               {
@@ -395,7 +323,6 @@ export type Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -409,22 +336,34 @@ export type Points = {
         {
           'name': 'userTokenAccount',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The User token account for the license to burn'
+          ]
         },
         {
           'name': 'licenseMintAccount',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The mint address for the license to burn'
+          ]
         },
         {
           'name': 'tokenProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana Token Program'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System Program'
+          ]
         }
       ],
       'args': []
@@ -435,58 +374,34 @@ export type Points = {
         {
           'name': 'admin',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'pointsModifierAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
           'pda': {
             'seeds': [
               {
@@ -497,7 +412,6 @@ export type Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -511,12 +425,18 @@ export type Points = {
         {
           'name': 'modifier',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Points Modifier address'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': [
@@ -544,58 +464,34 @@ export type Points = {
         {
           'name': 'admin',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'pointsModifierAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
           'pda': {
             'seeds': [
               {
@@ -606,7 +502,6 @@ export type Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -620,54 +515,48 @@ export type Points = {
         {
           'name': 'modifier',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Points Modifier address'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': []
     },
     {
-      'name': 'modifyPoints',
+      'name': 'incrementPoints',
       'accounts': [
         {
           'name': 'modifier',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.domain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'userPointsAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
           'pda': {
             'seeds': [
               {
@@ -678,14 +567,12 @@ export type Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'UserPointsAccount',
-                'path': 'user_points_account.owner'
+                'path': 'user_points_account'
               }
             ]
           }
@@ -694,6 +581,9 @@ export type Points = {
           'name': 'pointsModifierAccount',
           'isMut': false,
           'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
           'pda': {
             'seeds': [
               {
@@ -704,7 +594,6 @@ export type Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -718,13 +607,117 @@ export type Points = {
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': [
         {
-          'name': 'newXpValue',
+          'name': 'pointsAmount',
           'type': 'u64'
+        },
+        {
+          'name': 'newUserLevel',
+          'type': {
+            'option': 'u16'
+          }
+        }
+      ]
+    },
+    {
+      'name': 'decrementPoints',
+      'accounts': [
+        {
+          'name': 'modifier',
+          'isMut': false,
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
+        },
+        {
+          'name': 'pointCategoryAccount',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
+        },
+        {
+          'name': 'userPointsAccount',
+          'isMut': true,
+          'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'UserPointsAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'point_category_account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user_points_account'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'pointsModifierAccount',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'PointModifier'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'point_category_account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'modifier'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
+        }
+      ],
+      'args': [
+        {
+          'name': 'pointsAmount',
+          'type': 'u64'
+        },
+        {
+          'name': 'newUserLevel',
+          'type': {
+            'option': 'u16'
+          }
         }
       ]
     },
@@ -734,38 +727,26 @@ export type Points = {
         {
           'name': 'spender',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity calling this instruction'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.domain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'userPointsAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
           'pda': {
             'seeds': [
               {
@@ -776,14 +757,12 @@ export type Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'UserPointsAccount',
-                'path': 'user_points_account.owner'
+                'path': 'user_points_account'
               }
             ]
           }
@@ -792,6 +771,9 @@ export type Points = {
           'name': 'pointsModifierAccount',
           'isMut': false,
           'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
           'pda': {
             'seeds': [
               {
@@ -802,7 +784,6 @@ export type Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -825,102 +806,203 @@ export type Points = {
   'accounts': [
     {
       'name': 'domainAccount',
+      'docs': [
+        'PDA holding the class of points and the account with admin privileges for this point type'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
           {
-            'name': 'name',
-            'type': 'string'
+            'name': 'version',
+            'docs': [
+              'The data version of this account.'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'admin',
+            'docs': [
+              'admin'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
             'type': 'u8'
+          },
+          {
+            'name': 'name',
+            'docs': [
+              'the name'
+            ],
+            'type': {
+              'array': [
+                'u8',
+                32
+              ]
+            }
           }
         ]
       }
     },
     {
       'name': 'pointCategoryAccount',
+      'docs': [
+        'PDA for each specific type of Points'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
           {
+            'name': 'version',
+            'docs': [
+              'The data version of this account.'
+            ],
+            'type': 'u8'
+          },
+          {
             'name': 'domain',
+            'docs': [
+              'the domain'
+            ],
             'type': 'publicKey'
           },
           {
-            'name': 'label',
-            'type': 'string'
-          },
-          {
             'name': 'tokenRequired',
-            'type': 'bool'
+            'docs': [
+              'if this is true then token_mint should be a mint address'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'tokenMint',
-            'type': {
-              'option': 'publicKey'
-            }
+            'docs': [
+              'the token mint'
+            ],
+            'type': 'publicKey'
           },
           {
             'name': 'tokenQty',
+            'docs': [
+              'the token qty'
+            ],
             'type': 'u64'
           },
           {
+            'name': 'transferTokensToVault',
+            'docs': [
+              'if this is true then token_vault should be a token address'
+            ],
+            'type': 'u8'
+          },
+          {
+            'name': 'tokenVault',
+            'docs': [
+              'the token vault'
+            ],
+            'type': 'publicKey'
+          },
+          {
             'name': 'pointLimit',
+            'docs': [
+              'point limit'
+            ],
             'type': 'u64'
           },
           {
             'name': 'isSpendable',
-            'type': 'bool'
+            'docs': [
+              'is spendable?'
+            ],
+            'type': 'u8'
           },
           {
-            'name': 'lvlRequiredPoints',
-            'type': {
-              'array': [
-                'u64',
-                20
-              ]
-            }
+            'name': 'numLevels',
+            'docs': [
+              'the number of levels'
+            ],
+            'type': 'u16'
           },
           {
             'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
             'type': 'u8'
+          },
+          {
+            'name': 'label',
+            'docs': [
+              'the label'
+            ],
+            'type': {
+              'array': [
+                'u8',
+                32
+              ]
+            }
           }
         ]
       }
     },
     {
       'name': 'pointsModifier',
+      'docs': [
+        'PDA containing one account that can modify an Points type'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
           {
+            'name': 'version',
+            'docs': [
+              'The data version of this account.'
+            ],
+            'type': 'u8'
+          },
+          {
             'name': 'modifier',
+            'docs': [
+              'modifier'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'pointCategory',
+            'docs': [
+              'point_category'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'canIncrement',
-            'type': 'bool'
+            'docs': [
+              'can_increment'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'canDecrement',
-            'type': 'bool'
+            'docs': [
+              'can_decrement'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'canSpend',
-            'type': 'bool'
+            'docs': [
+              'can_spend'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
             'type': 'u8'
           }
         ]
@@ -928,32 +1010,182 @@ export type Points = {
     },
     {
       'name': 'userPointsAccount',
+      'docs': [
+        'PDA of an User for each specific type of Points'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
           {
+            'name': 'version',
+            'docs': [
+              'The data version of this account.'
+            ],
+            'type': 'u8'
+          },
+          {
             'name': 'owner',
+            'docs': [
+              'owner'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'pointCategory',
+            'docs': [
+              'point_category'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'earnedPoints',
+            'docs': [
+              'earned_points'
+            ],
             'type': 'u64'
           },
           {
             'name': 'spentPoints',
+            'docs': [
+              'spent_points'
+            ],
             'type': 'u64'
           },
           {
             'name': 'level',
-            'type': 'u64'
+            'docs': [
+              'level'
+            ],
+            'type': 'u16'
           },
           {
             'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
             'type': 'u8'
+          }
+        ]
+      }
+    }
+  ],
+  'types': [
+    {
+      'name': 'RegisterPointCategoryAccountInput',
+      'docs': [
+        'Struct for data input to Update Moon'
+      ],
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'label',
+            'docs': [
+              'label'
+            ],
+            'type': 'string'
+          },
+          {
+            'name': 'tokenRequired',
+            'docs': [
+              'token_required'
+            ],
+            'type': 'bool'
+          },
+          {
+            'name': 'tokenQty',
+            'docs': [
+              'token_qty'
+            ],
+            'type': {
+              'option': 'u64'
+            }
+          },
+          {
+            'name': 'pointLimit',
+            'docs': [
+              'point_limit'
+            ],
+            'type': 'u64'
+          },
+          {
+            'name': 'isSpendable',
+            'docs': [
+              'is_spendable'
+            ],
+            'type': 'bool'
+          },
+          {
+            'name': 'transferTokensToVault',
+            'docs': [
+              'transfer_tokens_to_vault'
+            ],
+            'type': 'bool'
+          }
+        ]
+      }
+    },
+    {
+      'name': 'UpdatePointCategoryAccountInput',
+      'docs': [
+        'Struct for data input to Update Moon'
+      ],
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'pointLimit',
+            'docs': [
+              'point_limit'
+            ],
+            'type': {
+              'option': 'u64'
+            }
+          },
+          {
+            'name': 'tokenQty',
+            'docs': [
+              'token_qty'
+            ],
+            'type': {
+              'option': 'u64'
+            }
+          },
+          {
+            'name': 'tokenRequired',
+            'docs': [
+              'token_required'
+            ],
+            'type': {
+              'option': 'bool'
+            }
+          },
+          {
+            'name': 'transferTokensToVault',
+            'docs': [
+              'transfer_tokens_to_vault'
+            ],
+            'type': {
+              'option': 'bool'
+            }
+          },
+          {
+            'name': 'isSpendable',
+            'docs': [
+              'is_spendable'
+            ],
+            'type': {
+              'option': 'bool'
+            }
+          },
+          {
+            'name': 'resetLevels',
+            'docs': [
+              'if true, the levels will be reset'
+            ],
+            'type': {
+              'option': 'bool'
+            }
           }
         ]
       }
@@ -975,19 +1207,27 @@ export type Points = {
         },
         {
           'name': 'tokenRequired',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'tokenMint',
-          'type': {
-            'option': 'publicKey'
-          },
+          'type': 'publicKey',
           'index': false
         },
         {
           'name': 'tokenQty',
           'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'transferTokensToVault',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'tokenVault',
+          'type': 'publicKey',
           'index': false
         },
         {
@@ -997,7 +1237,7 @@ export type Points = {
         },
         {
           'name': 'isSpendable',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
@@ -1016,25 +1256,28 @@ export type Points = {
           'index': false
         },
         {
-          'name': 'label',
-          'type': 'string',
-          'index': false
-        },
-        {
           'name': 'tokenRequired',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'tokenMint',
-          'type': {
-            'option': 'publicKey'
-          },
+          'type': 'publicKey',
           'index': false
         },
         {
           'name': 'tokenQty',
           'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'transferTokensToVault',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'tokenVault',
+          'type': 'publicKey',
           'index': false
         },
         {
@@ -1044,7 +1287,7 @@ export type Points = {
         },
         {
           'name': 'isSpendable',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
@@ -1063,25 +1306,28 @@ export type Points = {
           'index': false
         },
         {
-          'name': 'label',
-          'type': 'string',
-          'index': false
-        },
-        {
           'name': 'tokenRequired',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'tokenMint',
-          'type': {
-            'option': 'publicKey'
-          },
+          'type': 'publicKey',
           'index': false
         },
         {
           'name': 'tokenQty',
           'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'transferTokensToVault',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'tokenVault',
+          'type': 'publicKey',
           'index': false
         },
         {
@@ -1091,7 +1337,27 @@ export type Points = {
         },
         {
           'name': 'isSpendable',
-          'type': 'bool',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'updatedAt',
+          'type': 'i64',
+          'index': false
+        }
+      ]
+    },
+    {
+      'name': 'AddPointCategoryAccountLevelEvent',
+      'fields': [
+        {
+          'name': 'domain',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'newLevel',
+          'type': 'u64',
           'index': false
         },
         {
@@ -1156,17 +1422,17 @@ export type Points = {
         },
         {
           'name': 'canIncrement',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'canDecrement',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'canSpend',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
@@ -1196,12 +1462,12 @@ export type Points = {
         },
         {
           'name': 'canIncrement',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'canDecrement',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
@@ -1245,6 +1511,13 @@ export type Points = {
           'index': false
         },
         {
+          'name': 'userLevel',
+          'type': {
+            'option': 'u16'
+          },
+          'index': false
+        },
+        {
           'name': 'modifiedAt',
           'type': 'i64',
           'index': false
@@ -1270,7 +1543,7 @@ export type Points = {
           'index': false
         },
         {
-          'name': 'spendedPointsAmount',
+          'name': 'spentPointsAmount',
           'type': 'u64',
           'index': false
         },
@@ -1340,13 +1613,13 @@ export type Points = {
     },
     {
       'code': 6011,
-      'name': 'NotAllowedExperienceQuantity',
-      'msg': 'Experience above permitted limit.'
+      'name': 'TokenVaultRequired',
+      'msg': 'Token Vault account is required.'
     },
     {
       'code': 6012,
-      'name': 'LabelTooLong',
-      'msg': 'Label string above max length.'
+      'name': 'NotAllowedPointsQuantity',
+      'msg': 'Points above permitted limit.'
     },
     {
       'code': 6013,
@@ -1357,6 +1630,11 @@ export type Points = {
       'code': 6014,
       'name': 'TokenQuantityExpected',
       'msg': 'The token quantity must be provided.'
+    },
+    {
+      'code': 6015,
+      'name': 'NumericOverflow',
+      'msg': 'Numeric overflow'
     }
   ]
 };
@@ -1371,31 +1649,26 @@ export const IDL: Points = {
         {
           'name': 'admin',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity calling this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': true,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'arg',
-                'type': 'string',
-                'path': 'name'
-              }
-            ]
-          }
+          'docs': [
+            'The [DomainAccount] account'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'Solana System program'
+          ]
         }
       ],
       'args': [
@@ -1406,96 +1679,68 @@ export const IDL: Points = {
       ]
     },
     {
+      'name': 'deregisterDomain',
+      'accounts': [
+        {
+          'name': 'admin',
+          'isMut': false,
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
+        },
+        {
+          'name': 'domainAccount',
+          'isMut': true,
+          'isSigner': false,
+          'docs': [
+            'the [DomainAccount] account'
+          ]
+        }
+      ],
+      'args': []
+    },
+    {
       'name': 'registerPointCategoryAccount',
       'accounts': [
         {
           'name': 'admin',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': true,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'arg',
-                'type': 'string',
-                'path': 'label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': [
         {
-          'name': 'label',
-          'type': 'string'
-        },
-        {
-          'name': 'tokenRequired',
-          'type': 'bool'
-        },
-        {
-          'name': 'tokenQty',
+          'name': 'input',
           'type': {
-            'option': 'u64'
-          }
-        },
-        {
-          'name': 'pointLimit',
-          'type': 'u64'
-        },
-        {
-          'name': 'isSpendable',
-          'type': 'bool'
-        },
-        {
-          'name': 'lvlRequiredPoints',
-          'type': {
-            'option': {
-              'array': [
-                'u64',
-                20
-              ]
-            }
+            'defined': 'RegisterPointCategoryAccountInput'
           }
         }
       ]
@@ -1506,58 +1751,34 @@ export const IDL: Points = {
         {
           'name': 'admin',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': true,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': []
@@ -1568,78 +1789,85 @@ export const IDL: Points = {
         {
           'name': 'admin',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
-          'isMut': false,
+          'isMut': true,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': [
         {
-          'name': 'pointLimit',
+          'name': 'input',
           'type': {
-            'option': 'u64'
+            'defined': 'UpdatePointCategoryAccountInput'
           }
+        }
+      ]
+    },
+    {
+      'name': 'addPointCategoryAccountLevel',
+      'accounts': [
+        {
+          'name': 'admin',
+          'isMut': false,
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
-          'name': 'tokenQty',
-          'type': {
-            'option': 'u64'
-          }
+          'name': 'domainAccount',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
-          'name': 'tokenRequired',
-          'type': {
-            'option': 'bool'
-          }
+          'name': 'pointCategoryAccount',
+          'isMut': true,
+          'isSigner': false,
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
+        }
+      ],
+      'args': [
+        {
+          'name': 'newLevel',
+          'type': 'u64'
         }
       ]
     },
@@ -1649,38 +1877,26 @@ export const IDL: Points = {
         {
           'name': 'user',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that called this instruction'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.domain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'userPointsAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
           'pda': {
             'seeds': [
               {
@@ -1691,7 +1907,6 @@ export const IDL: Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -1705,7 +1920,10 @@ export const IDL: Points = {
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System Program'
+          ]
         }
       ],
       'args': []
@@ -1716,38 +1934,26 @@ export const IDL: Points = {
         {
           'name': 'user',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that called this instruction'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.domain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'userPointsAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
           'pda': {
             'seeds': [
               {
@@ -1758,7 +1964,6 @@ export const IDL: Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -1772,22 +1977,34 @@ export const IDL: Points = {
         {
           'name': 'userTokenAccount',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The User token account for the license to burn'
+          ]
         },
         {
           'name': 'licenseMintAccount',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The mint address for the license to burn'
+          ]
         },
         {
           'name': 'tokenProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana Token Program'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System Program'
+          ]
         }
       ],
       'args': []
@@ -1798,58 +2015,34 @@ export const IDL: Points = {
         {
           'name': 'admin',
           'isMut': true,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'pointsModifierAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
           'pda': {
             'seeds': [
               {
@@ -1860,7 +2053,6 @@ export const IDL: Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -1874,12 +2066,18 @@ export const IDL: Points = {
         {
           'name': 'modifier',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Points Modifier address'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': [
@@ -1907,58 +2105,34 @@ export const IDL: Points = {
         {
           'name': 'admin',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'domainAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointsDomain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'DomainAccount',
-                'path': 'domain_account.name'
-              }
-            ]
-          }
+          'docs': [
+            'the [DomainAccount] account'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'DomainAccount',
-                'path': 'domain_account'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'pointsModifierAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
           'pda': {
             'seeds': [
               {
@@ -1969,7 +2143,6 @@ export const IDL: Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -1983,54 +2156,48 @@ export const IDL: Points = {
         {
           'name': 'modifier',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Points Modifier address'
+          ]
         },
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': []
     },
     {
-      'name': 'modifyPoints',
+      'name': 'incrementPoints',
       'accounts': [
         {
           'name': 'modifier',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.domain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'userPointsAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
           'pda': {
             'seeds': [
               {
@@ -2041,14 +2208,12 @@ export const IDL: Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'UserPointsAccount',
-                'path': 'user_points_account.owner'
+                'path': 'user_points_account'
               }
             ]
           }
@@ -2057,6 +2222,9 @@ export const IDL: Points = {
           'name': 'pointsModifierAccount',
           'isMut': false,
           'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
           'pda': {
             'seeds': [
               {
@@ -2067,7 +2235,6 @@ export const IDL: Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -2081,13 +2248,117 @@ export const IDL: Points = {
         {
           'name': 'systemProgram',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
         }
       ],
       'args': [
         {
-          'name': 'newXpValue',
+          'name': 'pointsAmount',
           'type': 'u64'
+        },
+        {
+          'name': 'newUserLevel',
+          'type': {
+            'option': 'u16'
+          }
+        }
+      ]
+    },
+    {
+      'name': 'decrementPoints',
+      'accounts': [
+        {
+          'name': 'modifier',
+          'isMut': false,
+          'isSigner': true,
+          'docs': [
+            'The entity that calls this instruction'
+          ]
+        },
+        {
+          'name': 'pointCategoryAccount',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
+        },
+        {
+          'name': 'userPointsAccount',
+          'isMut': true,
+          'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'UserPointsAccount'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'point_category_account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user_points_account'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'pointsModifierAccount',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'PointModifier'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'point_category_account'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'modifier'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'The Solana System program'
+          ]
+        }
+      ],
+      'args': [
+        {
+          'name': 'pointsAmount',
+          'type': 'u64'
+        },
+        {
+          'name': 'newUserLevel',
+          'type': {
+            'option': 'u16'
+          }
         }
       ]
     },
@@ -2097,38 +2368,26 @@ export const IDL: Points = {
         {
           'name': 'spender',
           'isMut': false,
-          'isSigner': true
+          'isSigner': true,
+          'docs': [
+            'The entity calling this instruction'
+          ]
         },
         {
           'name': 'pointCategoryAccount',
           'isMut': false,
           'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'PointCategoryAccount'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.domain'
-              },
-              {
-                'kind': 'account',
-                'type': 'string',
-                'account': 'PointCategoryAccount',
-                'path': 'point_category_account.label'
-              }
-            ]
-          }
+          'docs': [
+            'The [PointCategoryAccount]'
+          ]
         },
         {
           'name': 'userPointsAccount',
           'isMut': true,
           'isSigner': false,
+          'docs': [
+            'The [UserPointsAccount]'
+          ],
           'pda': {
             'seeds': [
               {
@@ -2139,14 +2398,12 @@ export const IDL: Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'UserPointsAccount',
-                'path': 'user_points_account.owner'
+                'path': 'user_points_account'
               }
             ]
           }
@@ -2155,6 +2412,9 @@ export const IDL: Points = {
           'name': 'pointsModifierAccount',
           'isMut': false,
           'isSigner': false,
+          'docs': [
+            'The [PointsModifier] account'
+          ],
           'pda': {
             'seeds': [
               {
@@ -2165,7 +2425,6 @@ export const IDL: Points = {
               {
                 'kind': 'account',
                 'type': 'publicKey',
-                'account': 'PointCategoryAccount',
                 'path': 'point_category_account'
               },
               {
@@ -2188,102 +2447,203 @@ export const IDL: Points = {
   'accounts': [
     {
       'name': 'domainAccount',
+      'docs': [
+        'PDA holding the class of points and the account with admin privileges for this point type'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
           {
-            'name': 'name',
-            'type': 'string'
+            'name': 'version',
+            'docs': [
+              'The data version of this account.'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'admin',
+            'docs': [
+              'admin'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
             'type': 'u8'
+          },
+          {
+            'name': 'name',
+            'docs': [
+              'the name'
+            ],
+            'type': {
+              'array': [
+                'u8',
+                32
+              ]
+            }
           }
         ]
       }
     },
     {
       'name': 'pointCategoryAccount',
+      'docs': [
+        'PDA for each specific type of Points'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
           {
+            'name': 'version',
+            'docs': [
+              'The data version of this account.'
+            ],
+            'type': 'u8'
+          },
+          {
             'name': 'domain',
+            'docs': [
+              'the domain'
+            ],
             'type': 'publicKey'
           },
           {
-            'name': 'label',
-            'type': 'string'
-          },
-          {
             'name': 'tokenRequired',
-            'type': 'bool'
+            'docs': [
+              'if this is true then token_mint should be a mint address'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'tokenMint',
-            'type': {
-              'option': 'publicKey'
-            }
+            'docs': [
+              'the token mint'
+            ],
+            'type': 'publicKey'
           },
           {
             'name': 'tokenQty',
+            'docs': [
+              'the token qty'
+            ],
             'type': 'u64'
           },
           {
+            'name': 'transferTokensToVault',
+            'docs': [
+              'if this is true then token_vault should be a token address'
+            ],
+            'type': 'u8'
+          },
+          {
+            'name': 'tokenVault',
+            'docs': [
+              'the token vault'
+            ],
+            'type': 'publicKey'
+          },
+          {
             'name': 'pointLimit',
+            'docs': [
+              'point limit'
+            ],
             'type': 'u64'
           },
           {
             'name': 'isSpendable',
-            'type': 'bool'
+            'docs': [
+              'is spendable?'
+            ],
+            'type': 'u8'
           },
           {
-            'name': 'lvlRequiredPoints',
-            'type': {
-              'array': [
-                'u64',
-                20
-              ]
-            }
+            'name': 'numLevels',
+            'docs': [
+              'the number of levels'
+            ],
+            'type': 'u16'
           },
           {
             'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
             'type': 'u8'
+          },
+          {
+            'name': 'label',
+            'docs': [
+              'the label'
+            ],
+            'type': {
+              'array': [
+                'u8',
+                32
+              ]
+            }
           }
         ]
       }
     },
     {
       'name': 'pointsModifier',
+      'docs': [
+        'PDA containing one account that can modify an Points type'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
           {
+            'name': 'version',
+            'docs': [
+              'The data version of this account.'
+            ],
+            'type': 'u8'
+          },
+          {
             'name': 'modifier',
+            'docs': [
+              'modifier'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'pointCategory',
+            'docs': [
+              'point_category'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'canIncrement',
-            'type': 'bool'
+            'docs': [
+              'can_increment'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'canDecrement',
-            'type': 'bool'
+            'docs': [
+              'can_decrement'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'canSpend',
-            'type': 'bool'
+            'docs': [
+              'can_spend'
+            ],
+            'type': 'u8'
           },
           {
             'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
             'type': 'u8'
           }
         ]
@@ -2291,32 +2651,182 @@ export const IDL: Points = {
     },
     {
       'name': 'userPointsAccount',
+      'docs': [
+        'PDA of an User for each specific type of Points'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
           {
+            'name': 'version',
+            'docs': [
+              'The data version of this account.'
+            ],
+            'type': 'u8'
+          },
+          {
             'name': 'owner',
+            'docs': [
+              'owner'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'pointCategory',
+            'docs': [
+              'point_category'
+            ],
             'type': 'publicKey'
           },
           {
             'name': 'earnedPoints',
+            'docs': [
+              'earned_points'
+            ],
             'type': 'u64'
           },
           {
             'name': 'spentPoints',
+            'docs': [
+              'spent_points'
+            ],
             'type': 'u64'
           },
           {
             'name': 'level',
-            'type': 'u64'
+            'docs': [
+              'level'
+            ],
+            'type': 'u16'
           },
           {
             'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
             'type': 'u8'
+          }
+        ]
+      }
+    }
+  ],
+  'types': [
+    {
+      'name': 'RegisterPointCategoryAccountInput',
+      'docs': [
+        'Struct for data input to Update Moon'
+      ],
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'label',
+            'docs': [
+              'label'
+            ],
+            'type': 'string'
+          },
+          {
+            'name': 'tokenRequired',
+            'docs': [
+              'token_required'
+            ],
+            'type': 'bool'
+          },
+          {
+            'name': 'tokenQty',
+            'docs': [
+              'token_qty'
+            ],
+            'type': {
+              'option': 'u64'
+            }
+          },
+          {
+            'name': 'pointLimit',
+            'docs': [
+              'point_limit'
+            ],
+            'type': 'u64'
+          },
+          {
+            'name': 'isSpendable',
+            'docs': [
+              'is_spendable'
+            ],
+            'type': 'bool'
+          },
+          {
+            'name': 'transferTokensToVault',
+            'docs': [
+              'transfer_tokens_to_vault'
+            ],
+            'type': 'bool'
+          }
+        ]
+      }
+    },
+    {
+      'name': 'UpdatePointCategoryAccountInput',
+      'docs': [
+        'Struct for data input to Update Moon'
+      ],
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'pointLimit',
+            'docs': [
+              'point_limit'
+            ],
+            'type': {
+              'option': 'u64'
+            }
+          },
+          {
+            'name': 'tokenQty',
+            'docs': [
+              'token_qty'
+            ],
+            'type': {
+              'option': 'u64'
+            }
+          },
+          {
+            'name': 'tokenRequired',
+            'docs': [
+              'token_required'
+            ],
+            'type': {
+              'option': 'bool'
+            }
+          },
+          {
+            'name': 'transferTokensToVault',
+            'docs': [
+              'transfer_tokens_to_vault'
+            ],
+            'type': {
+              'option': 'bool'
+            }
+          },
+          {
+            'name': 'isSpendable',
+            'docs': [
+              'is_spendable'
+            ],
+            'type': {
+              'option': 'bool'
+            }
+          },
+          {
+            'name': 'resetLevels',
+            'docs': [
+              'if true, the levels will be reset'
+            ],
+            'type': {
+              'option': 'bool'
+            }
           }
         ]
       }
@@ -2338,19 +2848,27 @@ export const IDL: Points = {
         },
         {
           'name': 'tokenRequired',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'tokenMint',
-          'type': {
-            'option': 'publicKey'
-          },
+          'type': 'publicKey',
           'index': false
         },
         {
           'name': 'tokenQty',
           'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'transferTokensToVault',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'tokenVault',
+          'type': 'publicKey',
           'index': false
         },
         {
@@ -2360,7 +2878,7 @@ export const IDL: Points = {
         },
         {
           'name': 'isSpendable',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
@@ -2379,25 +2897,28 @@ export const IDL: Points = {
           'index': false
         },
         {
-          'name': 'label',
-          'type': 'string',
-          'index': false
-        },
-        {
           'name': 'tokenRequired',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'tokenMint',
-          'type': {
-            'option': 'publicKey'
-          },
+          'type': 'publicKey',
           'index': false
         },
         {
           'name': 'tokenQty',
           'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'transferTokensToVault',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'tokenVault',
+          'type': 'publicKey',
           'index': false
         },
         {
@@ -2407,7 +2928,7 @@ export const IDL: Points = {
         },
         {
           'name': 'isSpendable',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
@@ -2426,25 +2947,28 @@ export const IDL: Points = {
           'index': false
         },
         {
-          'name': 'label',
-          'type': 'string',
-          'index': false
-        },
-        {
           'name': 'tokenRequired',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'tokenMint',
-          'type': {
-            'option': 'publicKey'
-          },
+          'type': 'publicKey',
           'index': false
         },
         {
           'name': 'tokenQty',
           'type': 'u64',
+          'index': false
+        },
+        {
+          'name': 'transferTokensToVault',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'tokenVault',
+          'type': 'publicKey',
           'index': false
         },
         {
@@ -2454,7 +2978,27 @@ export const IDL: Points = {
         },
         {
           'name': 'isSpendable',
-          'type': 'bool',
+          'type': 'u8',
+          'index': false
+        },
+        {
+          'name': 'updatedAt',
+          'type': 'i64',
+          'index': false
+        }
+      ]
+    },
+    {
+      'name': 'AddPointCategoryAccountLevelEvent',
+      'fields': [
+        {
+          'name': 'domain',
+          'type': 'publicKey',
+          'index': false
+        },
+        {
+          'name': 'newLevel',
+          'type': 'u64',
           'index': false
         },
         {
@@ -2519,17 +3063,17 @@ export const IDL: Points = {
         },
         {
           'name': 'canIncrement',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'canDecrement',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'canSpend',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
@@ -2559,12 +3103,12 @@ export const IDL: Points = {
         },
         {
           'name': 'canIncrement',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
           'name': 'canDecrement',
-          'type': 'bool',
+          'type': 'u8',
           'index': false
         },
         {
@@ -2608,6 +3152,13 @@ export const IDL: Points = {
           'index': false
         },
         {
+          'name': 'userLevel',
+          'type': {
+            'option': 'u16'
+          },
+          'index': false
+        },
+        {
           'name': 'modifiedAt',
           'type': 'i64',
           'index': false
@@ -2633,7 +3184,7 @@ export const IDL: Points = {
           'index': false
         },
         {
-          'name': 'spendedPointsAmount',
+          'name': 'spentPointsAmount',
           'type': 'u64',
           'index': false
         },
@@ -2703,13 +3254,13 @@ export const IDL: Points = {
     },
     {
       'code': 6011,
-      'name': 'NotAllowedExperienceQuantity',
-      'msg': 'Experience above permitted limit.'
+      'name': 'TokenVaultRequired',
+      'msg': 'Token Vault account is required.'
     },
     {
       'code': 6012,
-      'name': 'LabelTooLong',
-      'msg': 'Label string above max length.'
+      'name': 'NotAllowedPointsQuantity',
+      'msg': 'Points above permitted limit.'
     },
     {
       'code': 6013,
@@ -2720,6 +3271,11 @@ export const IDL: Points = {
       'code': 6014,
       'name': 'TokenQuantityExpected',
       'msg': 'The token quantity must be provided.'
+    },
+    {
+      'code': 6015,
+      'name': 'NumericOverflow',
+      'msg': 'Numeric overflow'
     }
   ]
 };

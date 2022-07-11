@@ -1,3 +1,4 @@
+import { BN } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 import { IDL as PROGRAM_IDL } from './points_program';
 import type { AnchorTypes } from '../../anchor/types';
@@ -6,9 +7,13 @@ export type XpTypes = AnchorTypes<typeof PROGRAM_IDL>;
 type Accounts = XpTypes['Accounts'];
 
 export type UserPointsAccount = Accounts['userPointsAccount'];
-export type PointCategoryAccount = Accounts['pointCategoryAccount'];
+export type BasePointCategoryAccount = Accounts['pointCategoryAccount'];
 export type PointsModifier = Accounts['pointsModifier'];
 export type DomainAccount = Accounts['domainAccount'];
+
+export interface PointCategoryAccount extends BasePointCategoryAccount {
+  levels: BN[];
+}
 
 export interface UserPointsAccountItem {
   publicKey: PublicKey;
