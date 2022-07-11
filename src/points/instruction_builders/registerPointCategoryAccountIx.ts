@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import { web3, BN } from '@project-serum/anchor';
 import { BaseParams } from '../../util/BaseParams';
 import { getPointsProgram } from '../utils';
-import { findDomainAccount } from '../pda_finders';
+import { findDomainAccount, findPointCategoryAccount } from '../pda_finders';
 
 /** Params for Register Point Category Account instruction */
 export interface RegisterPointCategoryAccountParams extends BaseParams {
@@ -14,7 +14,8 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
   tokenMintKey?: PublicKey | undefined /** The required token mint */;
   isSpendable: boolean /** Deployed program ID for the Points program */;
   domain: string /** The class of the related domain */;
-  lvlRequiredPoints?: Array<BN> | undefined;
+  transferTokensToVault?: boolean /** Whether to transfer tokens to the token vault */;
+  tokenVaultKey?: PublicKey /** The token vault */;
 }
 
 /**
@@ -27,7 +28,6 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
  * @param tokenMintKey - The required token mint
  * @param isSpendable - Whether the type of point is spendable or not
  * @param domain - The class of the related domain
- * @param lvlRequiredPoints - the level calculation parameters
  * @param connection - the Solana connection object
  * @param programId - Deployed program ID for the Points program
  */
@@ -39,17 +39,23 @@ export const registerPointCategoryAccountIx = async ({
   tokenQty = null,
   tokenMintKey,
   isSpendable,
+  transferTokensToVault,
+  tokenVaultKey,
   domain,
-  lvlRequiredPoints = null,
   connection,
   programId,
 }: RegisterPointCategoryAccountParams): Promise<{
-  accounts: web3.PublicKey[];
+  signers: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
   domainAccount: PublicKey;
 }> => {
   const program = getPointsProgram(connection, programId);
   const [domainAccount] = await findDomainAccount(domain, programId);
+  const [pointCategoryAccount] = await findPointCategoryAccount(
+    label,
+    domainAccount,
+    programId
+  );
 
   let remainingAccounts = [];
 
@@ -61,26 +67,37 @@ export const registerPointCategoryAccountIx = async ({
     ];
   }
 
+  if (transferTokensToVault && !tokenVaultKey) {
+    throw new Error('The token vault is required');
+  } else if (transferTokensToVault && tokenVaultKey) {
+    remainingAccounts.push({
+      pubkey: tokenVaultKey,
+      isWritable: false,
+      isSigner: false,
+    });
+  }
+
   const instructions = [
     await program.methods
-      .registerPointCategoryAccount(
+      .registerPointCategoryAccount({
         label,
         tokenRequired,
         tokenQty,
         pointLimit,
         isSpendable,
-        lvlRequiredPoints,
-      )
+        transferTokensToVault,
+      })
       .accounts({
         admin,
         domainAccount,
+        pointCategoryAccount,
       })
       .remainingAccounts(remainingAccounts)
       .instruction(),
   ];
 
   return {
-    accounts: [],
+    signers: [],
     instructions,
     domainAccount,
   };
