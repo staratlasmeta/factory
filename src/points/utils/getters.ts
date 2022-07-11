@@ -1,7 +1,9 @@
+import { BN } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 import {
   DomainAccount,
   PointsModifier,
+  BasePointCategoryAccount,
   PointCategoryAccount,
   UserPointsAccount,
   UserPointsAccountItem,
@@ -43,6 +45,9 @@ export interface GetPointsAccountParams extends BaseParams {
   pointCategoryAccountKey: PublicKey /** the Points Account public key */;
 }
 
+/** The minimum data size for a Points Category Account */
+export const POINTS_CATEGORY_OFFSET = 159;
+
 /**
  * Gets an Points account
  * @param param - the input parameters
@@ -52,12 +57,36 @@ export const getPointCategoryAccount = async ({
   connection,
   programId,
 }: GetPointsAccountParams) => {
-  const program = getPointsProgram(connection, programId);
-  const pointAccount = await program.account.pointCategoryAccount.fetch(
-    pointCategoryAccountKey
-  );
+  const account = await connection.getAccountInfo(pointCategoryAccountKey);
+  if (account === null) {
+    throw new Error('Account not found');
+  }
 
-  return pointAccount as PointCategoryAccount;
+  const program = getPointsProgram(connection, programId);
+
+  const pointCategoryAccount =
+    program.coder.accounts.decode<BasePointCategoryAccount>(
+      'pointCategoryAccount',
+      account.data
+    );
+
+  const retrievedLevels: BN[] = [];
+  for (let index = 0; index < pointCategoryAccount.numLevels; index++) {
+    const element = new BN(
+      account.data.subarray(
+        POINTS_CATEGORY_OFFSET + 8 * index,
+        POINTS_CATEGORY_OFFSET + 8 * (index + 1)
+      ),
+      10,
+      'le'
+    );
+    retrievedLevels.push(element);
+  }
+
+  return {
+    ...pointCategoryAccount,
+    levels: retrievedLevels,
+  } as PointCategoryAccount;
 };
 
 /** Params for User Points Account Getter */
