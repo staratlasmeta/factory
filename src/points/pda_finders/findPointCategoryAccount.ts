@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { POINT_CATEGORY_ACCOUNT_SEED } from './seeds';
+import { convertStringToBytes } from '../../util';
 
 /**
  * Returns the public key and bump seed for the Point Category Account
@@ -14,7 +15,7 @@ export async function findPointCategoryAccount(
   programId: PublicKey
 ): Promise<[PublicKey, number]> {
   return await PublicKey.findProgramAddress(
-    [POINT_CATEGORY_ACCOUNT_SEED, domainKey.toBuffer(), Buffer.from(label)],
+    [POINT_CATEGORY_ACCOUNT_SEED, domainKey.toBuffer(), convertStringToBytes(label, 32)],
     programId
   );
 }

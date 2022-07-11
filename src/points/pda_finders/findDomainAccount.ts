@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import { DOMAIN_ACCOUNT_SEED } from './seeds';
+import { convertStringToBytes } from '../../util';
 
 /**
  * Returns the public key and bump seed for the Domain Account
@@ -13,7 +14,7 @@ export async function findDomainAccount(
   programId: PublicKey
 ): Promise<[PublicKey, number]> {
   return await PublicKey.findProgramAddress(
-    [DOMAIN_ACCOUNT_SEED, Buffer.from(name)],
+    [DOMAIN_ACCOUNT_SEED, convertStringToBytes(name, 32)],
     programId
   );
 }
