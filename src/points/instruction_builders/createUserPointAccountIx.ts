@@ -22,7 +22,7 @@ export const createUserPointAccountIx = async ({
   connection,
   programId,
 }: CreateUserPointAccountParams): Promise<{
-  accounts: web3.PublicKey[];
+  signers: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
   const program = getPointsProgram(connection, programId);
@@ -38,7 +38,7 @@ export const createUserPointAccountIx = async ({
   ];
 
   return {
-    accounts: [],
+    signers: [],
     instructions,
   };
 };

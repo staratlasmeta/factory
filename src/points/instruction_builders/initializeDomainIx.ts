@@ -1,12 +1,13 @@
 import { PublicKey } from '@solana/web3.js';
 import { web3 } from '@project-serum/anchor';
-import { BaseParams } from '../../util/BaseParams'
-import { getPointsProgram } from '../utils'
+import { BaseParams } from '../../util/BaseParams';
+import { getPointsProgram } from '../utils';
+import { findDomainAccount } from '../pda_finders';
 
 /** Params for Init instruction */
 export interface initializeDomainParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
-  domain: string  /**the name of the domain account */
+  domain: string /**the name of the domain account */;
 }
 
 /**
@@ -20,19 +21,26 @@ export const initializeDomainIx = async ({
   admin,
   domain,
   connection,
-  programId
-}: initializeDomainParams): Promise<{ accounts: web3.PublicKey[], instructions: web3.TransactionInstruction[] }> => {
+  programId,
+}: initializeDomainParams): Promise<{
+  signers: web3.PublicKey[];
+  instructions: web3.TransactionInstruction[];
+}> => {
   const program = getPointsProgram(connection, programId);
+  const [domainAccount] = await findDomainAccount(domain, programId);
 
   const instructions = [
     await program.methods
       .initializeDomain(domain)
-      .accounts({admin})
-      .instruction()
+      .accounts({
+        admin,
+        domainAccount
+      })
+      .instruction(),
   ];
 
-  return {    
-    accounts: [],
+  return {
+    signers: [],
     instructions,
   };
 };
