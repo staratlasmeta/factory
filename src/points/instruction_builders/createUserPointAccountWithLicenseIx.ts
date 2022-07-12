@@ -6,7 +6,8 @@ import { getPointsProgram } from '../utils';
 /** Params for Create User Point Account instruction with license */
 export interface CreateUserPointAccountWithLicenseParams
   extends CreateUserPointAccountParams {
-  licenseTokenAccountKey: PublicKey /** the token account for the license to burn */;
+  licenseTokenAccountKey: PublicKey /** the token account for the license to burn/transfer */;
+  vaultTokenAccountKey?: PublicKey /** the vault token account */;
   licenseMintAccountKey: PublicKey /** the mint of the license token account */;
   pointCategoryAccount: PublicKey /** the Point Category Account PublicKey */;
 }
@@ -14,7 +15,8 @@ export interface CreateUserPointAccountWithLicenseParams
 /**
  * Creates a user Point Account when a license is required
  * @param user - the user public key
- * @param licenseTokenAccountKey - the token account for the license to burn
+ * @param licenseTokenAccountKey - the token account for the license to burn/transfer
+ * @param vaultTokenAccountKey - the vault token account
  * @param licenseMintAccountKey - the mint of the license token account
  * @param pointCategoryAccount - the Point Category Account PublicKey
  * @param connection - the Solana connection object
@@ -25,6 +27,7 @@ export const createUserPointAccountWithLicenseIx = async ({
   licenseTokenAccountKey,
   licenseMintAccountKey,
   pointCategoryAccount,
+  vaultTokenAccountKey,
   connection,
   programId,
 }: CreateUserPointAccountWithLicenseParams): Promise<{
@@ -32,6 +35,15 @@ export const createUserPointAccountWithLicenseIx = async ({
   instructions: web3.TransactionInstruction[];
 }> => {
   const program = getPointsProgram(connection, programId);
+
+  const remainingAccounts = [];
+  if (vaultTokenAccountKey) {
+    remainingAccounts.push({
+      pubkey: vaultTokenAccountKey,
+      isWritable: true,
+      isSigner: false,
+    });
+  }
 
   const instructions = [
     await program.methods
@@ -42,6 +54,7 @@ export const createUserPointAccountWithLicenseIx = async ({
         userTokenAccount: licenseTokenAccountKey,
         licenseMintAccount: licenseMintAccountKey,
       })
+      .remainingAccounts(remainingAccounts)
       .instruction(),
   ];
 
