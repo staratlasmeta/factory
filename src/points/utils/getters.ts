@@ -30,9 +30,17 @@ export const getDomainAccount = async ({
   programId,
 }: GetDomainAccountParams) => {
   const program = getPointsProgram(connection, programId);
-  const domainAccount = await program.account.domainAccount.fetch(
+  const baseDomainAccount = await program.account.domainAccount.fetch(
     domainAccountKey
   );
+
+  let prettyName = new TextDecoder().decode(Buffer.from(baseDomainAccount.name));
+  prettyName = prettyName.replace(/\0/g, '');
+
+  const domainAccount = {
+    ...baseDomainAccount,
+    prettyName,
+  };
 
   return {
     domainAccount: domainAccount as DomainAccount,
@@ -83,9 +91,13 @@ export const getPointCategoryAccount = async ({
     retrievedLevels.push(element);
   }
 
+  let prettyLabel = new TextDecoder().decode(Buffer.from(pointCategoryAccount.label));
+  prettyLabel = prettyLabel.replace(/\0/g, '');
+
   return {
     ...pointCategoryAccount,
     levels: retrievedLevels,
+    prettyLabel,
   } as PointCategoryAccount;
 };
 

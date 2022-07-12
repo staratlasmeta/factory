@@ -9,10 +9,15 @@ type Accounts = XpTypes['Accounts'];
 export type UserPointsAccount = Accounts['userPointsAccount'];
 export type BasePointCategoryAccount = Accounts['pointCategoryAccount'];
 export type PointsModifier = Accounts['pointsModifier'];
-export type DomainAccount = Accounts['domainAccount'];
+export type BaseDomainAccount = Accounts['domainAccount'];
 
 export interface PointCategoryAccount extends BasePointCategoryAccount {
+  prettyLabel: string;
   levels: BN[];
+}
+
+export interface DomainAccount extends BaseDomainAccount {
+  prettyName: string;
 }
 
 export interface UserPointsAccountItem {
