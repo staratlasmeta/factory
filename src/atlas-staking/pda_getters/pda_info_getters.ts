@@ -1,5 +1,4 @@
 import { web3 } from '@project-serum/anchor';
-import { getRegisteredStake, getStakingAccount } from './pda_getters';
 import { getStakingProgram } from './../utils/getStakingProgram';
 import { RegisteredStakeAccountInfo, StakingAccountInfo } from './../types/stakingProgramAccounts';
 
@@ -11,15 +10,12 @@ import { RegisteredStakeAccountInfo, StakingAccountInfo } from './../types/staki
  * */
 export async function getRegisteredStakeAccountInfo(
     connection: web3.Connection,
+    registeredStake: web3.PublicKey,
     programId: web3.PublicKey,
-    authority: web3.PublicKey,
-    stakeToken: web3.PublicKey,
-    rewardToken: web3.PublicKey,
 ): Promise<RegisteredStakeAccountInfo> {
     const program = getStakingProgram({connection, programId});
 
-    const [registeredStakeAccount] = await getRegisteredStake(programId, authority, stakeToken, rewardToken);
-    const registeredStakeAccountInfo = await program.account.registeredStake.fetch(registeredStakeAccount);
+    const registeredStakeAccountInfo = await program.account.registeredStake.fetch(registeredStake);
     return registeredStakeAccountInfo as RegisteredStakeAccountInfo
 }
 
@@ -31,13 +27,11 @@ export async function getRegisteredStakeAccountInfo(
  * */
 export async function getStakingAccountInfo(
     connection: web3.Connection,
+    stakingAccount: web3.PublicKey,
     programId: web3.PublicKey,
-    user: web3.PublicKey,
-    registeredStake: web3.PublicKey,
 ): Promise<StakingAccountInfo> {
     const program = getStakingProgram({connection, programId});
 
-    const [stakingAccount] = await getStakingAccount(programId, user, registeredStake);
     const stakingAccountInfo = await program.account.stakingAccount.fetch(stakingAccount);
     return stakingAccountInfo as StakingAccountInfo
 }
