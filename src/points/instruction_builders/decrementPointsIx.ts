@@ -56,14 +56,17 @@ export const decrementPointsIx = async ({
   });
 
   const newPointsValue = userPointsAcc.earnedPoints.sub(pointsValue);
-  let newLevel = 0;
+  let newLevel = null;
 
-  for (let index = 0; index < pointsCategoryAcc.levels.length; index++) {
-    const levelPoints = pointsCategoryAcc.levels[index];
-    if (levelPoints.gt(newPointsValue)) {
-      break;
+  if (pointsCategoryAcc.levels.length > 0) {
+    newLevel = 0;
+    for (let index = 0; index < pointsCategoryAcc.levels.length; index++) {
+      const levelPoints = pointsCategoryAcc.levels[index];
+      if (levelPoints.gt(newPointsValue)) {
+        break;
+      }
+      newLevel += 1;
     }
-    newLevel += 1;
   }
 
   const instructions = [
