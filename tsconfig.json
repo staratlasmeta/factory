@@ -5,9 +5,13 @@
     "checkJs": true,
     "declaration": true,
     "declarationMap": true,
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "sourceMap": true,
     "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "ES6"
   },
   "include": ["./src/**/*"],
   "exclude": ["./src/**/*.test.js", "node_modules", "**/node_modules"]

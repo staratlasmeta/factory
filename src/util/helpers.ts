@@ -25,7 +25,6 @@ export function byteArrayToString(array: number[]): string {
 
 export function stringToByteArray(str: string, length: number): any[] {
   if (str.length > length) {
-    console.log(`Unable to get byte array, length greater than ${length}`);
     return null;
   }
   let byteArray = [];

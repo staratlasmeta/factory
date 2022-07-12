@@ -3,7 +3,6 @@ import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
 export const getOrderSide = (orderAccount: any): string => {
-    console.log('Jsonify: ', JSON.stringify(orderAccount.orderSide));
     if (JSON.stringify(orderAccount.orderSide) === JSON.stringify({ buy: {} })) {
         return 'BuySide';
     }

@@ -25,7 +25,7 @@ export interface ExchangeOrderParams extends BaseParams {
 }
 
 /**
- * Creates an instruction which exchanges tokens between offer initializer and offer taker to satisfy the exchange detailed in offerAccount
+ * Creates an instruction which exchanges tokens between order initializer and order taker to satisfy the exchange detailed in orderAccount
  *
  * @param connection
  * @param orderAccount - an initialized orderAccount

@@ -9,13 +9,13 @@ import { SystemProgram, Transaction, TransactionInstruction } from '@solana/web3
 import { getGmIDL } from './../marketplace/utils/getMarketplaceProgram';
 
 /**
- * Creates an instruction to initialize an order account which can be passed into an initialize offer instruction.
+ * Creates an instruction to initialize an order account which can be passed into an initialize order instruction.
  *
  * Must add to an existing web3.Transaction. Transaction recentBlockhash and feePayer must be defined.
- * Must call '.partialsign(offerAccount)' before sending transaction containing this instruction or you will receive signature verification errors.
+ * Must call '.partialsign(orderAccount)' before sending transaction containing this instruction or you will receive signature verification errors.
  *
  * @param connection
- * @param payer - PublicKey of offer initializer
+ * @param payer - PublicKey of order initializer
  * @param orderAccount - Keypair for order account, can be obtained with 'anchor.web3.Keypair.generate()'
  * @param programId - Deployed program ID for GM program
  */
@@ -41,14 +41,14 @@ export async function createAccountInstruction(
 }
 
 /**
- * Creates a transaction to initialize an order account which can be passed into an initialize offer instruction.
+ * Creates a transaction to initialize an order account which can be passed into an initialize order instruction.
  *
  * Can '.add()' additional instructions to this transaction.
  *
- * Must call '.partialsign(offerAccount)' before sending this transaction or you will receive signature verification errors.
+ * Must call '.partialsign(orderAccount)' before sending this transaction or you will receive signature verification errors.
  *
  * @param connection
- * @param payer - Public key of offer initializer
+ * @param payer - Public key of order initializer
  * @param orderAccount - Keypair for order account, can be obtained with 'anchor.web3.Keypair.generate()'
  * @param programId - Deployed program ID for GM program
  */
@@ -80,11 +80,3 @@ export async function createAccountTransaction(
 
     return tx;
 }
-
-// export const getOrderSide = (side: any): string => {
-//     console.log('Jsonify: ', JSON.stringify(side));
-//     if (JSON.stringify(side) === JSON.stringify({ buy: {} })) {
-//         return 'BuySide';
-//     }
-//     return 'SellSide';
-// }

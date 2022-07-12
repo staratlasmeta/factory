@@ -21,16 +21,16 @@ export interface InitializeOrderParameters extends BaseParams {
 }
 
 /**
- * Returns an instruction which creates an offer to purchase originationQty of ReceiveToken at 'price' value per unit
+ * Returns an instruction which creates an order to purchase originationQty of ReceiveToken at 'price' value per unit
  *
  * @param connection
  * @param initializerMainAccount - Public key of user creating order
- * @param initializerDepositTokenAccount - Public key of token account for token being offered
+ * @param initializerDepositTokenAccount - Public key of token account for token being ordered
  * @param initializerReceiveTokenAccount - Public key of token account for token to be received
  * @param orderAccount - Keypair of an initialized orderAccount
  * @param price - Price of individual unit
  * @param originationQty - Number of units to purchase
- * @param depositMint - Mint address of token being offered
+ * @param depositMint - Mint address of token being ordered
  * @param receiveMint - Mint address of token being purchased
  * @param programId - Deployed program ID for GM program
  */
@@ -120,16 +120,16 @@ export async function createInitializeBuyOrderInstruction({
 }
 
 /*
- * Returns an instruction which creates an offer to sell originationQty of DepositToke;n at 'price' value per unit
+ * Returns an instruction which creates an order to sell originationQty of DepositToke;n at 'price' value per unit
  *
  * @param connection
  * @param orderInitializer - Public key of order initializer
- * @param initializerDepositTokenAccount - Public key of token account for token being offered
+ * @param initializerDepositTokenAccount - Public key of token account for token being ordered
  * @param initializerReceiveTokenAccount - Public key of token account for token to be received
  * @param orderAccount - Keypair of an initialized orderAccount
  * @param price - Price of individual unit
  * @param originationQty - Number of units to purchase
- * @param depositMint - Mint address of token being offered
+ * @param depositMint - Mint address of token being ordered
  * @param receiveMint - Mint address of token being purchased
  * @param programId - Deployed program ID for GM program
  */
