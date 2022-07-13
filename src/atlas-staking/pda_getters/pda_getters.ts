@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import {REGISTERED_STAKE, REWARD_ACCOUNT, REWARD_AUTH, STAKING_ACCOUNT, STAKING_ESCROW} from './seeds';
+import {REGISTERED_STAKE, REWARD_AUTH, STAKING_ACCOUNT, STAKING_ESCROW} from './seeds';
 
 /**
  * Returns the public key and bump seed for a registered stake account
