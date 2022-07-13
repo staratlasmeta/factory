@@ -11,7 +11,8 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "target": "ES6"
+    "target": "ES6",
+    "module": "commonjs"
   },
   "include": ["./src/**/*"],
   "exclude": ["./src/**/*.test.js", "node_modules", "**/node_modules"]
