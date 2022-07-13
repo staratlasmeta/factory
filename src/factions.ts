@@ -5,7 +5,7 @@ import {
   Program,
   web3
 } from '@project-serum/anchor';
-import { AnchorTypes } from '@saberhq/anchor-contrib';
+import { AnchorTypes } from './anchor/types';
 
 export type FactionEnlistment = {
   'version': '0.0.0',

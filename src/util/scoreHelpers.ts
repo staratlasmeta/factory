@@ -52,9 +52,7 @@ export async function createATokenAccount(
     mint
   );
   tx.add(ix);
-  const txid = await provider.sendAndConfirm(tx);
-  
-  console.log('Created Token Account: ', txid);
+  await provider.sendAndConfirm(tx);
 
   return associatedTokenAccount;
 }
@@ -240,7 +238,6 @@ export async function createMint(
   tx.add(initialInstruction);
 
   const txid = await provider.sendAndConfirm(tx, [account]);
-  console.log('Created mint: ', txid);
 
   return account.publicKey;
 }

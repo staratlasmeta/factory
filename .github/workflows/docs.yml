@@ -2,6 +2,7 @@ name: Docs publish
 
 on:
   push:
+
     branches: [ main ]
 jobs:
   build:

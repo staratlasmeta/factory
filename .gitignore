@@ -109,6 +109,7 @@ dist
 
 # VSCode files
 .vscode/
+
 *.code-workspace
 
 # JetBrains
