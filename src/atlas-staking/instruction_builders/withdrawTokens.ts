@@ -1,7 +1,6 @@
 import { BaseStakingParams } from './baseParams';
 import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from  '@solana/spl-token';
 import { getStakingProgram } from '../utils';
 import { FactoryReturn } from '../../types';
 import { getTokenAccount } from '../../util';
