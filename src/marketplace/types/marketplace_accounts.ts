@@ -24,11 +24,6 @@ export type RegisteredCurrencyItem = {
     royalty: BN;
 }
 
-export interface OrderSide {
-    Buy,
-    Sell
-}
-
 export enum GmLogs {
     CancelOrderMemo = 'CancelOrderMemo',
     ExchangeMemo = 'ExchangeMemo',
