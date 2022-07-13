@@ -1,9 +1,9 @@
 import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 
-export interface harvestRewardsParams extends BaseParams {
+export interface HarvestRewardsParams extends BaseStakingParams {
     user: web3.PublicKey,
     rewardMint: web3.PublicKey,
     registeredStake: web3.PublicKey,
@@ -27,7 +27,7 @@ export async function harvestRewardsInstruction({
     registeredStake,
     stakingAccount,
     programId
-}: harvestRewardsParams): Promise<{
+}: HarvestRewardsParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {

@@ -2,9 +2,9 @@ import { BN, web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { getRegisteredStake } from '../pda_getters';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 
-export interface registerStakeParams extends BaseParams {
+export interface RegisterStakeParams extends BaseStakingParams {
     authority: web3.PublicKey
     stakeMint: web3.PublicKey,
     rewardMint: web3.PublicKey,
@@ -27,7 +27,7 @@ export async function registerStakeInstruction({
     rewardMint,
     cooldownPeriod,
     programId
-}: registerStakeParams): Promise<{
+}: RegisterStakeParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {

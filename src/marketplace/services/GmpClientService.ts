@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { BN } from '@project-serum/anchor';
 import { Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js';
 

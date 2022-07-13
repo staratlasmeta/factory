@@ -1,9 +1,8 @@
 import { web3 } from '@project-serum/anchor';
-import { getRegisteredStake } from '../pda_getters';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 
-export interface cancelUnstakeParams extends BaseParams {
+export interface CancelUnstakeParams extends BaseStakingParams {
     user: web3.PublicKey,
     registeredStake: web3.PublicKey,
 }
@@ -21,7 +20,7 @@ export async function cancelUnstakeInstruction({
     user,
     registeredStake,
     programId
-}: cancelUnstakeParams): Promise<{
+}: CancelUnstakeParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {

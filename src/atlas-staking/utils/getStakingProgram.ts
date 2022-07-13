@@ -5,7 +5,7 @@ import {
     web3,
 } from '@project-serum/anchor';
 import {
-    baseIdl
+    stakingIdl
 } from './../types/stakingIdl';
 
 /**
@@ -16,7 +16,7 @@ import {
 export function getStakingIdl(
     programId: web3.PublicKey
 ): unknown {
-    const _tmp = baseIdl;
+    const _tmp = stakingIdl;
     _tmp['metadata']['address'] = programId.toBase58();
     return _tmp;
 }

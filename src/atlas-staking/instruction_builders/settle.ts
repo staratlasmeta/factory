@@ -1,8 +1,8 @@
 import { web3 } from '@project-serum/anchor';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 
-export interface SettleParams extends BaseParams {
+export interface SettleParams extends BaseStakingParams {
     authority: web3.PublicKey,
     registeredStake: web3.PublicKey,
     stakingAccount: web3.PublicKey,

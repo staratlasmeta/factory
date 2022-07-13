@@ -1,9 +1,9 @@
 import { BN, web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 
-export interface stakeTokensParams extends BaseParams {
+export interface StakeTokensParams extends BaseStakingParams {
     user: web3.PublicKey,
     tokenSource: web3.PublicKey,
     stakeMint: web3.PublicKey,
@@ -33,7 +33,7 @@ export async function stakeTokensInstruction({
     registeredStake,
     stakingAccount,
     programId
-}: stakeTokensParams): Promise<{
+}: StakeTokensParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {

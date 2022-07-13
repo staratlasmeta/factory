@@ -1,10 +1,10 @@
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from  '@solana/spl-token';
 import { getStakingProgram } from '../utils';
 
-export interface withdrawTokensParams extends BaseParams {
+export interface WithdrawTokensParams extends BaseStakingParams {
     user: web3.PublicKey,
     tokenSource: web3.PublicKey,
     authority: web3.PublicKey
@@ -34,7 +34,7 @@ export async function withdrawTokensInstruction({
     stakingAccount,
     tokenSource,
     programId
-}: withdrawTokensParams): Promise<{
+}: WithdrawTokensParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {

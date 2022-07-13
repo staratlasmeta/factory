@@ -2,9 +2,9 @@ import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { getRegisteredStakeAccountInfo } from '../pda_getters';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 
-export interface unstakeTokensParams extends BaseParams {
+export interface UnstakeTokensParams extends BaseStakingParams {
     user: web3.PublicKey,
     registeredStake: web3.PublicKey,
     stakingAccount: web3.PublicKey,
@@ -25,7 +25,7 @@ export async function unstakeTokensInstruction({
     registeredStake,
     stakingAccount,
     programId
-}: unstakeTokensParams): Promise<{
+}: UnstakeTokensParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {

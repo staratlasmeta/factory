@@ -915,7 +915,7 @@ export type Staking =
   }
 }
 
-export const baseIdl: Staking =
+export const stakingIdl: Staking =
 {
   'version': '0.1.0',
   'name': 'atlas_staking',

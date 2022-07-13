@@ -1,8 +1,8 @@
 import { web3 } from '@project-serum/anchor';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 
-export interface createStakingAccount extends BaseParams {
+export interface CreateStakingAccount extends BaseStakingParams {
     user: web3.PublicKey,
     registeredStake: web3.PublicKey
 }
@@ -20,7 +20,7 @@ export async function createStakingAccountInstruction({
     user,
     registeredStake,
     programId
-}: createStakingAccount): Promise<{
+}: CreateStakingAccount): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {

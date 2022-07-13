@@ -1,8 +1,8 @@
 import { BN, web3 } from '@project-serum/anchor';
 import { getStakingProgram } from '../utils';
-import { BaseParams } from './baseParams';
+import { BaseStakingParams } from './baseParams';
 
-export interface updateRewardMultiplierParams extends BaseParams {
+export interface UpdateRewardMultiplierParams extends BaseStakingParams {
     authority: web3.PublicKey
     registeredStake: web3.PublicKey,
     rewardMultiplier: number,
@@ -25,7 +25,7 @@ export async function updateRewardMultiplierInstruction({
     registeredStake,
     newStakingPeriod,
     programId
-}: updateRewardMultiplierParams): Promise<{
+}: UpdateRewardMultiplierParams): Promise<{
     accounts: web3.PublicKey[],
     instructions: web3.TransactionInstruction[]
 }> {
