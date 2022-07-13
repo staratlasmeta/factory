@@ -15,8 +15,6 @@ export interface GalacticMarketPlaceChangeEvent {
 }
 
 export interface GalacticMarketPlaceEventHandler {
-  mint?: string;
-  userAddress?: string;
   onEvent: (orderEvent: GalacticMarketPlaceChangeEvent) => void;
 }
 

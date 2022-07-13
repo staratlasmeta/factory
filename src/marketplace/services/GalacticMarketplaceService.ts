@@ -12,8 +12,8 @@ import { GmpClientService } from './GmpClientService';
 import { GmpEventService } from './GmpEventService';
 
 /**
- * Establishes a connection to the Galactic Marketplace and maintains an up-to-date realtime
- * internal state of all open marketplace orders.
+ * Establishes a connection to the Galactic Marketplace and maintains an up-to-date
+ * real time snapshot of all open marketplace orders.
  *
  * @param rpcUrl Solana RPC Provider Url
  * @param programId The Galactic Marketplace program PublicKey
@@ -119,7 +119,7 @@ export class GalacticMarketplaceService {
     return this.orderCacheService.buyOrdersCache;
   }
 
-  getBuyOrdersForNft(mint: string): Map<string, Order> {
+  getBuyOrdersForMint(mint: string): Map<string, Order> {
     return this.orderCacheService.buyOrdersCache.get(mint);
   }
 
@@ -127,7 +127,7 @@ export class GalacticMarketplaceService {
     return this.orderCacheService.sellOrdersCache;
   }
 
-  getSellOrdersForNft(mint: string): Map<string, Order> {
+  getSellOrdersForMint(mint: string): Map<string, Order> {
     return this.orderCacheService.sellOrdersCache.get(mint);
   }
 
@@ -139,11 +139,11 @@ export class GalacticMarketplaceService {
     currencyMint: string,
     itemMint: string
   ): Order[] {
-    const ordersForNft = this.getBuyOrdersForNft(itemMint);
+    const ordersForMint = this.getBuyOrdersForMint(itemMint);
 
-    if (!ordersForNft) return [];
+    if (!ordersForMint) return [];
 
-    const orders = [...ordersForNft.values()];
+    const orders = [...ordersForMint.values()];
 
     if (!orders.length) return [];
 
@@ -154,11 +154,11 @@ export class GalacticMarketplaceService {
     currencyMint: string,
     itemMint: string
   ): Order[] {
-    const ordersForNft = this.getSellOrdersForNft(itemMint);
+    const ordersForMint = this.getSellOrdersForMint(itemMint);
 
-    if (!ordersForNft) return [];
+    if (!ordersForMint) return [];
 
-    const orders = [...ordersForNft.values()];
+    const orders = [...ordersForMint.values()];
 
     if (!orders.length) return [];
 
@@ -181,8 +181,8 @@ export class GalacticMarketplaceService {
   getAllOrdersByItemMint(mint: string): Map<string, Order> {
     const map = new Map();
 
-    const sellOrdersForMint = this.getSellOrdersForNft(mint);
-    const buyOrdersForMint = this.getBuyOrdersForNft(mint);
+    const sellOrdersForMint = this.getSellOrdersForMint(mint);
+    const buyOrdersForMint = this.getBuyOrdersForMint(mint);
 
     if (sellOrdersForMint) {
       for (const order of sellOrdersForMint.values()) {
