@@ -1,7 +1,6 @@
 import { queueProcessor, IDisposer } from 'mobx-utils';
 import { pull } from 'lodash';
 import { Commitment, Connection, PublicKey } from '@solana/web3.js';
-import { singleton } from 'tsyringe';
 
 import { OrderCacheService } from './OrderCacheService';
 import { Order } from '../models/Order';
@@ -20,31 +19,30 @@ import { GmpEventService } from './GmpEventService';
  * @param programId The Galactic Marketplace program PublicKey
  * @param commitment Optional Solana commitment level, defaults to `confirmed`
  */
-@singleton()
 export class GalacticMarketplaceService {
   protected static commitment: Commitment = 'confirmed';
 
   protected connection: Connection;
   protected marketplaceProgramId: PublicKey;
-  protected OrderCacheService: OrderCacheService;
-  protected gmpClientService: GmpClientService;
+  protected orderCacheService: OrderCacheService;
+  protected gmpClientService: GmpClientService = new GmpClientService();
   protected gmpEventService: GmpEventService;
   protected eventCallBacks: Array<GalacticMarketPlaceEventHandler> = [];
   protected changeObserverDisposer: IDisposer = null;
 
   constructor(rpcUrl: string, programId: PublicKey, commitment?: Commitment) {
+    this.orderCacheService = new OrderCacheService();
+    this.gmpClientService = new GmpClientService();
+
     this.connection = new Connection(
       rpcUrl,
       commitment || GalacticMarketplaceService.commitment
     );
     this.marketplaceProgramId = programId;
-
     this.gmpEventService = new GmpEventService(
       this.connection,
       this.marketplaceProgramId
     );
-    this.gmpClientService = new GmpClientService();
-    this.OrderCacheService = new OrderCacheService();
 
     this.handleMarketplaceEvent = this.handleMarketplaceEvent.bind(this);
   }
@@ -53,7 +51,7 @@ export class GalacticMarketplaceService {
     await this.gmpEventService.initialize();
 
     this.changeObserverDisposer = queueProcessor(
-      this.OrderCacheService.orderChanges,
+      this.orderCacheService.orderChanges,
       (event) => {
         this.eventCallBacks.forEach((callBackHandler) =>
           callBackHandler.onEvent(event)
@@ -66,7 +64,7 @@ export class GalacticMarketplaceService {
 
     await this.loadInitialOrders();
 
-    return this.OrderCacheService.mints.length;
+    return this.orderCacheService.mints.length;
   }
 
   async end(): Promise<boolean> {
@@ -102,35 +100,35 @@ export class GalacticMarketplaceService {
       console.log(error);
     }
 
-    return this.OrderCacheService.getAllOrdersCache().size;
+    return this.orderCacheService.getAllOrdersCache().size;
   }
 
   addOrderToCache(order: Order): Order {
-    return this.OrderCacheService.addOrder(order);
+    return this.orderCacheService.addOrder(order);
   }
 
   removeOrderFromCache(order: Order): boolean {
-    return this.OrderCacheService.cancelOrder(order);
+    return this.orderCacheService.cancelOrder(order);
   }
 
   updateOrderInCache(order: Order): Order {
-    return this.OrderCacheService.updateOrder(order);
+    return this.orderCacheService.updateOrder(order);
   }
 
   getBuyOrders(): Map<string, Map<string, Order>> {
-    return this.OrderCacheService.buyOrdersCache;
+    return this.orderCacheService.buyOrdersCache;
   }
 
   getBuyOrdersForNft(mint: string): Map<string, Order> {
-    return this.OrderCacheService.buyOrdersCache.get(mint);
+    return this.orderCacheService.buyOrdersCache.get(mint);
   }
 
   getSellOrders(): Map<string, Map<string, Order>> {
-    return this.OrderCacheService.sellOrdersCache;
+    return this.orderCacheService.sellOrdersCache;
   }
 
   getSellOrdersForNft(mint: string): Map<string, Order> {
-    return this.OrderCacheService.sellOrdersCache.get(mint);
+    return this.orderCacheService.sellOrdersCache.get(mint);
   }
 
   getOrdersByType(orderType: 'buy' | 'sell'): Map<string, Map<string, Order>> {
@@ -177,7 +175,7 @@ export class GalacticMarketplaceService {
   }
 
   getOrdersById(id: string): Order {
-    return { ...this.OrderCacheService.getOrderById(id) };
+    return { ...this.orderCacheService.getOrderById(id) };
   }
 
   getAllOrdersByItemMint(mint: string): Map<string, Order> {
@@ -202,11 +200,11 @@ export class GalacticMarketplaceService {
   }
 
   getAllMints(): string[] {
-    return this.OrderCacheService.mints;
+    return this.orderCacheService.mints;
   }
 
   getAllOrdersForUserAddress(publicKey: string): Order[] {
-    const allOrders = this.OrderCacheService.getAllOrdersCache();
+    const allOrders = this.orderCacheService.getAllOrdersCache();
     const allOrdersValues = Array.from(allOrders.values());
     const ordersFilteredByOwner = allOrdersValues.filter(
       (order) => order.owner === publicKey

@@ -1,12 +1,12 @@
 {
   "name": "@staratlas/factory",
-  "version": "0.2.7",
+  "version": "0.2.13",
   "description": "Star Atlas Factory for constructing Transactions targeting Solana on-chain programs",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/staratlasmeta/factory.git"
   },
-  "author": "",
+  "author": "ATMTA, Inc.",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/staratlasmeta/factory/issues"
@@ -31,9 +31,8 @@
     "@solana/web3.js": "^1.15.0",
     "bn.js": "^5.1.3",
     "js-sha3": "^0.8.0",
-    "mobx": "^6.6.1",
-    "mobx-utils": "^6.0.5",
-    "tsyringe": "^4.7.0"
+    "mobx": "^6.3.13",
+    "mobx-utils": "^6.0.5"
   },
   "devDependencies": {
     "@types/bs58": "^4.0.1",

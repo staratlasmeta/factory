@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-import { singleton } from 'tsyringe';
 import { BN } from '@project-serum/anchor';
 import { Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js';
 
@@ -30,7 +29,6 @@ import { ONE_MILLION } from './constants';
  * Provides utility methods for interacting with the Galactic Marketplace and
  * maintains an internal cache of all valid quote currencies registered with the program
  */
-@singleton()
 export class GmpClientService {
   currencyInfo: RegisteredCurrency[] = [];
 

@@ -8,7 +8,6 @@ import {
   Wallet,
 } from '@project-serum/anchor';
 import { Commitment, Connection, Keypair, PublicKey } from '@solana/web3.js';
-import { singleton } from 'tsyringe';
 
 import { Order, OrderSide } from '../models';
 import {
@@ -28,7 +27,6 @@ import { GmLogs } from '../types';
  * @param programId The Galactic Marketplace program PublicKey
  * @param commitment Optional Solana commitment level, defaults the `connection` commitment level
  */
-@singleton()
 export class GmpEventService {
   protected wallet: Wallet;
   protected connection: Connection;

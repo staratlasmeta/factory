@@ -1,4 +1,3 @@
-import { singleton } from 'tsyringe';
 import { clone, union } from 'lodash';
 import {
   makeObservable,
@@ -24,7 +23,6 @@ type ObservableData = {
  * An opinionated service to maintain a performant caching layer of Order data.
  * This is implemented by `GalacticMarketplaceService`.
  */
-@singleton()
 export class OrderCacheService {
   protected endTriggered = false;
   protected observableData: ObservableData = {
