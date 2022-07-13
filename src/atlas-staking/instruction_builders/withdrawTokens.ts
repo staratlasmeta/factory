@@ -3,6 +3,8 @@ import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from  '@solana/spl-token';
 import { getStakingProgram } from '../utils';
+import { FactoryReturn } from '../../types';
+import { getTokenAccount } from '../../util';
 
 export interface WithdrawTokensParams extends BaseStakingParams {
     user: web3.PublicKey,
@@ -32,35 +34,34 @@ export async function withdrawTokensInstruction({
     stakeMint,
     registeredStake,
     stakingAccount,
-    tokenSource,
     programId
-}: WithdrawTokensParams): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: WithdrawTokensParams): Promise<FactoryReturn> {
     const program = getStakingProgram({connection, programId});
     const tokenEscrow = await associatedAddress({ owner: stakingAccount, mint: stakeMint});
 
-    const instructions = [];
-    const possibleTokenSource = await connection.getParsedTokenAccountsByOwner(
-        user,
-        {
-            mint: stakeMint,
-        }
-    );
+    const ixSet: FactoryReturn = {
+        signers: [],
+        instructions: []
+    }
 
-    if (possibleTokenSource.value.length === 0) {
-        tokenSource = await associatedAddress({owner: user, mint: stakeMint});
-        instructions.push(
-            Token.createAssociatedTokenAccountInstruction(
-                ASSOCIATED_TOKEN_PROGRAM_ID,
-                TOKEN_PROGRAM_ID,
-                stakeMint,
-                tokenSource,
-                user,
-                user
-            )
-        )
+    let tokenAccount: web3.PublicKey | web3.Keypair = null;
+    let tokenSource: web3.PublicKey = null;
+
+    const response = await getTokenAccount(
+        connection,
+        user,
+        stakeMint
+    );
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
+    }
+
+    if (tokenAccount instanceof web3.Keypair) {
+        tokenSource = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount);
+    } else {
+        tokenSource = tokenAccount;
     }
 
     const ix = await program.methods
@@ -76,10 +77,7 @@ export async function withdrawTokensInstruction({
             })
             .instruction();
 
-    instructions.push(ix);
+    ixSet.instructions.push(ix);
 
-    return {
-        accounts: [],
-        instructions,
-    };
+    return ixSet;
 }

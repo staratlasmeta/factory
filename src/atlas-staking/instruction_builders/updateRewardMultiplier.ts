@@ -1,4 +1,5 @@
 import { BN, web3 } from '@project-serum/anchor';
+import { FactoryReturn } from '../../types';
 import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
 
@@ -25,14 +26,15 @@ export async function updateRewardMultiplierInstruction({
     registeredStake,
     newStakingPeriod,
     programId
-}: UpdateRewardMultiplierParams): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: UpdateRewardMultiplierParams): Promise<FactoryReturn> {
     const program = getStakingProgram({connection, programId});
 
-    const instructions = [
-        await program.methods
+    const ixSet: FactoryReturn = {
+        instructions: [],
+        signers: []
+    }
+
+    const ix = await program.methods
             .updateRewardMultiplier(
                 new BN(rewardMultiplier),
                 newStakingPeriod,
@@ -41,10 +43,9 @@ export async function updateRewardMultiplierInstruction({
                 authority,
                 registeredStake
             })
-            .instruction()
-    ];
-    return {
-        accounts: [],
-        instructions,
-    };
+            .instruction();
+
+    ixSet.instructions.push(ix);
+
+    return ixSet;
 }

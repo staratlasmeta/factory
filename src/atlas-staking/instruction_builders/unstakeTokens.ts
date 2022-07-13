@@ -1,5 +1,7 @@
 import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { FactoryReturn } from '../../types';
+import { getTokenAccount } from '../../util';
 import { getRegisteredStakeAccountInfo } from '../pda_getters';
 import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
@@ -25,20 +27,42 @@ export async function unstakeTokensInstruction({
     registeredStake,
     stakingAccount,
     programId
-}: UnstakeTokensParams): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: UnstakeTokensParams): Promise<FactoryReturn> {
     const program = getStakingProgram({connection, programId});
+
+    const ixSet: FactoryReturn = {
+        signers: [],
+        instructions: []
+    }
 
     // Derive ATA for user's reward account
     const registeredStakeInfo =  await getRegisteredStakeAccountInfo(connection, registeredStake, programId);
     const rewardMint = registeredStakeInfo.rewardMint;
-    const userRewardAccount = await associatedAddress({owner: user, mint: rewardMint}); // TODO: Use account getter
+
+    // Derive ATA for user's reward account
+    let tokenAccount: web3.PublicKey | web3.Keypair = null;
+    let userRewardAccount: web3.PublicKey = null;
+
+    const response = await getTokenAccount(
+        connection,
+        user,
+        rewardMint
+    );
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
+    }
+
+    if (tokenAccount instanceof web3.Keypair) {
+        userRewardAccount = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount);
+    } else {
+        userRewardAccount = tokenAccount;
+    }
+
     const rewardAta = await associatedAddress({owner: registeredStake, mint: rewardMint});
 
-    const instructions = [
-        await program.methods
+    const ix = await program.methods
             .unstakeTokens()
             .accounts({
                 user,
@@ -48,10 +72,8 @@ export async function unstakeTokensInstruction({
                 userRewardAccount,
                 rewardAta
             })
-            .instruction()
-    ];
-    return {
-        accounts: [],
-        instructions,
-    };
+            .instruction();
+
+    ixSet.instructions.push(ix);
+    return ixSet;
 }

@@ -1,5 +1,6 @@
 import { BN, web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { FactoryReturn } from '../../types';
 import { getRegisteredStake } from '../pda_getters';
 import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
@@ -27,16 +28,18 @@ export async function registerStakeInstruction({
     rewardMint,
     cooldownPeriod,
     programId
-}: RegisterStakeParams): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: RegisterStakeParams): Promise<FactoryReturn> {
     const program = getStakingProgram({connection, programId});
+
+    const ixSet: FactoryReturn = {
+        instructions: [],
+        signers: []
+    }
+
     const [registeredStake] = await getRegisteredStake(programId, authority, stakeMint, rewardMint);
     const rewardAta = await associatedAddress({owner: registeredStake, mint: rewardMint});
 
-    const instructions = [
-        await program.methods
+    const ix = await program.methods
             .registerStake(
                 new BN(rewardMultiplier),
                 new BN(cooldownPeriod),
@@ -47,10 +50,8 @@ export async function registerStakeInstruction({
                 rewardMint,
                 rewardAta
             })
-            .instruction()
-    ];
-    return {
-        accounts: [],
-        instructions,
-    };
+            .instruction();
+
+    ixSet.instructions.push(ix);
+    return ixSet;
 }

@@ -1,4 +1,5 @@
 import { web3 } from '@project-serum/anchor';
+import { FactoryReturn } from '../../types';
 import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
 
@@ -20,23 +21,23 @@ export async function createStakingAccountInstruction({
     user,
     registeredStake,
     programId
-}: CreateStakingAccount): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: CreateStakingAccount): Promise<FactoryReturn> {
     const program = getStakingProgram({connection, programId});
 
-    const instructions = [
-        await program.methods
+    const ixSet: FactoryReturn = {
+        instructions: [],
+        signers: []
+    }
+
+    const ix = await program.methods
             .createStakingAccount()
             .accounts({
                 user,
                 registeredStake
             })
-            .instruction()
-    ];
-    return {
-        accounts: [],
-        instructions,
-    };
+            .instruction();
+
+    ixSet.instructions.push(ix);
+
+    return ixSet;
 }

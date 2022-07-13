@@ -1,5 +1,6 @@
 import { BN, web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { FactoryReturn } from '../../types';
 import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
 
@@ -33,15 +34,16 @@ export async function stakeTokensInstruction({
     registeredStake,
     stakingAccount,
     programId
-}: StakeTokensParams): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: StakeTokensParams): Promise<FactoryReturn> {
     const program = getStakingProgram({connection, programId});
     const tokenEscrow = await associatedAddress({ owner: stakingAccount, mint: stakeMint});
 
-    const instructions = [
-        await program.methods
+    const ixSet: FactoryReturn = {
+        instructions: [],
+        signers: []
+    }
+
+    const ix = await program.methods
             .stakeTokens(new BN(stakeQuantity))
             .accounts({
                 user,
@@ -50,10 +52,9 @@ export async function stakeTokensInstruction({
                 registeredStake,
                 tokenEscrow,
             })
-            .instruction()
-    ];
-    return {
-        accounts: [],
-        instructions,
-    };
+            .instruction();
+
+    ixSet.instructions.push(ix);
+
+    return ixSet;
 }

@@ -1,5 +1,7 @@
 import { web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { FactoryReturn } from '../../types';
+import { getTokenAccount } from '../../util';
 import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
 
@@ -27,18 +29,38 @@ export async function harvestRewardsInstruction({
     registeredStake,
     stakingAccount,
     programId
-}: HarvestRewardsParams): Promise<{
-    accounts: web3.PublicKey[],
-    instructions: web3.TransactionInstruction[]
-}> {
+}: HarvestRewardsParams): Promise<FactoryReturn> {
     const program = getStakingProgram({connection, programId});
 
-    // Derive ATA for user's reward account
-    const userRewardAccount = await associatedAddress({owner: user, mint: rewardMint}); // TODO: Use token account getter here
-    const rewardAta = await associatedAddress({owner: registeredStake, mint: rewardMint}); 
+    const ixSet: FactoryReturn = {
+        signers: [],
+        instructions: []
+    }
 
-    const instructions = [
-        await program.methods
+    // Derive ATA for user's reward account
+    let tokenAccount: web3.PublicKey | web3.Keypair = null;
+    let userRewardAccount: web3.PublicKey = null;
+
+    const response = await getTokenAccount(
+        connection,
+        user,
+        rewardMint
+    );
+    tokenAccount = response.tokenAccount;
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
+    }
+
+    if (tokenAccount instanceof web3.Keypair) {
+        userRewardAccount = tokenAccount.publicKey;
+        ixSet.signers.push(tokenAccount);
+    } else {
+        userRewardAccount = tokenAccount;
+    }
+
+    const rewardAta = await associatedAddress({owner: registeredStake, mint: rewardMint});
+
+    const ix = await program.methods
             .harvest()
             .accounts({
                 user,
@@ -48,10 +70,8 @@ export async function harvestRewardsInstruction({
                 userRewardAccount,
                 rewardAta
             })
-            .instruction()
-    ];
-    return {
-        accounts: [],
-        instructions,
-    };
+            .instruction();
+
+    ixSet.instructions.push(ix);
+    return ixSet;
 }
