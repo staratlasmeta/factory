@@ -6,19 +6,19 @@ import { getPointsProgram } from '../utils';
 /** Params for Create User Point Account instruction */
 export interface CreateUserPointAccountParams extends BaseParams {
   user: PublicKey /** the user public key */;
-  pointCategoryAccount: PublicKey /** the Point Category Account PublicKey */;
+  pointCategoryKey: PublicKey /** the Point Category Account PublicKey */;
 }
 
 /**
  * Creates a user Point Account
  * @param user - the user public key
- * @param pointCategoryAccount - the Point Category Account PublicKey
+ * @param pointCategoryKey - the Point Category Account PublicKey
  * @param connection - the Solana connection objec
  * @param programId - Deployed program ID for the Points program
  */
 export const createUserPointAccountIx = async ({
   user,
-  pointCategoryAccount,
+  pointCategoryKey,
   connection,
   programId,
 }: CreateUserPointAccountParams): Promise<{
@@ -32,7 +32,7 @@ export const createUserPointAccountIx = async ({
       .createUserPointAccount()
       .accounts({
         user,
-        pointCategoryAccount,
+        pointCategoryAccount: pointCategoryKey,
       })
       .instruction(),
   ];

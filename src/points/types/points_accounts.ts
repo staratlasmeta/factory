@@ -12,12 +12,12 @@ export type PointsModifier = Accounts['pointsModifier'];
 export type BaseDomainAccount = Accounts['domainAccount'];
 
 export interface PointCategoryAccount extends BasePointCategoryAccount {
-  prettyLabel: string;
+  prettyNamespace: string;
   levels: BN[];
 }
 
 export interface DomainAccount extends BaseDomainAccount {
-  prettyName: string;
+  prettyNamespace: string;
 }
 
 export interface UserPointsAccountItem {

@@ -34,12 +34,12 @@ export const getDomainAccount = async ({
     domainAccountKey
   );
 
-  let prettyName = new TextDecoder().decode(Buffer.from(baseDomainAccount.name));
-  prettyName = prettyName.replace(/\0/g, '');
+  let prettyNamespace = new TextDecoder().decode(Buffer.from(baseDomainAccount.namespace));
+  prettyNamespace = prettyNamespace.replace(/\0/g, '');
 
   const domainAccount = {
     ...baseDomainAccount,
-    prettyName,
+    prettyNamespace,
   };
 
   return {
@@ -91,13 +91,13 @@ export const getPointCategoryAccount = async ({
     retrievedLevels.push(element);
   }
 
-  let prettyLabel = new TextDecoder().decode(Buffer.from(pointCategoryAccount.label));
-  prettyLabel = prettyLabel.replace(/\0/g, '');
+  let prettyNamespace = new TextDecoder().decode(Buffer.from(pointCategoryAccount.namespace));
+  prettyNamespace = prettyNamespace.replace(/\0/g, '');
 
   return {
     ...pointCategoryAccount,
     levels: retrievedLevels,
-    prettyLabel,
+    prettyNamespace,
   } as PointCategoryAccount;
 };
 

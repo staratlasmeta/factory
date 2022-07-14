@@ -9,7 +9,7 @@ export interface CreateUserPointAccountWithLicenseParams
   licenseTokenAccountKey: PublicKey /** the token account for the license to burn/transfer */;
   vaultTokenAccountKey?: PublicKey /** the vault token account */;
   licenseMintAccountKey: PublicKey /** the mint of the license token account */;
-  pointCategoryAccount: PublicKey /** the Point Category Account PublicKey */;
+  pointCategoryKey: PublicKey /** the Point Category Account PublicKey */;
 }
 
 /**
@@ -18,7 +18,7 @@ export interface CreateUserPointAccountWithLicenseParams
  * @param licenseTokenAccountKey - the token account for the license to burn/transfer
  * @param vaultTokenAccountKey - the vault token account
  * @param licenseMintAccountKey - the mint of the license token account
- * @param pointCategoryAccount - the Point Category Account PublicKey
+ * @param pointCategoryKey - the Point Category Account PublicKey
  * @param connection - the Solana connection object
  * @param programId - Deployed program ID for the Points program
  */
@@ -26,7 +26,7 @@ export const createUserPointAccountWithLicenseIx = async ({
   user,
   licenseTokenAccountKey,
   licenseMintAccountKey,
-  pointCategoryAccount,
+  pointCategoryKey,
   vaultTokenAccountKey,
   connection,
   programId,
@@ -50,7 +50,7 @@ export const createUserPointAccountWithLicenseIx = async ({
       .createUserPointAccountWithLicense()
       .accounts({
         user,
-        pointCategoryAccount,
+        pointCategoryAccount: pointCategoryKey,
         userTokenAccount: licenseTokenAccountKey,
         licenseMintAccount: licenseMintAccountKey,
       })

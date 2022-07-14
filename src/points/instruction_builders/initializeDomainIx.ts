@@ -7,34 +7,37 @@ import { findDomainAccount } from '../pda_finders';
 /** Params for Init instruction */
 export interface initializeDomainParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
-  domain: string /**the name of the domain account */;
+  namespace: number[] /** the namespace (exactly 32 elements) */;
 }
 
 /**
  * Initialize a Domain Account
  * @param admin - the admin public key
- * @param domain - the name of the domain account
+ * @param namespace - the namespace of the domain account
  * @param connection - the Solana connection object
  * @param programId - Deployed program ID for the Points program
  */
 export const initializeDomainIx = async ({
   admin,
-  domain,
+  namespace,
   connection,
   programId,
 }: initializeDomainParams): Promise<{
   signers: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
+  if (namespace.length != 32) {
+    throw new Error('Namespace should have exactly 32 elements');
+  }
   const program = getPointsProgram(connection, programId);
-  const [domainAccount] = await findDomainAccount(domain, programId);
+  const [domainAccount] = await findDomainAccount(namespace, programId);
 
   const instructions = [
     await program.methods
-      .initializeDomain(domain)
+      .initializeDomain(namespace)
       .accounts({
         admin,
-        domainAccount
+        domainAccount,
       })
       .instruction(),
   ];

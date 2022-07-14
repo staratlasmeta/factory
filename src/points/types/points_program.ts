@@ -32,8 +32,13 @@ export type Points = {
       ],
       'args': [
         {
-          'name': 'name',
-          'type': 'string'
+          'name': 'namespace',
+          'type': {
+            'array': [
+              'u8',
+              32
+            ]
+          }
         }
       ]
     },
@@ -827,16 +832,9 @@ export type Points = {
             'type': 'publicKey'
           },
           {
-            'name': 'bump',
+            'name': 'namespace',
             'docs': [
-              'PDA bump'
-            ],
-            'type': 'u8'
-          },
-          {
-            'name': 'name',
-            'docs': [
-              'the name'
+              'the name space'
             ],
             'type': {
               'array': [
@@ -844,6 +842,13 @@ export type Points = {
                 32
               ]
             }
+          },
+          {
+            'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
+            'type': 'u8'
           }
         ]
       }
@@ -927,16 +932,9 @@ export type Points = {
             'type': 'u16'
           },
           {
-            'name': 'bump',
+            'name': 'namespace',
             'docs': [
-              'PDA bump'
-            ],
-            'type': 'u8'
-          },
-          {
-            'name': 'label',
-            'docs': [
-              'the label'
+              'the namespace'
             ],
             'type': {
               'array': [
@@ -944,6 +942,13 @@ export type Points = {
                 32
               ]
             }
+          },
+          {
+            'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
+            'type': 'u8'
           }
         ]
       }
@@ -1079,11 +1084,16 @@ export type Points = {
         'kind': 'struct',
         'fields': [
           {
-            'name': 'label',
+            'name': 'namespace',
             'docs': [
-              'label'
+              'namespace'
             ],
-            'type': 'string'
+            'type': {
+              'array': [
+                'u8',
+                32
+              ]
+            }
           },
           {
             'name': 'tokenRequired',
@@ -1201,8 +1211,13 @@ export type Points = {
           'index': false
         },
         {
-          'name': 'label',
-          'type': 'string',
+          'name': 'namespace',
+          'type': {
+            'array': [
+              'u8',
+              32
+            ]
+          },
           'index': false
         },
         {
@@ -1673,8 +1688,13 @@ export const IDL: Points = {
       ],
       'args': [
         {
-          'name': 'name',
-          'type': 'string'
+          'name': 'namespace',
+          'type': {
+            'array': [
+              'u8',
+              32
+            ]
+          }
         }
       ]
     },
@@ -2468,16 +2488,9 @@ export const IDL: Points = {
             'type': 'publicKey'
           },
           {
-            'name': 'bump',
+            'name': 'namespace',
             'docs': [
-              'PDA bump'
-            ],
-            'type': 'u8'
-          },
-          {
-            'name': 'name',
-            'docs': [
-              'the name'
+              'the name space'
             ],
             'type': {
               'array': [
@@ -2485,6 +2498,13 @@ export const IDL: Points = {
                 32
               ]
             }
+          },
+          {
+            'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
+            'type': 'u8'
           }
         ]
       }
@@ -2568,16 +2588,9 @@ export const IDL: Points = {
             'type': 'u16'
           },
           {
-            'name': 'bump',
+            'name': 'namespace',
             'docs': [
-              'PDA bump'
-            ],
-            'type': 'u8'
-          },
-          {
-            'name': 'label',
-            'docs': [
-              'the label'
+              'the namespace'
             ],
             'type': {
               'array': [
@@ -2585,6 +2598,13 @@ export const IDL: Points = {
                 32
               ]
             }
+          },
+          {
+            'name': 'bump',
+            'docs': [
+              'PDA bump'
+            ],
+            'type': 'u8'
           }
         ]
       }
@@ -2720,11 +2740,16 @@ export const IDL: Points = {
         'kind': 'struct',
         'fields': [
           {
-            'name': 'label',
+            'name': 'namespace',
             'docs': [
-              'label'
+              'namespace'
             ],
-            'type': 'string'
+            'type': {
+              'array': [
+                'u8',
+                32
+              ]
+            }
           },
           {
             'name': 'tokenRequired',
@@ -2842,8 +2867,13 @@ export const IDL: Points = {
           'index': false
         },
         {
-          'name': 'label',
-          'type': 'string',
+          'name': 'namespace',
+          'type': {
+            'array': [
+              'u8',
+              32
+            ]
+          },
           'index': false
         },
         {

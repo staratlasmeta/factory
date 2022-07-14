@@ -7,23 +7,23 @@ import { getPointsProgram } from '../utils';
 export interface DeregisterPointModifierParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
   modifierKey: PublicKey /** the modifier public key */;
-  domainAccount: PublicKey /** The related Domain Account PublicKey */;
-  pointCategoryAccount: PublicKey /** The Point Category Account PublicKey */;
+  domainKey: PublicKey /** The related Domain Account PublicKey */;
+  pointCategoryKey: PublicKey /** The Point Category Account PublicKey */;
 }
 
 /**
  * De-registers a Point Modifier
  * @param admin - the admin public key
- * @param domainAccount, - The related Domain Account PublicKey
- * @param pointCategoryAccount, - The Point Category Account PublicKey
+ * @param domainKey, - The related Domain Account PublicKey
+ * @param pointCategoryKey, - The Point Category Account PublicKey
  * @param modifierKey - the modifier public key
  * @param connection - the Solana connection object
  * @param programId - Deployed program ID for the Points program
  */
 export const deregisterPointModifierIx = async ({
   admin,
-  domainAccount,
-  pointCategoryAccount,
+  domainKey,
+  pointCategoryKey,
   modifierKey,
   connection,
   programId,
@@ -38,8 +38,8 @@ export const deregisterPointModifierIx = async ({
       .deregisterPointModifier()
       .accounts({
         admin,
-        domainAccount,
-        pointCategoryAccount,
+        domainAccount: domainKey,
+        pointCategoryAccount: pointCategoryKey,
         modifier: modifierKey,
       })
       .instruction(),

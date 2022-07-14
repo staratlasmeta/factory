@@ -10,15 +10,15 @@ export interface RegisterPointModifierParams extends BaseParams {
   canDecrement?: boolean /** whether the modifier can decrement Points */;
   canSpend?: boolean /** whether the modifier can spend Points (in case points are spendable) */;
   modifierKey: PublicKey /** the modifier public key */;
-  domainAccount: PublicKey /** The related Domain Account PublicKey */;
-  pointCategoryAccount: PublicKey /** The Point Category Account PublicKey */;
+  domainKey: PublicKey /** The related Domain Account PublicKey */;
+  pointCategoryKey: PublicKey /** The Point Category Account PublicKey */;
 }
 
 /**
  * Registers an Point modifier
  * @param admin - the admin public key
- * @param domainAccount, - The related Domain Account PublicKey
- * @param pointCategoryAccount, - The Point Category Account PublicKey
+ * @param domainKey, - The related Domain Account PublicKey
+ * @param pointCategoryKey, - The Point Category Account PublicKey
  * @param canIncrement - whether the modifier can increment Points
  * @param canDecrement - whether the modifier can decrement Points
  * @param canSpend - whether the modifier can spend Points (in case points are spendable)
@@ -28,8 +28,8 @@ export interface RegisterPointModifierParams extends BaseParams {
  */
 export const registerPointModifierIx = async ({
   admin,
-  domainAccount,
-  pointCategoryAccount,
+  domainKey,
+  pointCategoryKey,
   canIncrement,
   canDecrement = false,
   canSpend = false,
@@ -47,8 +47,8 @@ export const registerPointModifierIx = async ({
       .registerPointModifier(canIncrement, canDecrement, canSpend)
       .accounts({
         admin,
-        domainAccount,
-        pointCategoryAccount,
+        domainAccount: domainKey,
+        pointCategoryAccount: pointCategoryKey,
         modifier: modifierKey,
       })
       .instruction(),

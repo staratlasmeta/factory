@@ -2,18 +2,18 @@ import { PublicKey } from '@solana/web3.js';
 import { web3, BN } from '@project-serum/anchor';
 import { BaseParams } from '../../util/BaseParams';
 import { getPointsProgram } from '../utils';
-import { findDomainAccount, findPointCategoryAccount } from '../pda_finders';
+import { findPointCategoryAccount } from '../pda_finders';
 
 /** Params for Register Point Category Account instruction */
 export interface RegisterPointCategoryAccountParams extends BaseParams {
   admin: PublicKey /** the admin public key */;
-  label: string /** The XP account label */;
+  namespace: number[] /** the namespace (exactly 32 elements) */;
   pointLimit: BN /** The XP limit */;
   tokenRequired: boolean /** Whether a token is required */;
   tokenQty?: BN /** The token quantity to burn*/;
   tokenMintKey?: PublicKey | undefined /** The required token mint */;
   isSpendable: boolean /** Deployed program ID for the Points program */;
-  domain: string /** The class of the related domain */;
+  domainKey: PublicKey /** the domain account pubkey */;
   transferTokensToVault?: boolean /** Whether to transfer tokens to the token vault */;
   tokenVaultKey?: PublicKey /** The token vault */;
 }
@@ -21,19 +21,19 @@ export interface RegisterPointCategoryAccountParams extends BaseParams {
 /**
  * Registers a Point Category Account
  * @param admin - the admin public key
- * @param label - The XP account label
+ * @param namespace - The namespace
  * @param pointLimit - The XP limit
  * @param tokenRequired - Whether a token is required
  * @param tokenQty - The token quantity to burn
  * @param tokenMintKey - The required token mint
  * @param isSpendable - Whether the type of point is spendable or not
- * @param domain - The class of the related domain
+ * @param domainKey - The domain account pubkey
  * @param connection - the Solana connection object
  * @param programId - Deployed program ID for the Points program
  */
 export const registerPointCategoryAccountIx = async ({
   admin,
-  label,
+  namespace,
   pointLimit,
   tokenRequired,
   tokenQty = null,
@@ -41,19 +41,20 @@ export const registerPointCategoryAccountIx = async ({
   isSpendable,
   transferTokensToVault,
   tokenVaultKey,
-  domain,
+  domainKey,
   connection,
   programId,
 }: RegisterPointCategoryAccountParams): Promise<{
   signers: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
-  domainAccount: PublicKey;
 }> => {
+  if (namespace.length != 32) {
+    throw new Error('Namespace should have exactly 32 elements');
+  }
   const program = getPointsProgram(connection, programId);
-  const [domainAccount] = await findDomainAccount(domain, programId);
   const [pointCategoryAccount] = await findPointCategoryAccount(
-    label,
-    domainAccount,
+    namespace,
+    domainKey,
     programId
   );
 
@@ -80,7 +81,7 @@ export const registerPointCategoryAccountIx = async ({
   const instructions = [
     await program.methods
       .registerPointCategoryAccount({
-        label,
+        namespace,
         tokenRequired,
         tokenQty,
         pointLimit,
@@ -89,7 +90,7 @@ export const registerPointCategoryAccountIx = async ({
       })
       .accounts({
         admin,
-        domainAccount,
+        domainAccount: domainKey,
         pointCategoryAccount,
       })
       .remainingAccounts(remainingAccounts)
@@ -99,6 +100,5 @@ export const registerPointCategoryAccountIx = async ({
   return {
     signers: [],
     instructions,
-    domainAccount,
   };
 };
