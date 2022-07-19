@@ -4,10 +4,7 @@ import { Commitment, Connection, PublicKey } from '@solana/web3.js';
 
 import { OrderCacheService } from './OrderCacheService';
 import { Order } from '../models/Order';
-import {
-  GmEventHandler,
-  GmEventType,
-} from '../types';
+import { GmEventHandler, GmEventType } from '../types';
 import { GmClientService } from './GmClientService';
 import { GmEventService } from './GmEventService';
 
@@ -20,26 +17,33 @@ import { GmEventService } from './GmEventService';
  * @param commitment Optional Solana commitment level, defaults to `confirmed`
  */
 export class GmOrderbookService {
-  protected static commitment: Commitment = 'confirmed';
+  private static HEALTH_CHECK_RATE = 5000;
 
   protected connection: Connection;
   protected marketplaceProgramId: PublicKey;
   protected orderCacheService: OrderCacheService;
   protected gmClientService: GmClientService = new GmClientService();
-  protected GmEventService: GmEventService;
+  protected gmEventService: GmEventService;
   protected eventCallBacks: Array<GmEventHandler> = [];
   protected changeObserverDisposer: IDisposer = null;
 
-  constructor(rpcUrl: string, programId: PublicKey, commitment?: Commitment) {
+  protected healthcheckTimer: NodeJS.Timer;
+  protected lastEventTimestamp = this.getNow();
+  protected healthcheckThreshold: number;
+  protected isReloading = false;
+
+  constructor(
+    connection: Connection,
+    programId: PublicKey,
+    healthcheckThresholdSeconds = 60
+  ) {
+    this.connection = connection;
+    this.marketplaceProgramId = programId;
+    this.healthcheckThreshold = healthcheckThresholdSeconds;
+
     this.orderCacheService = new OrderCacheService();
     this.gmClientService = new GmClientService();
-
-    this.connection = new Connection(
-      rpcUrl,
-      commitment || GmOrderbookService.commitment
-    );
-    this.marketplaceProgramId = programId;
-    this.GmEventService = new GmEventService(
+    this.gmEventService = new GmEventService(
       this.connection,
       this.marketplaceProgramId
     );
@@ -48,7 +52,7 @@ export class GmOrderbookService {
   }
 
   async initialize(): Promise<number> {
-    await this.GmEventService.initialize();
+    await this.gmEventService.initialize();
 
     this.changeObserverDisposer = queueProcessor(
       this.orderCacheService.orderChanges,
@@ -60,9 +64,15 @@ export class GmOrderbookService {
       250
     );
 
-    this.GmEventService.setEventHandler(this.handleMarketplaceEvent);
+    this.gmEventService.setEventHandler(this.handleMarketplaceEvent);
 
     await this.loadInitialOrders();
+
+    this.healthcheckTimer = setInterval(() => {
+      const isHealthy = this.getIsServiceHealthy();
+
+      if (!isHealthy && !this.isReloading) this.resetOrdersData();
+    }, GmOrderbookService.HEALTH_CHECK_RATE);
 
     return this.orderCacheService.mints.length;
   }
@@ -74,15 +84,76 @@ export class GmOrderbookService {
     return true;
   }
 
-  public addOnEventHandler(
-    eventHandler: GmEventHandler
-  ): void {
+  protected getIsServiceHealthy(): boolean {
+    const now = this.getNow();
+    const secondsSinceLastEvent = now - this.lastEventTimestamp;
+
+    return secondsSinceLastEvent <= this.healthcheckThreshold;
+  }
+
+  protected async resetOrdersData(): Promise<void> {
+    this.isReloading = true;
+
+    await this.resetEventService();
+    await this.refetchOrderData();
+
+    this.lastEventTimestamp = this.getNow();
+    this.isReloading = false;
+  }
+
+  protected async resetEventService(): Promise<void> {
+    if (this.isReloading) return;
+
+    this.gmEventService = new GmEventService(
+      this.connection,
+      this.marketplaceProgramId
+    );
+
+    await this.gmEventService.initialize();
+  }
+
+  protected async refetchOrderData(): Promise<void> {
+    const existingOffers = this.orderCacheService.getAllOrdersCache();
+
+    try {
+      const fetchedOffers = await this.gmClientService.getAllOpenOrders(
+        this.connection,
+        this.marketplaceProgramId
+      );
+      const fetchedOffersMap = new Map<string, Order>();
+
+      for (const offer of fetchedOffers) {
+        /** Set new offer values in a temporary map for faster read times */
+        fetchedOffersMap.set(offer.id, offer);
+
+        const existingOffer = existingOffers.get(offer.id);
+
+        if (!existingOffer) {
+          this.addOrderToCache(offer);
+        } else if (
+          existingOffer &&
+          existingOffer.orderQtyRemaining !== offer.orderQtyRemaining
+        ) {
+          this.updateOrderInCache(offer);
+        }
+      }
+
+      /** Remove offers which exist in the local cache, but not in the freshly fetched offers */
+      for (const existingOffer of Array.from(existingOffers.values())) {
+        if (!fetchedOffersMap.get(existingOffer.id)) {
+          this.removeOrderFromCache(existingOffer);
+        }
+      }
+    } catch (error) {
+      console.log('There was an error refreshing all marketplace data', error);
+    }
+  }
+
+  public addOnEventHandler(eventHandler: GmEventHandler): void {
     this.eventCallBacks.push(eventHandler);
   }
 
-  public removeOnEventHandler(
-    eventHandler: GmEventHandler
-  ): void {
+  public removeOnEventHandler(eventHandler: GmEventHandler): void {
     pull(this.eventCallBacks, eventHandler);
   }
 
@@ -230,11 +301,10 @@ export class GmOrderbookService {
     this.removeOrderFromCache(order);
   }
 
-  protected handleMarketplaceEvent(
-    eventType: GmEventType,
-    order: Order
-  ): void {
+  protected handleMarketplaceEvent(eventType: GmEventType, order: Order): void {
     if (!order) return;
+
+    this.lastEventTimestamp = this.getNow();
 
     switch (eventType) {
       case GmEventType.orderAdded:
@@ -249,5 +319,9 @@ export class GmOrderbookService {
       default:
         break;
     }
+  }
+
+  protected getNow(): number {
+    return new Date().getTime() / 1000;
   }
 }
