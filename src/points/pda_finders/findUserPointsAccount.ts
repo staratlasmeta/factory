@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js';
-import { USER_POINTS_ACCOUNT_SEED } from './seeds';
+import { POINTS_USER_POINTS_ACCOUNT_SEED } from './seeds';
 
 /**
  * Returns the public key and bump seed for the User Points Account
@@ -16,7 +16,7 @@ export async function findUserPointsAccount(
 ): Promise<[PublicKey, number]> {
   return await PublicKey.findProgramAddress(
     [
-      USER_POINTS_ACCOUNT_SEED,
+      POINTS_USER_POINTS_ACCOUNT_SEED,
       pointsCategoryAccountKey.toBuffer(),
       userAccountKey.toBuffer(),
     ],
