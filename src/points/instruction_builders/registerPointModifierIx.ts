@@ -37,7 +37,7 @@ export const registerPointModifierIx = async ({
   connection,
   programId,
 }: RegisterPointModifierParams): Promise<{
-  signers: web3.PublicKey[];
+  signers?: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
   const program = getPointsProgram(connection, programId);
@@ -55,7 +55,6 @@ export const registerPointModifierIx = async ({
   ];
 
   return {
-    signers: [],
     instructions,
   };
 };

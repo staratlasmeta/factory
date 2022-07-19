@@ -23,7 +23,7 @@ export const initializeDomainIx = async ({
   connection,
   programId,
 }: initializeDomainParams): Promise<{
-  signers: web3.PublicKey[];
+  signers?: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
   if (namespace.length != 32) {
@@ -43,7 +43,6 @@ export const initializeDomainIx = async ({
   ];
 
   return {
-    signers: [],
     instructions,
   };
 };

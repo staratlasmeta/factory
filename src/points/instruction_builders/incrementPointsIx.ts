@@ -1,4 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, TransactionInstruction } from '@solana/web3.js';
 import { BN } from '@project-serum/anchor';
 import { BaseParams } from '../../util/BaseParams';
 import {
@@ -34,7 +34,10 @@ export const incrementPointsIx = async ({
   pointsModifierAccountKey,
   connection,
   programId,
-}: IncrementPointsParams) => {
+}: IncrementPointsParams): Promise<{
+  signers?: PublicKey[];
+  instructions: TransactionInstruction[];
+}> => {
   const program = getPointsProgram(connection, programId);
 
   const userPointsAcc = await getUserPointsAccount({
@@ -82,7 +85,6 @@ export const incrementPointsIx = async ({
   ];
 
   return {
-    signers: [],
     instructions,
   };
 };

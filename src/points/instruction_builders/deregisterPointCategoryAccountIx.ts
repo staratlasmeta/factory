@@ -25,7 +25,7 @@ export const deregisterPointCategoryAccountIx = async ({
   connection,
   programId,
 }: DeregisterPointCategoryAccountParams): Promise<{
-  signers: web3.PublicKey[];
+  signers?: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
   const program = getPointsProgram(connection, programId);
@@ -42,7 +42,6 @@ export const deregisterPointCategoryAccountIx = async ({
   ];
 
   return {
-    signers: [],
     instructions,
   };
 };

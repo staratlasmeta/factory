@@ -45,7 +45,7 @@ export const registerPointCategoryAccountIx = async ({
   connection,
   programId,
 }: RegisterPointCategoryAccountParams): Promise<{
-  signers: web3.PublicKey[];
+  signers?: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
   if (namespace.length != 32) {
@@ -98,7 +98,6 @@ export const registerPointCategoryAccountIx = async ({
   ];
 
   return {
-    signers: [],
     instructions,
   };
 };

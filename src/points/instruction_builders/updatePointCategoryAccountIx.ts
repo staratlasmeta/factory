@@ -49,7 +49,7 @@ export const updatePointCategoryAccountIx = async ({
   connection,
   programId,
 }: UpdatePointCategoryAccountParams): Promise<{
-  signers: web3.PublicKey[];
+  signers?: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
   const program = getPointsProgram(connection, programId);
@@ -93,7 +93,6 @@ export const updatePointCategoryAccountIx = async ({
   ];
 
   return {
-    signers: [],
     instructions,
   };
 };

@@ -28,7 +28,7 @@ export const deregisterPointModifierIx = async ({
   connection,
   programId,
 }: DeregisterPointModifierParams): Promise<{
-  signers: web3.PublicKey[];
+  signers?: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
   const program = getPointsProgram(connection, programId);
@@ -46,7 +46,6 @@ export const deregisterPointModifierIx = async ({
   ];
 
   return {
-    signers: [],
     instructions,
   };
 };

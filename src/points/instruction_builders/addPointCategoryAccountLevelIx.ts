@@ -28,7 +28,7 @@ export const addPointCategoryAccountLevelIx = async ({
   connection,
   programId,
 }: AddPointCategoryAccountLevelParams): Promise<{
-  signers: web3.PublicKey[];
+  signers?: web3.PublicKey[];
   instructions: web3.TransactionInstruction[];
 }> => {
   const program = getPointsProgram(connection, programId);
@@ -45,7 +45,6 @@ export const addPointCategoryAccountLevelIx = async ({
   ];
 
   return {
-    signers: [],
     instructions,
   };
 };
