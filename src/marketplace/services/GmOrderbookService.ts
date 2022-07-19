@@ -30,6 +30,7 @@ export class GmOrderbookService {
   protected healthcheckTimer: NodeJS.Timer;
   protected lastEventTimestamp = this.getNow();
   protected healthcheckThreshold: number;
+  protected isReloading = false;
 
   constructor(
     connection: Connection,
@@ -68,7 +69,9 @@ export class GmOrderbookService {
     await this.loadInitialOrders();
 
     this.healthcheckTimer = setInterval(() => {
-      this.checkServiceHealth();
+      const isHealthy = this.getIsServiceHealthy();
+
+      if (!isHealthy && !this.isReloading) this.resetOrdersData();
     }, GmOrderbookService.HEALTH_CHECK_RATE);
 
     return this.orderCacheService.mints.length;
@@ -81,16 +84,21 @@ export class GmOrderbookService {
     return true;
   }
 
-  protected async checkServiceHealth(): Promise<void> {
+  protected getIsServiceHealthy(): boolean {
     const now = this.getNow();
     const secondsSinceLastEvent = now - this.lastEventTimestamp;
-    const isUnhealthy = secondsSinceLastEvent >= this.healthcheckThreshold;
 
-    if (isUnhealthy) {
-      await this.resetEventService();
-      await this.refetchOrderData();
-      this.lastEventTimestamp = this.getNow();
-    }
+    return secondsSinceLastEvent <= this.healthcheckThreshold;
+  }
+
+  protected async resetOrdersData(): Promise<void> {
+    this.isReloading = true;
+
+    await this.resetEventService();
+    await this.refetchOrderData();
+
+    this.lastEventTimestamp = this.getNow();
+    this.isReloading = false;
   }
 
   protected async resetEventService(): Promise<void> {
