@@ -1,4 +1,4 @@
-import { IDL as PROGRAM_IDL } from './program';
+import { PointsStoreIDL as PROGRAM_IDL } from './program';
 import type { AnchorTypes } from '../../anchor/types';
 
 export type PointsStoreTypes = AnchorTypes<typeof PROGRAM_IDL>;

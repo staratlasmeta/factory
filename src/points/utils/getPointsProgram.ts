@@ -1,6 +1,6 @@
 import { Program, AnchorProvider, web3 } from '@project-serum/anchor';
 import { Connection } from '@solana/web3.js';
-import { IDL } from '../types/points_program';
+import { PointsIDL } from '../types/points_program';
 import type { Points } from '../types/points_program';
 
 /**
@@ -10,7 +10,7 @@ import type { Points } from '../types/points_program';
  * @returns - The base IDL object
  */
 function getPointsIDL(programId: web3.PublicKey): unknown {
-  const _tmp = IDL;
+  const _tmp = PointsIDL;
   _tmp['metadata'] = { address: programId.toBase58() };
   return _tmp;
 }

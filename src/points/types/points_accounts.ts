@@ -1,6 +1,6 @@
 import { BN } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
-import { IDL as PROGRAM_IDL } from './points_program';
+import { PointsIDL as PROGRAM_IDL } from './points_program';
 import type { AnchorTypes } from '../../anchor/types';
 
 export type XpTypes = AnchorTypes<typeof PROGRAM_IDL>;

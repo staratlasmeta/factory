@@ -352,7 +352,7 @@ export type PointsStore = {
   ];
 };
 
-export const IDL: PointsStore = {
+export const PointsStoreIDL: PointsStore = {
   version: '0.1.0',
   name: 'points_store',
   instructions: [

@@ -1654,7 +1654,7 @@ export type Points = {
   ]
 };
 
-export const IDL: Points = {
+export const PointsIDL: Points = {
   'version': '0.1.0',
   'name': 'points',
   'instructions': [
