@@ -47,7 +47,7 @@ export type Points = {
       'accounts': [
         {
           'name': 'admin',
-          'isMut': false,
+          'isMut': true,
           'isSigner': true,
           'docs': [
             'The entity that calls this instruction'
@@ -114,7 +114,7 @@ export type Points = {
       'accounts': [
         {
           'name': 'admin',
-          'isMut': false,
+          'isMut': true,
           'isSigner': true,
           'docs': [
             'The entity that calls this instruction'
@@ -468,7 +468,7 @@ export type Points = {
       'accounts': [
         {
           'name': 'admin',
-          'isMut': false,
+          'isMut': true,
           'isSigner': true,
           'docs': [
             'The entity that calls this instruction'
@@ -1583,73 +1583,108 @@ export type Points = {
     },
     {
       'code': 6002,
+      'name': 'IncorrectTokenAddress',
+      'msg': 'Incorrect token address.'
+    },
+    {
+      'code': 6003,
       'name': 'IncorrectModifierAddress',
       'msg': 'Incorrect modifier address.'
     },
     {
-      'code': 6003,
+      'code': 6004,
       'name': 'IncorrectPointCategoryAddress',
       'msg': 'Incorrect owner address.'
     },
     {
-      'code': 6004,
+      'code': 6005,
       'name': 'IncorrectOwner',
       'msg': 'Incorrect Point Category.'
     },
     {
-      'code': 6005,
+      'code': 6006,
       'name': 'IncrementNotAllowed',
       'msg': 'Not allowed to increment Points.'
     },
     {
-      'code': 6006,
+      'code': 6007,
       'name': 'DecrementNotAllowed',
       'msg': 'Not allowed to decrement Points.'
     },
     {
-      'code': 6007,
+      'code': 6008,
       'name': 'InsufficientTokenToBurn',
       'msg': 'Insufficient token licenses to burn.'
     },
     {
-      'code': 6008,
+      'code': 6009,
       'name': 'LicenseRequired',
       'msg': 'License required to this category of Points.'
     },
     {
-      'code': 6009,
+      'code': 6010,
       'name': 'LicenseNotRequired',
       'msg': 'License NOT required to this category of Points.'
     },
     {
-      'code': 6010,
+      'code': 6011,
       'name': 'TokenMintRequired',
       'msg': 'Token Mint account is required.'
     },
     {
-      'code': 6011,
+      'code': 6012,
       'name': 'TokenVaultRequired',
       'msg': 'Token Vault account is required.'
     },
     {
-      'code': 6012,
+      'code': 6013,
       'name': 'NotAllowedPointsQuantity',
       'msg': 'Points above permitted limit.'
     },
     {
-      'code': 6013,
+      'code': 6014,
+      'name': 'NotEnoughPoints',
+      'msg': 'Not enough points.'
+    },
+    {
+      'code': 6015,
       'name': 'SpendingNotAllowed',
       'msg': 'Points modifier not allowed to spend points.'
     },
     {
-      'code': 6014,
+      'code': 6016,
       'name': 'TokenQuantityExpected',
       'msg': 'The token quantity must be provided.'
     },
     {
-      'code': 6015,
+      'code': 6017,
       'name': 'NumericOverflow',
-      'msg': 'Numeric overflow'
+      'msg': 'Numeric overflow.'
+    },
+    {
+      'code': 6018,
+      'name': 'InvalidLevel',
+      'msg': 'Invalid Level.'
+    },
+    {
+      'code': 6019,
+      'name': 'PointLevelAmountTooLow',
+      'msg': 'Point level amount too low.'
+    },
+    {
+      'code': 6020,
+      'name': 'PointLevelAmountTooHigh',
+      'msg': 'Point level amount too high.'
+    },
+    {
+      'code': 6021,
+      'name': 'PointLevelRequired',
+      'msg': 'The Point Level is required.'
+    },
+    {
+      'code': 6022,
+      'name': 'InvalidIndex',
+      'msg': 'The Index is invalid.'
     }
   ]
 };
@@ -1703,7 +1738,7 @@ export const PointsIDL: Points = {
       'accounts': [
         {
           'name': 'admin',
-          'isMut': false,
+          'isMut': true,
           'isSigner': true,
           'docs': [
             'The entity that calls this instruction'
@@ -1770,7 +1805,7 @@ export const PointsIDL: Points = {
       'accounts': [
         {
           'name': 'admin',
-          'isMut': false,
+          'isMut': true,
           'isSigner': true,
           'docs': [
             'The entity that calls this instruction'
@@ -2124,7 +2159,7 @@ export const PointsIDL: Points = {
       'accounts': [
         {
           'name': 'admin',
-          'isMut': false,
+          'isMut': true,
           'isSigner': true,
           'docs': [
             'The entity that calls this instruction'
@@ -3239,73 +3274,108 @@ export const PointsIDL: Points = {
     },
     {
       'code': 6002,
+      'name': 'IncorrectTokenAddress',
+      'msg': 'Incorrect token address.'
+    },
+    {
+      'code': 6003,
       'name': 'IncorrectModifierAddress',
       'msg': 'Incorrect modifier address.'
     },
     {
-      'code': 6003,
+      'code': 6004,
       'name': 'IncorrectPointCategoryAddress',
       'msg': 'Incorrect owner address.'
     },
     {
-      'code': 6004,
+      'code': 6005,
       'name': 'IncorrectOwner',
       'msg': 'Incorrect Point Category.'
     },
     {
-      'code': 6005,
+      'code': 6006,
       'name': 'IncrementNotAllowed',
       'msg': 'Not allowed to increment Points.'
     },
     {
-      'code': 6006,
+      'code': 6007,
       'name': 'DecrementNotAllowed',
       'msg': 'Not allowed to decrement Points.'
     },
     {
-      'code': 6007,
+      'code': 6008,
       'name': 'InsufficientTokenToBurn',
       'msg': 'Insufficient token licenses to burn.'
     },
     {
-      'code': 6008,
+      'code': 6009,
       'name': 'LicenseRequired',
       'msg': 'License required to this category of Points.'
     },
     {
-      'code': 6009,
+      'code': 6010,
       'name': 'LicenseNotRequired',
       'msg': 'License NOT required to this category of Points.'
     },
     {
-      'code': 6010,
+      'code': 6011,
       'name': 'TokenMintRequired',
       'msg': 'Token Mint account is required.'
     },
     {
-      'code': 6011,
+      'code': 6012,
       'name': 'TokenVaultRequired',
       'msg': 'Token Vault account is required.'
     },
     {
-      'code': 6012,
+      'code': 6013,
       'name': 'NotAllowedPointsQuantity',
       'msg': 'Points above permitted limit.'
     },
     {
-      'code': 6013,
+      'code': 6014,
+      'name': 'NotEnoughPoints',
+      'msg': 'Not enough points.'
+    },
+    {
+      'code': 6015,
       'name': 'SpendingNotAllowed',
       'msg': 'Points modifier not allowed to spend points.'
     },
     {
-      'code': 6014,
+      'code': 6016,
       'name': 'TokenQuantityExpected',
       'msg': 'The token quantity must be provided.'
     },
     {
-      'code': 6015,
+      'code': 6017,
       'name': 'NumericOverflow',
-      'msg': 'Numeric overflow'
+      'msg': 'Numeric overflow.'
+    },
+    {
+      'code': 6018,
+      'name': 'InvalidLevel',
+      'msg': 'Invalid Level.'
+    },
+    {
+      'code': 6019,
+      'name': 'PointLevelAmountTooLow',
+      'msg': 'Point level amount too low.'
+    },
+    {
+      'code': 6020,
+      'name': 'PointLevelAmountTooHigh',
+      'msg': 'Point level amount too high.'
+    },
+    {
+      'code': 6021,
+      'name': 'PointLevelRequired',
+      'msg': 'The Point Level is required.'
+    },
+    {
+      'code': 6022,
+      'name': 'InvalidIndex',
+      'msg': 'The Index is invalid.'
     }
   ]
 };
