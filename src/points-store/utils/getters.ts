@@ -11,7 +11,7 @@ export interface GetPointsStoreAccountParams extends BaseParams {
  * Gets the Points Store Account
  * @param param - the input parameters
  */
-export const getPointsStoreKeyAccounts = async ({
+export const getPointsStoreAccount = async ({
   pointsStoreKey,
   connection,
   programId,
