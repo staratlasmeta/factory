@@ -1,4 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Keypair } from '@solana/web3.js';
 import { web3, BN } from '@project-serum/anchor';
 import { BaseParams } from '../../util/BaseParams';
 import { getPointsProgram } from '../utils';
@@ -45,7 +45,7 @@ export const registerPointCategoryAccountIx = async ({
   connection,
   programId,
 }: RegisterPointCategoryAccountParams): Promise<{
-  signers?: web3.PublicKey[];
+  signers?: Keypair[];
   instructions: web3.TransactionInstruction[];
 }> => {
   if (namespace.length != 32) {

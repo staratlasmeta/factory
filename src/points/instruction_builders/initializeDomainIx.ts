@@ -1,4 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Keypair } from '@solana/web3.js';
 import { web3 } from '@project-serum/anchor';
 import { BaseParams } from '../../util/BaseParams';
 import { getPointsProgram } from '../utils';
@@ -23,7 +23,7 @@ export const initializeDomainIx = async ({
   connection,
   programId,
 }: initializeDomainParams): Promise<{
-  signers?: web3.PublicKey[];
+  signers?: Keypair[];
   instructions: web3.TransactionInstruction[];
 }> => {
   if (namespace.length != 32) {

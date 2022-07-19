@@ -1,4 +1,4 @@
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Keypair } from '@solana/web3.js';
 import { web3 } from '@project-serum/anchor';
 import { BaseParams } from '../../util/BaseParams';
 import { getPointsProgram } from '../utils';
@@ -28,7 +28,7 @@ export const deregisterPointModifierIx = async ({
   connection,
   programId,
 }: DeregisterPointModifierParams): Promise<{
-  signers?: web3.PublicKey[];
+  signers?: Keypair[];
   instructions: web3.TransactionInstruction[];
 }> => {
   const program = getPointsProgram(connection, programId);
