@@ -1,4 +1,3 @@
-export * from './GalacticMarketplaceService';
-export * from './GmpClientService';
-export * from './GmpEventService';
-export * from './OrderCacheService';
+export * from './GmOrderbookService';
+export * from './GmTransactionService';
+export * from './GmEventService';

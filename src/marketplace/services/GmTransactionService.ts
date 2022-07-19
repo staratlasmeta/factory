@@ -21,15 +21,14 @@ import { OrderAccountItem } from '../types';
 import { createTransactionFromInstructions } from './helpers';
 import { getAssociatedTokenAddress } from '../../util';
 import { Order, OrderSide } from '../models/Order';
-import { RegisteredCurrency } from '../types';
+import { GmRegisteredCurrency } from '../types';
 import { ONE_MILLION } from './constants';
 
 /**
- * Provides utility methods for interacting with the Galactic Marketplace and
- * maintains an internal cache of all valid quote currencies registered with the program
+ * Provides utility methods and transaction builders for interacting with the Galactic Marketplace.
  */
 export class GmpClientService {
-  currencyInfo: RegisteredCurrency[] = [];
+  currencyInfo: GmRegisteredCurrency[] = [];
 
   /**
    * Returns information about all valid quote currencies registered with the Galactic Marketplace
@@ -38,14 +37,14 @@ export class GmpClientService {
    * @param programId Marketplace program PublicKey
    * @param invalidateCache Forces currency cache to be invalidated
    */
-  async getAllRegisteredCurrencyInfo(
+  async getRegisteredCurrencies(
     connection: Connection,
     programId: PublicKey,
     invalidateCache = false
-  ): Promise<RegisteredCurrency[]> {
+  ): Promise<GmRegisteredCurrency[]> {
     if (this.currencyInfo?.length && !invalidateCache) return this.currencyInfo;
 
-    const result: RegisteredCurrency[] = [];
+    const result: GmRegisteredCurrency[] = [];
 
     const currencyInfo = await getAllRegisteredCurrencies(
       connection,
@@ -119,7 +118,7 @@ export class GmpClientService {
    * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
-   * @param currencyMint Currency mint - use `getAllRegisteredCurrencyInfo` for a list of valid currencies
+   * @param currencyMint Currency mint - use `getAllGmRegisteredCurrencyInfo` for a list of valid currencies
    * @param programId Marketplace program PublicKey
    * @returns
    */
@@ -168,7 +167,7 @@ export class GmpClientService {
    *
    * @param connection Solana Connection
    * @param playerPublicKey User PublicKey
-   * @param currencyMint Currency mint - use `getAllRegisteredCurrencyInfo` for a list of valid currencies
+   * @param currencyMint Currency mint - use `getAllGmRegisteredCurrencyInfo` for a list of valid currencies
    * @param programId Marketplace program PublicKey
    * @returns
    */
@@ -271,7 +270,7 @@ export class GmpClientService {
     transaction: Transaction;
     signers: Keypair[];
   }> {
-    const allCurrencyInfo = await this.getAllRegisteredCurrencyInfo(
+    const allCurrencyInfo = await this.getRegisteredCurrencies(
       connection,
       programId
     );
@@ -392,7 +391,7 @@ export class GmpClientService {
   ): Promise<Order[]> {
     if (!orderAccountItems.length) return [];
 
-    const currencyInfo = await this.getAllRegisteredCurrencyInfo(
+    const currencyInfo = await this.getRegisteredCurrencies(
       connection,
       programId
     );

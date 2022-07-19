@@ -10,24 +10,20 @@ import {
 import { Commitment, Connection, Keypair, PublicKey } from '@solana/web3.js';
 
 import { Order, OrderSide } from '../models';
-import {
-  GalacticMarketPlaceEventType,
-  GmLogEvent,
-  RegisteredCurrency,
-} from '../types';
-import { GmpClientService } from './GmpClientService';
+import { GmEventType, GmLogEvent, GmRegisteredCurrency } from '../types';
+import { GmpClientService } from './GmTransactionService';
 import { getGmLogsIDL } from '../utils';
 import { GmLogs } from '../types';
 
 /**
- * Listens to events emitted by the on-chain program and will call the registered
+ * Listens to events emitted by the Galactic Marketplace program and will call the registered
  * onEvent() callback function for each event.
  *
  * @param connection Solana connection
  * @param programId The Galactic Marketplace program PublicKey
  * @param commitment Optional Solana commitment level, defaults the `connection` commitment level
  */
-export class GmpEventService {
+export class GmEventService {
   protected wallet: Wallet;
   protected connection: Connection;
   protected programId: PublicKey;
@@ -36,10 +32,10 @@ export class GmpEventService {
   protected provider: AnchorProvider;
   protected program: Program;
   protected registeredCurrencyInfo: {
-    [key: string]: RegisteredCurrency;
+    [key: string]: GmRegisteredCurrency;
   } = {};
   protected onEvent: (
-    eventType: GalacticMarketPlaceEventType,
+    eventType: GmEventType,
     order: Order,
     slotContext: number
   ) => void;
@@ -94,11 +90,7 @@ export class GmpEventService {
   }
 
   setEventHandler(
-    handler: (
-      eventType: GalacticMarketPlaceEventType,
-      order: Order,
-      slotContext: number
-    ) => void
+    handler: (eventType: GmEventType, order: Order, slotContext: number) => void
   ): void {
     this.onEvent = handler;
   }
@@ -107,7 +99,7 @@ export class GmpEventService {
     const gmpClientService = new GmpClientService();
 
     const registeredCurrencyInfo =
-      await gmpClientService.getAllRegisteredCurrencyInfo(
+      await gmpClientService.getRegisteredCurrencies(
         this.connection,
         this.programId,
         true
@@ -144,7 +136,7 @@ export class GmpEventService {
 
   protected handleOrderCreated(event: GmLogEvent, slotContext: number): void {
     this.onEvent(
-      GalacticMarketPlaceEventType.orderAdded,
+      GmEventType.orderAdded,
       this.getParsedOrderFromEvent(event),
       slotContext
     );
@@ -152,7 +144,7 @@ export class GmpEventService {
 
   protected handleOrderExchanged(event: GmLogEvent, slotContext: number): void {
     this.onEvent(
-      GalacticMarketPlaceEventType.orderModified,
+      GmEventType.orderModified,
       this.getParsedOrderFromEvent(event),
       slotContext
     );
@@ -160,7 +152,7 @@ export class GmpEventService {
 
   protected handleOrderCanceled(event: GmLogEvent, slotContext: number): void {
     this.onEvent(
-      GalacticMarketPlaceEventType.orderRemoved,
+      GmEventType.orderRemoved,
       this.getParsedOrderFromEvent(event),
       slotContext
     );

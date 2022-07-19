@@ -5,11 +5,11 @@ import { Commitment, Connection, PublicKey } from '@solana/web3.js';
 import { OrderCacheService } from './OrderCacheService';
 import { Order } from '../models/Order';
 import {
-  GalacticMarketPlaceEventHandler,
-  GalacticMarketPlaceEventType,
+  GmEventHandler,
+  GmEventType,
 } from '../types';
-import { GmpClientService } from './GmpClientService';
-import { GmpEventService } from './GmpEventService';
+import { GmpClientService } from './GmTransactionService';
+import { GmEventService } from './GmEventService';
 
 /**
  * Establishes a connection to the Galactic Marketplace and maintains an up-to-date
@@ -19,15 +19,15 @@ import { GmpEventService } from './GmpEventService';
  * @param programId The Galactic Marketplace program PublicKey
  * @param commitment Optional Solana commitment level, defaults to `confirmed`
  */
-export class GalacticMarketplaceService {
+export class GmOrderbookService {
   protected static commitment: Commitment = 'confirmed';
 
   protected connection: Connection;
   protected marketplaceProgramId: PublicKey;
   protected orderCacheService: OrderCacheService;
   protected gmpClientService: GmpClientService = new GmpClientService();
-  protected gmpEventService: GmpEventService;
-  protected eventCallBacks: Array<GalacticMarketPlaceEventHandler> = [];
+  protected GmEventService: GmEventService;
+  protected eventCallBacks: Array<GmEventHandler> = [];
   protected changeObserverDisposer: IDisposer = null;
 
   constructor(rpcUrl: string, programId: PublicKey, commitment?: Commitment) {
@@ -36,10 +36,10 @@ export class GalacticMarketplaceService {
 
     this.connection = new Connection(
       rpcUrl,
-      commitment || GalacticMarketplaceService.commitment
+      commitment || GmOrderbookService.commitment
     );
     this.marketplaceProgramId = programId;
-    this.gmpEventService = new GmpEventService(
+    this.GmEventService = new GmEventService(
       this.connection,
       this.marketplaceProgramId
     );
@@ -48,7 +48,7 @@ export class GalacticMarketplaceService {
   }
 
   async initialize(): Promise<number> {
-    await this.gmpEventService.initialize();
+    await this.GmEventService.initialize();
 
     this.changeObserverDisposer = queueProcessor(
       this.orderCacheService.orderChanges,
@@ -60,7 +60,7 @@ export class GalacticMarketplaceService {
       250
     );
 
-    this.gmpEventService.setEventHandler(this.handleMarketplaceEvent);
+    this.GmEventService.setEventHandler(this.handleMarketplaceEvent);
 
     await this.loadInitialOrders();
 
@@ -75,13 +75,13 @@ export class GalacticMarketplaceService {
   }
 
   public addOnEventHandler(
-    eventHandler: GalacticMarketPlaceEventHandler
+    eventHandler: GmEventHandler
   ): void {
     this.eventCallBacks.push(eventHandler);
   }
 
   public removeOnEventHandler(
-    eventHandler: GalacticMarketPlaceEventHandler
+    eventHandler: GmEventHandler
   ): void {
     pull(this.eventCallBacks, eventHandler);
   }
@@ -231,19 +231,19 @@ export class GalacticMarketplaceService {
   }
 
   protected handleMarketplaceEvent(
-    eventType: GalacticMarketPlaceEventType,
+    eventType: GmEventType,
     order: Order
   ): void {
     if (!order) return;
 
     switch (eventType) {
-      case GalacticMarketPlaceEventType.orderAdded:
+      case GmEventType.orderAdded:
         this.handleOrderAddedEvent(order);
         break;
-      case GalacticMarketPlaceEventType.orderModified:
+      case GmEventType.orderModified:
         this.handleOrderModifiedEvent(order);
         break;
-      case GalacticMarketPlaceEventType.orderRemoved:
+      case GmEventType.orderRemoved:
         this.handleOrderCanceledEvent(order);
         break;
       default:

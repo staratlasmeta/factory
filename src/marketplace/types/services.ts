@@ -3,22 +3,22 @@ import { PublicKey } from '@solana/web3.js';
 
 import { Order } from '../models';
 
-export enum GalacticMarketPlaceEventType {
+export enum GmEventType {
   orderAdded,
   orderRemoved,
   orderModified,
 }
 
-export interface GalacticMarketPlaceChangeEvent {
-  eventType: GalacticMarketPlaceEventType;
+export interface GmChangeEvent {
+  eventType: GmEventType;
   order: Order;
 }
 
-export interface GalacticMarketPlaceEventHandler {
-  onEvent: (orderEvent: GalacticMarketPlaceChangeEvent) => void;
+export interface GmEventHandler {
+  onEvent: (orderEvent: GmChangeEvent) => void;
 }
 
-export type RegisteredCurrency = {
+export type GmRegisteredCurrency = {
   mint: string;
   decimals: number;
   royaltyPercentageAsDecimal: number;
