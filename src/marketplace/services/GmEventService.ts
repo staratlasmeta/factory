@@ -11,7 +11,7 @@ import { Commitment, Connection, Keypair, PublicKey } from '@solana/web3.js';
 
 import { Order, OrderSide } from '../models';
 import { GmEventType, GmLogEvent, GmRegisteredCurrency } from '../types';
-import { GmpClientService } from './GmTransactionService';
+import { GmClientService } from './GmClientService';
 import { getGmLogsIDL } from '../utils';
 import { GmLogs } from '../types';
 
@@ -96,10 +96,10 @@ export class GmEventService {
   }
 
   protected async setCurrencyInfo(): Promise<void> {
-    const gmpClientService = new GmpClientService();
+    const gmClientService = new GmClientService();
 
     const registeredCurrencyInfo =
-      await gmpClientService.getRegisteredCurrencies(
+      await gmClientService.getRegisteredCurrencies(
         this.connection,
         this.programId,
         true

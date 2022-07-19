@@ -27,7 +27,7 @@ import { ONE_MILLION } from './constants';
 /**
  * Provides utility methods and transaction builders for interacting with the Galactic Marketplace.
  */
-export class GmpClientService {
+export class GmClientService {
   currencyInfo: GmRegisteredCurrency[] = [];
 
   /**

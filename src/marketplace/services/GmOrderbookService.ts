@@ -8,7 +8,7 @@ import {
   GmEventHandler,
   GmEventType,
 } from '../types';
-import { GmpClientService } from './GmTransactionService';
+import { GmClientService } from './GmClientService';
 import { GmEventService } from './GmEventService';
 
 /**
@@ -25,14 +25,14 @@ export class GmOrderbookService {
   protected connection: Connection;
   protected marketplaceProgramId: PublicKey;
   protected orderCacheService: OrderCacheService;
-  protected gmpClientService: GmpClientService = new GmpClientService();
+  protected gmClientService: GmClientService = new GmClientService();
   protected GmEventService: GmEventService;
   protected eventCallBacks: Array<GmEventHandler> = [];
   protected changeObserverDisposer: IDisposer = null;
 
   constructor(rpcUrl: string, programId: PublicKey, commitment?: Commitment) {
     this.orderCacheService = new OrderCacheService();
-    this.gmpClientService = new GmpClientService();
+    this.gmClientService = new GmClientService();
 
     this.connection = new Connection(
       rpcUrl,
@@ -88,7 +88,7 @@ export class GmOrderbookService {
 
   public async loadInitialOrders(): Promise<number> {
     try {
-      const orders = await this.gmpClientService.getAllOpenOrders(
+      const orders = await this.gmClientService.getAllOpenOrders(
         this.connection,
         this.marketplaceProgramId
       );

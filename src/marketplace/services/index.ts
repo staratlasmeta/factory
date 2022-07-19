@@ -1,3 +1,3 @@
 export * from './GmOrderbookService';
-export * from './GmTransactionService';
+export * from './GmClientService';
 export * from './GmEventService';
