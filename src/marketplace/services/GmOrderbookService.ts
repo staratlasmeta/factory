@@ -102,6 +102,8 @@ export class GmOrderbookService {
   }
 
   protected async resetEventService(): Promise<void> {
+    if (this.isReloading) return;
+
     this.gmEventService = new GmEventService(
       this.connection,
       this.marketplaceProgramId
