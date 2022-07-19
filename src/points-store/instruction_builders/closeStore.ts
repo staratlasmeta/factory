@@ -44,10 +44,7 @@ export const closePointsStoreIx = async (
   } = params;
   const program = getPointsStoreProgram(connection, programId);
 
-  const storeSigner = await findPointsStoreSigner(
-    store,
-    programId
-  )[0];
+  const storeSigner = await findPointsStoreSigner(store, programId);
 
   const instructions = [
     await program.methods
@@ -63,7 +60,7 @@ export const closePointsStoreIx = async (
         pointsModifierAccount: pointsModifierKey,
         pointsProgram: pointsProgramId,
         store,
-        storeSigner,
+        storeSigner: storeSigner[0],
       })
       .instruction(),
   ];

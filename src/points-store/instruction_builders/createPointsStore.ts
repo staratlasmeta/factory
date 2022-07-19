@@ -45,14 +45,14 @@ export const createPointsStoreAccountIx = async (
 
   const store = params.store || Keypair.generate();
 
-  const [storeSigner, signerBump] = await findPointsStoreSigner(
+  const storeSigner = await findPointsStoreSigner(
     store.publicKey,
     programId
   );
 
   const instructions = [
     await program.methods
-      .createPointsStore(signerBump, price)
+      .createPointsStore(price)
       .accounts({
         authority,
         bank,
@@ -63,7 +63,7 @@ export const createPointsStoreAccountIx = async (
         pointsModifierAccount: pointsModifierKey,
         pointsProgram: pointsProgramId,
         store: store.publicKey,
-        storeSigner,
+        storeSigner: storeSigner[0],
       })
       .instruction(),
   ];

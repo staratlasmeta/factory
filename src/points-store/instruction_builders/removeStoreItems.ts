@@ -23,18 +23,11 @@ export const removePointsStoreItemIx = async (
   signers?: web3.Keypair[];
   instructions: web3.TransactionInstruction[];
 }> => {
-  const {
-    authority,
-    amount,
-    bank,
-    tokensTo,
-    connection,
-    store,
-    programId,
-  } = params;
+  const { authority, amount, bank, tokensTo, connection, store, programId } =
+    params;
   const program = getPointsStoreProgram(connection, programId);
 
-  const storeSigner = await findPointsStoreSigner(store, programId)[0];
+  const storeSigner = await findPointsStoreSigner(store, programId);
 
   const instructions = [
     await program.methods
@@ -44,7 +37,7 @@ export const removePointsStoreItemIx = async (
         bank,
         tokensTo,
         store,
-        storeSigner,
+        storeSigner: storeSigner[0],
       })
       .instruction(),
   ];
