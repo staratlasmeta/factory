@@ -37,7 +37,8 @@ export class GmEventService {
   protected onEvent: (
     eventType: GmEventType,
     order: Order,
-    slotContext: number
+    slotContext: number,
+    signature: string
   ) => void;
 
   constructor(
@@ -67,6 +68,7 @@ export class GmEventService {
       accounts: new BorshAccountsCoder(this.idl),
       state: null,
       events: new BorshEventCoder(this.idl),
+      types: null
     });
 
     await this.setCurrencyInfo();
@@ -134,27 +136,30 @@ export class GmEventService {
     });
   }
 
-  protected handleOrderCreated(event: GmLogEvent, slotContext: number): void {
+  protected handleOrderCreated(event: GmLogEvent, slotContext: number, signature: string): void {
     this.onEvent(
       GmEventType.orderAdded,
       this.getParsedOrderFromEvent(event),
-      slotContext
+      slotContext,
+      signature
     );
   }
 
-  protected handleOrderExchanged(event: GmLogEvent, slotContext: number): void {
+  protected handleOrderExchanged(event: GmLogEvent, slotContext: number, signature: string): void {
     this.onEvent(
       GmEventType.orderModified,
       this.getParsedOrderFromEvent(event),
-      slotContext
+      slotContext,
+      signature
     );
   }
 
-  protected handleOrderCanceled(event: GmLogEvent, slotContext: number): void {
+  protected handleOrderCanceled(event: GmLogEvent, slotContext: number, signature: string): void {
     this.onEvent(
       GmEventType.orderRemoved,
       this.getParsedOrderFromEvent(event),
-      slotContext
+      slotContext,
+      signature
     );
   }
 
