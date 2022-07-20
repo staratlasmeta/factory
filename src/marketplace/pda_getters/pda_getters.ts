@@ -86,13 +86,13 @@ export async function getRegisteredCurrencyAccount(
 export async function getAllRegisteredCurrencies(
     connection: web3.Connection,
     programId: web3.PublicKey,
-): Promise<RegisteredCurrencyItem[]> {
+): Promise<RegisteredCurrencyItem[]> {    
     const provider = new AnchorProvider(connection, null, null);
     const idl = getGmIDL(programId);
     const program = new Program(idl as Idl, programId, provider);
     const filter = [
         {
-            dataSize:  81
+            dataSize: 1686
         }
     ];
     const registeredCurrencies = await program.account.registeredCurrency.all(filter);
