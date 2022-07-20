@@ -14,6 +14,7 @@ import { GmEventType, GmLogEvent, GmRegisteredCurrency } from '../types';
 import { GmClientService } from './GmClientService';
 import { getGmLogsIDL } from '../utils';
 import { GmLogs } from '../types';
+import { BorshTypesCoder } from '@project-serum/anchor/dist/cjs/coder/borsh/types';
 
 /**
  * Listens to events emitted by the Galactic Marketplace program and will call the registered
@@ -68,7 +69,7 @@ export class GmEventService {
       accounts: new BorshAccountsCoder(this.idl),
       state: null,
       events: new BorshEventCoder(this.idl),
-      types: null
+      types: new BorshTypesCoder(this.idl)
     });
 
     await this.setCurrencyInfo();
@@ -92,7 +93,7 @@ export class GmEventService {
   }
 
   setEventHandler(
-    handler: (eventType: GmEventType, order: Order, slotContext: number) => void
+    handler: (eventType: GmEventType, order: Order, slotContext: number, signature: string) => void
   ): void {
     this.onEvent = handler;
   }
