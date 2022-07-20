@@ -14,6 +14,7 @@ import { GmEventType, GmLogEvent, GmRegisteredCurrency } from '../types';
 import { GmClientService } from './GmClientService';
 import { getGmLogsIDL } from '../utils';
 import { GmLogs } from '../types';
+import { BorshTypesCoder } from '@project-serum/anchor/dist/cjs/coder/borsh/types';
 
 /**
  * Listens to events emitted by the Galactic Marketplace program and will call the registered
@@ -37,7 +38,8 @@ export class GmEventService {
   protected onEvent: (
     eventType: GmEventType,
     order: Order,
-    slotContext: number
+    slotContext: number,
+    signature: string
   ) => void;
 
   constructor(
@@ -67,6 +69,7 @@ export class GmEventService {
       accounts: new BorshAccountsCoder(this.idl),
       state: null,
       events: new BorshEventCoder(this.idl),
+      types: new BorshTypesCoder(this.idl)
     });
 
     await this.setCurrencyInfo();
@@ -90,7 +93,7 @@ export class GmEventService {
   }
 
   setEventHandler(
-    handler: (eventType: GmEventType, order: Order, slotContext: number) => void
+    handler: (eventType: GmEventType, order: Order, slotContext: number, signature: string) => void
   ): void {
     this.onEvent = handler;
   }
@@ -134,27 +137,30 @@ export class GmEventService {
     });
   }
 
-  protected handleOrderCreated(event: GmLogEvent, slotContext: number): void {
+  protected handleOrderCreated(event: GmLogEvent, slotContext: number, signature: string): void {
     this.onEvent(
       GmEventType.orderAdded,
       this.getParsedOrderFromEvent(event),
-      slotContext
+      slotContext,
+      signature
     );
   }
 
-  protected handleOrderExchanged(event: GmLogEvent, slotContext: number): void {
+  protected handleOrderExchanged(event: GmLogEvent, slotContext: number, signature: string): void {
     this.onEvent(
       GmEventType.orderModified,
       this.getParsedOrderFromEvent(event),
-      slotContext
+      slotContext,
+      signature
     );
   }
 
-  protected handleOrderCanceled(event: GmLogEvent, slotContext: number): void {
+  protected handleOrderCanceled(event: GmLogEvent, slotContext: number, signature: string): void {
     this.onEvent(
       GmEventType.orderRemoved,
       this.getParsedOrderFromEvent(event),
-      slotContext
+      slotContext,
+      signature
     );
   }
 
