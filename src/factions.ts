@@ -1,7 +1,7 @@
 import {
-  AnchorProvider,
   Idl,
   Program,
+  AnchorProvider,
   web3
 } from '@project-serum/anchor';
 import { AnchorTypes } from './anchor/types';

@@ -3,8 +3,8 @@ import {
     getMarketplaceProgram,
     getOrderSide,
 } from '../utils';
+import { BaseParams } from '../../util/BaseParams';
 import { FactoryReturn } from './../../types';
-import { BaseParams } from './BaseParams';
 import { OrderAccountInfo } from '../types/marketplace_accounts';
 import { getTokenAccount } from '../../util';
 

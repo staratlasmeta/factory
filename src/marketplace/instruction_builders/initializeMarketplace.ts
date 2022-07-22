@@ -1,6 +1,6 @@
 import { web3 } from '@project-serum/anchor';
 import { getMarketplaceProgram } from '../utils';
-import { BaseParams } from './BaseParams';
+import { BaseParams } from '../../util/BaseParams';
 
 export interface InitParameters extends BaseParams {
     updateAuthorityAccount: web3.PublicKey

@@ -1,7 +1,4 @@
-import {
-  AnchorProvider,
-    web3
-} from '@project-serum/anchor'
+import { AnchorProvider, web3} from '@project-serum/anchor'
 import { ASSOCIATED_TOKEN_PROGRAM_ID, MintLayout, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { byteArrayToLong } from '.';
 import { strict as assert } from 'assert';

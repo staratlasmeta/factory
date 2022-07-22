@@ -1,4 +1,4 @@
-export * from './BaseParams'
+export * from '../../util/BaseParams'
 export * from './cancelOrder'
 export * from './createOrder'
 export * from './deregisterCurrency'

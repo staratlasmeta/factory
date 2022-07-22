@@ -8,7 +8,7 @@ import {
 } from '../utils';
 import { OrderAccountInfo } from '../types/marketplace_accounts';
 import { getOrderVault } from '../pda_getters/pda_getters';
-import { BaseParams } from './BaseParams';
+import { BaseParams } from '../../util/BaseParams';
 import {
     getRegisteredCurrencyAccountInfo,
     getOpenOrdersCounter,

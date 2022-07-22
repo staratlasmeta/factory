@@ -3,9 +3,9 @@ import {
     web3,
 } from '@project-serum/anchor';
 import { getMarketplaceProgram } from '../utils';
+import { BaseParams } from '../../util/BaseParams';
 import { getTokenAccount } from './../../util/helpers'
 import { FactoryReturn } from './../../types'
-import { BaseParams } from './BaseParams';
 import { getOpenOrdersCounter } from '../pda_getters';
 import { createOrderCounterInstruction } from './createOrderCounter';
 import { createAccountInstruction } from '../../util';

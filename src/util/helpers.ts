@@ -89,6 +89,24 @@ export async function convertFactionStringToNum(
   return address;
 }
 
+/**
+ * Convert string to bytes
+ *
+ * @param item - the string
+ * @param maxLen - the maximum length of string to accept
+ * @returns a buffer of the string
+ */
+export const convertStringToBytes = (item: string, maxLen = 32): Buffer => {
+  const item_bytes = Buffer.from(item);
+  if (item_bytes.byteLength > maxLen) {
+      throw new Error(`Max string byte length is ${maxLen}.  Please use a shorter value.`);
+  }
+  const result = Buffer.alloc(maxLen);
+  result.set(item_bytes);
+
+  return result;
+};
+
 export async function getTokenAccount(
   connection: web3.Connection,
   wallet: web3.PublicKey,

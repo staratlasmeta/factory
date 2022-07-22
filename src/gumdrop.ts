@@ -1,4 +1,4 @@
-import { AnchorProvider, Idl, Program, web3, BN } from '@project-serum/anchor';
+import { Idl, Program, AnchorProvider, web3, BN } from '@project-serum/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
