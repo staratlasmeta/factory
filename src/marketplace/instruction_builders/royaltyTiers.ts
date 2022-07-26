@@ -1,7 +1,7 @@
 import { BN, web3} from '@project-serum/anchor';
-import { FactoryReturn } from "../../types";
-import { getMarketplaceProgram } from "../utils";
-import { BaseParams } from "./BaseParams";
+import { FactoryReturn } from '../../types';
+import { getMarketplaceProgram } from '../utils';
+import { BaseParams } from './BaseParams';
 
 export interface RoyaltyTierParams extends BaseParams {
     updateAuthorityAccount: web3.PublicKey,
