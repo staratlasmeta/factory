@@ -965,12 +965,38 @@ export type GmIdl =
           {
             'name': 'bump',
             'type': 'u8'
+          },
+          {
+            'name': 'royaltyTiers',
+            'type': {
+              'option': {
+                'vec': {
+                  'defined': 'RoyaltyTier'
+                }
+              }
+            }
           }
         ]
       }
     }
   ],
   'types': [
+    {
+      'name': 'RoyaltyTier',
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'stakeAmount',
+            'type': 'u64'
+          },
+          {
+            'name': 'discount',
+            'type': 'u64'
+          }
+        ]
+      }
+    },
     {
       'name': 'OrderSide',
       'type': {
@@ -1085,10 +1111,19 @@ export type GmIdl =
       'code': 6016,
       'name': 'InvalidOrderAccountError',
       'msg': 'Order Account does not match provided account'
+    },
+    {
+      'code': 6017,
+      'name': 'InvalidRoyaltyTier',
+      'msg': 'No royalty tier exists with provided stake amount'
+    },
+    {
+      'code': 6018,
+      'name': 'RoyaltyTierLength',
+      'msg': 'Royalty Tier vector cannot hold any additional tiers'
     }
   ],
-  'metadata': {
-  }
+  'metadata': Record<string, unknown>
 }
 export const baseIdl: GmIdl =
 {
@@ -2057,12 +2092,38 @@ export const baseIdl: GmIdl =
           {
             'name': 'bump',
             'type': 'u8'
+          },
+          {
+            'name': 'royaltyTiers',
+            'type': {
+              'option': {
+                'vec': {
+                  'defined': 'RoyaltyTier'
+                }
+              }
+            }
           }
         ]
       }
     }
   ],
   'types': [
+    {
+      'name': 'RoyaltyTier',
+      'type': {
+        'kind': 'struct',
+        'fields': [
+          {
+            'name': 'stakeAmount',
+            'type': 'u64'
+          },
+          {
+            'name': 'discount',
+            'type': 'u64'
+          }
+        ]
+      }
+    },
     {
       'name': 'OrderSide',
       'type': {
@@ -2177,6 +2238,16 @@ export const baseIdl: GmIdl =
       'code': 6016,
       'name': 'InvalidOrderAccountError',
       'msg': 'Order Account does not match provided account'
+    },
+    {
+      'code': 6017,
+      'name': 'InvalidRoyaltyTier',
+      'msg': 'No royalty tier exists with provided stake amount'
+    },
+    {
+      'code': 6018,
+      'name': 'RoyaltyTierLength',
+      'msg': 'Royalty Tier vector cannot hold any additional tiers'
     }
   ],
   'metadata': {

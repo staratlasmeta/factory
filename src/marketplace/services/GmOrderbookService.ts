@@ -4,42 +4,46 @@ import { Commitment, Connection, PublicKey } from '@solana/web3.js';
 
 import { OrderCacheService } from './OrderCacheService';
 import { Order } from '../models/Order';
-import {
-  GalacticMarketPlaceEventHandler,
-  GalacticMarketPlaceEventType,
-} from '../types';
-import { GmpClientService } from './GmpClientService';
-import { GmpEventService } from './GmpEventService';
+import { GmEventHandler, GmEventType } from '../types';
+import { GmClientService } from './GmClientService';
+import { GmEventService } from './GmEventService';
 
 /**
- * Establishes a connection to the Galactic Marketplace and maintains an up-to-date realtime
- * internal state of all open marketplace orders.
+ * Establishes a connection to the Galactic Marketplace and maintains an up-to-date
+ * real time snapshot of all open marketplace orders.
  *
  * @param rpcUrl Solana RPC Provider Url
  * @param programId The Galactic Marketplace program PublicKey
  * @param commitment Optional Solana commitment level, defaults to `confirmed`
  */
-export class GalacticMarketplaceService {
-  protected static commitment: Commitment = 'confirmed';
+export class GmOrderbookService {
+  private static HEALTH_CHECK_RATE = 5000;
 
   protected connection: Connection;
   protected marketplaceProgramId: PublicKey;
   protected orderCacheService: OrderCacheService;
-  protected gmpClientService: GmpClientService = new GmpClientService();
-  protected gmpEventService: GmpEventService;
-  protected eventCallBacks: Array<GalacticMarketPlaceEventHandler> = [];
+  protected gmClientService: GmClientService = new GmClientService();
+  protected gmEventService: GmEventService;
+  protected eventCallBacks: Array<GmEventHandler> = [];
   protected changeObserverDisposer: IDisposer = null;
 
-  constructor(rpcUrl: string, programId: PublicKey, commitment?: Commitment) {
-    this.orderCacheService = new OrderCacheService();
-    this.gmpClientService = new GmpClientService();
+  protected healthcheckTimer: NodeJS.Timer;
+  protected lastEventTimestamp = this.getNow();
+  protected healthcheckThreshold: number;
+  protected isReloading = false;
 
-    this.connection = new Connection(
-      rpcUrl,
-      commitment || GalacticMarketplaceService.commitment
-    );
+  constructor(
+    connection: Connection,
+    programId: PublicKey,
+    healthcheckThresholdSeconds = 60
+  ) {
+    this.connection = connection;
     this.marketplaceProgramId = programId;
-    this.gmpEventService = new GmpEventService(
+    this.healthcheckThreshold = healthcheckThresholdSeconds;
+
+    this.orderCacheService = new OrderCacheService();
+    this.gmClientService = new GmClientService();
+    this.gmEventService = new GmEventService(
       this.connection,
       this.marketplaceProgramId
     );
@@ -48,7 +52,7 @@ export class GalacticMarketplaceService {
   }
 
   async initialize(): Promise<number> {
-    await this.gmpEventService.initialize();
+    await this.gmEventService.initialize();
 
     this.changeObserverDisposer = queueProcessor(
       this.orderCacheService.orderChanges,
@@ -60,9 +64,15 @@ export class GalacticMarketplaceService {
       250
     );
 
-    this.gmpEventService.setEventHandler(this.handleMarketplaceEvent);
+    this.gmEventService.setEventHandler(this.handleMarketplaceEvent);
 
     await this.loadInitialOrders();
+
+    this.healthcheckTimer = setInterval(() => {
+      const isHealthy = this.getIsServiceHealthy();
+
+      if (!isHealthy && !this.isReloading) this.resetOrdersData();
+    }, GmOrderbookService.HEALTH_CHECK_RATE);
 
     return this.orderCacheService.mints.length;
   }
@@ -74,21 +84,82 @@ export class GalacticMarketplaceService {
     return true;
   }
 
-  public addOnEventHandler(
-    eventHandler: GalacticMarketPlaceEventHandler
-  ): void {
+  protected getIsServiceHealthy(): boolean {
+    const now = this.getNow();
+    const secondsSinceLastEvent = now - this.lastEventTimestamp;
+
+    return secondsSinceLastEvent <= this.healthcheckThreshold;
+  }
+
+  protected async resetOrdersData(): Promise<void> {
+    this.isReloading = true;
+
+    await this.resetEventService();
+    await this.refetchOrderData();
+
+    this.lastEventTimestamp = this.getNow();
+    this.isReloading = false;
+  }
+
+  protected async resetEventService(): Promise<void> {
+    if (this.isReloading) return;
+
+    this.gmEventService = new GmEventService(
+      this.connection,
+      this.marketplaceProgramId
+    );
+
+    await this.gmEventService.initialize();
+  }
+
+  protected async refetchOrderData(): Promise<void> {
+    const existingOffers = this.orderCacheService.getAllOrdersCache();
+
+    try {
+      const fetchedOffers = await this.gmClientService.getAllOpenOrders(
+        this.connection,
+        this.marketplaceProgramId
+      );
+      const fetchedOffersMap = new Map<string, Order>();
+
+      for (const offer of fetchedOffers) {
+        /** Set new offer values in a temporary map for faster read times */
+        fetchedOffersMap.set(offer.id, offer);
+
+        const existingOffer = existingOffers.get(offer.id);
+
+        if (!existingOffer) {
+          this.addOrderToCache(offer);
+        } else if (
+          existingOffer &&
+          existingOffer.orderQtyRemaining !== offer.orderQtyRemaining
+        ) {
+          this.updateOrderInCache(offer);
+        }
+      }
+
+      /** Remove offers which exist in the local cache, but not in the freshly fetched offers */
+      for (const existingOffer of Array.from(existingOffers.values())) {
+        if (!fetchedOffersMap.get(existingOffer.id)) {
+          this.removeOrderFromCache(existingOffer);
+        }
+      }
+    } catch (error) {
+      console.log('There was an error refreshing all marketplace data', error);
+    }
+  }
+
+  public addOnEventHandler(eventHandler: GmEventHandler): void {
     this.eventCallBacks.push(eventHandler);
   }
 
-  public removeOnEventHandler(
-    eventHandler: GalacticMarketPlaceEventHandler
-  ): void {
+  public removeOnEventHandler(eventHandler: GmEventHandler): void {
     pull(this.eventCallBacks, eventHandler);
   }
 
   public async loadInitialOrders(): Promise<number> {
     try {
-      const orders = await this.gmpClientService.getAllOpenOrders(
+      const orders = await this.gmClientService.getAllOpenOrders(
         this.connection,
         this.marketplaceProgramId
       );
@@ -119,7 +190,7 @@ export class GalacticMarketplaceService {
     return this.orderCacheService.buyOrdersCache;
   }
 
-  getBuyOrdersForNft(mint: string): Map<string, Order> {
+  getBuyOrdersForMint(mint: string): Map<string, Order> {
     return this.orderCacheService.buyOrdersCache.get(mint);
   }
 
@@ -127,7 +198,7 @@ export class GalacticMarketplaceService {
     return this.orderCacheService.sellOrdersCache;
   }
 
-  getSellOrdersForNft(mint: string): Map<string, Order> {
+  getSellOrdersForMint(mint: string): Map<string, Order> {
     return this.orderCacheService.sellOrdersCache.get(mint);
   }
 
@@ -139,11 +210,11 @@ export class GalacticMarketplaceService {
     currencyMint: string,
     itemMint: string
   ): Order[] {
-    const ordersForNft = this.getBuyOrdersForNft(itemMint);
+    const ordersForMint = this.getBuyOrdersForMint(itemMint);
 
-    if (!ordersForNft) return [];
+    if (!ordersForMint) return [];
 
-    const orders = [...ordersForNft.values()];
+    const orders = [...ordersForMint.values()];
 
     if (!orders.length) return [];
 
@@ -154,11 +225,11 @@ export class GalacticMarketplaceService {
     currencyMint: string,
     itemMint: string
   ): Order[] {
-    const ordersForNft = this.getSellOrdersForNft(itemMint);
+    const ordersForMint = this.getSellOrdersForMint(itemMint);
 
-    if (!ordersForNft) return [];
+    if (!ordersForMint) return [];
 
-    const orders = [...ordersForNft.values()];
+    const orders = [...ordersForMint.values()];
 
     if (!orders.length) return [];
 
@@ -181,8 +252,8 @@ export class GalacticMarketplaceService {
   getAllOrdersByItemMint(mint: string): Map<string, Order> {
     const map = new Map();
 
-    const sellOrdersForMint = this.getSellOrdersForNft(mint);
-    const buyOrdersForMint = this.getBuyOrdersForNft(mint);
+    const sellOrdersForMint = this.getSellOrdersForMint(mint);
+    const buyOrdersForMint = this.getBuyOrdersForMint(mint);
 
     if (sellOrdersForMint) {
       for (const order of sellOrdersForMint.values()) {
@@ -230,24 +301,27 @@ export class GalacticMarketplaceService {
     this.removeOrderFromCache(order);
   }
 
-  protected handleMarketplaceEvent(
-    eventType: GalacticMarketPlaceEventType,
-    order: Order
-  ): void {
+  protected handleMarketplaceEvent(eventType: GmEventType, order: Order): void {
     if (!order) return;
 
+    this.lastEventTimestamp = this.getNow();
+
     switch (eventType) {
-      case GalacticMarketPlaceEventType.orderAdded:
+      case GmEventType.orderAdded:
         this.handleOrderAddedEvent(order);
         break;
-      case GalacticMarketPlaceEventType.orderModified:
+      case GmEventType.orderModified:
         this.handleOrderModifiedEvent(order);
         break;
-      case GalacticMarketPlaceEventType.orderRemoved:
+      case GmEventType.orderRemoved:
         this.handleOrderCanceledEvent(order);
         break;
       default:
         break;
     }
+  }
+
+  protected getNow(): number {
+    return new Date().getTime() / 1000;
   }
 }

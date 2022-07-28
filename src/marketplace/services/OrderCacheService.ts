@@ -9,8 +9,8 @@ import {
 
 import { Order, OrderSide } from '../models/Order';
 import {
-  GalacticMarketPlaceChangeEvent,
-  GalacticMarketPlaceEventType,
+  GmChangeEvent,
+  GmEventType,
 } from '../types';
 
 type OrderCache = Map<string, Map<string, Order>>;
@@ -21,7 +21,7 @@ type ObservableData = {
 
 /**
  * An opinionated service to maintain a performant caching layer of Order data.
- * This is implemented by `GalacticMarketplaceService`.
+ * This is implemented by `GmOrderbookService`.
  */
 export class OrderCacheService {
   protected endTriggered = false;
@@ -29,7 +29,7 @@ export class OrderCacheService {
     buyOrdersCache: new Map<string, Map<string, Order>>(),
     sellOrdersCache: new Map<string, Map<string, Order>>(),
   };
-  public orderChanges = observable<GalacticMarketPlaceChangeEvent>([]);
+  public orderChanges = observable<GmChangeEvent>([]);
 
   constructor() {
     this.observableData = makeAutoObservable(this.observableData);
@@ -108,7 +108,7 @@ export class OrderCacheService {
     allOrdersCache.forEach((order) => {
       runInAction(() => {
         this.orderChanges.push({
-          eventType: GalacticMarketPlaceEventType.orderRemoved,
+          eventType: GmEventType.orderRemoved,
           order,
         });
       });
@@ -153,7 +153,7 @@ export class OrderCacheService {
 
     runInAction(() => {
       this.orderChanges.push({
-        eventType: GalacticMarketPlaceEventType.orderAdded,
+        eventType: GmEventType.orderAdded,
         order,
       });
     });
@@ -181,7 +181,7 @@ export class OrderCacheService {
 
         runInAction(() => {
           this.orderChanges.push({
-            eventType: GalacticMarketPlaceEventType.orderModified,
+            eventType: GmEventType.orderModified,
             order,
           });
         });
@@ -202,7 +202,7 @@ export class OrderCacheService {
     if (removed) {
       runInAction(() => {
         this.orderChanges.push({
-          eventType: GalacticMarketPlaceEventType.orderRemoved,
+          eventType: GmEventType.orderRemoved,
           order,
         });
       });
