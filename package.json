@@ -1,6 +1,6 @@
 {
   "name": "@staratlas/factory",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "Star Atlas Factory for constructing Transactions targeting Solana on-chain programs",
   "repository": {
     "type": "git",
