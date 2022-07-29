@@ -85,8 +85,14 @@ export class GmClientService {
     programId: PublicKey
   ): Promise<Order[]> {
     const openOrders = await getAllOpenOrders(connection, programId);
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
@@ -108,8 +114,14 @@ export class GmClientService {
       playerPublicKey,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
@@ -132,8 +144,14 @@ export class GmClientService {
       currencyMint,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
@@ -156,8 +174,14 @@ export class GmClientService {
       assetMint,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
@@ -183,8 +207,14 @@ export class GmClientService {
       currencyMint,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
@@ -210,8 +240,14 @@ export class GmClientService {
       assetMint,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
@@ -235,10 +271,12 @@ export class GmClientService {
       publicKey: orderAccount,
       account: orderAccountInfo,
     };
+    const slotContext = await connection.getSlot();
     const [result] = await this.accountItemsToOrders(
       connection,
       programId,
-      [orderAccountItem]
+      [orderAccountItem],
+      slotContext
     );
 
     return result;
@@ -387,7 +425,8 @@ export class GmClientService {
   async accountItemsToOrders(
     connection: Connection,
     programId: PublicKey,
-    orderAccountItems: OrderAccountItem[]
+    orderAccountItems: OrderAccountItem[],
+    slotContext: number
   ): Promise<Order[]> {
     if (!orderAccountItems.length) return [];
 
@@ -432,6 +471,7 @@ export class GmClientService {
         ownerAssetTokenAccount,
         ownerCurrencyTokenAccount,
         createdAt,
+        slotContext,
       });
     });
   }

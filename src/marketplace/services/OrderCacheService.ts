@@ -8,10 +8,7 @@ import {
 } from 'mobx';
 
 import { Order, OrderSide } from '../models/Order';
-import {
-  GmChangeEvent,
-  GmEventType,
-} from '../types';
+import { GmChangeEvent, GmEventType } from '../types';
 
 type OrderCache = Map<string, Map<string, Order>>;
 type ObservableData = {
@@ -148,6 +145,11 @@ export class OrderCacheService {
     }
 
     const ordersForMint = ordersForType.get(order.orderMint);
+    const existingOrder = ordersForMint.get(order.id);
+
+    if (existingOrder && existingOrder.slotContext > order.slotContext) {
+      return existingOrder;
+    }
 
     ordersForMint.set(order.id, order);
 
@@ -166,28 +168,23 @@ export class OrderCacheService {
     const ordersForMint = ordersForType.get(order.orderMint);
     const existingOrder = ordersForMint.get(order.id);
 
-    if (existingOrder) {
-      let hasUpdate = false;
+    if (!existingOrder) return;
 
-      if (existingOrder.orderQtyRemaining !== order.orderQtyRemaining) {
-        hasUpdate = true;
-      }
+    if (
+      existingOrder.orderQtyRemaining !== order.orderQtyRemaining &&
+      order.slotContext > existingOrder.slotContext
+    ) {
+      const orderClone = clone(existingOrder);
 
-      if (hasUpdate) {
-        const orderClone = clone(existingOrder);
+      orderClone.orderQtyRemaining = order.orderQtyRemaining;
+      ordersForMint.set(order.id, orderClone);
 
-        orderClone.orderQtyRemaining = order.orderQtyRemaining;
-        ordersForMint.set(order.id, orderClone);
-
-        runInAction(() => {
-          this.orderChanges.push({
-            eventType: GmEventType.orderModified,
-            order,
-          });
+      runInAction(() => {
+        this.orderChanges.push({
+          eventType: GmEventType.orderModified,
+          order,
         });
-      }
-    } else {
-      this.cancelOrder(order);
+      });
     }
 
     return order;
