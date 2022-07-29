@@ -17,6 +17,7 @@ export type OrderType = {
   ownerAssetTokenAccount: string;
   ownerCurrencyTokenAccount: string;
   createdAt: number;
+  slotContext: number;
 };
 
 export class Order implements OrderType {
@@ -31,6 +32,7 @@ export class Order implements OrderType {
   ownerAssetTokenAccount = '';
   ownerCurrencyTokenAccount = '';
   createdAt = 0;
+  slotContext = 0;
 
   constructor(order?: OrderType) {
     if (order) {
@@ -45,6 +47,7 @@ export class Order implements OrderType {
       this.ownerAssetTokenAccount = order.ownerAssetTokenAccount;
       this.ownerCurrencyTokenAccount = order.ownerCurrencyTokenAccount;
       this.createdAt = order.createdAt;
+      this.slotContext = order.slotContext;
     }
 
     makeObservable(this, {

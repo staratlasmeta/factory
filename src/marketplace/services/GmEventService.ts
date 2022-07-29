@@ -5,9 +5,8 @@ import {
   BorshInstructionCoder,
   Idl,
   Program,
-  Wallet,
 } from '@project-serum/anchor';
-import { Commitment, Connection, Keypair, PublicKey } from '@solana/web3.js';
+import { Commitment, Connection, PublicKey } from '@solana/web3.js';
 
 import { Order, OrderSide } from '../models';
 import { GmEventType, GmLogEvent, GmRegisteredCurrency } from '../types';
@@ -24,7 +23,6 @@ import { GmLogs } from '../types';
  * @param commitment Optional Solana commitment level, defaults the `connection` commitment level
  */
 export class GmEventService {
-  protected wallet: Wallet;
   protected connection: Connection;
   protected programId: PublicKey;
   protected commitment: Commitment;
@@ -39,13 +37,13 @@ export class GmEventService {
     order: Order,
     slotContext: number
   ) => void;
+  protected eventListeners: number[] = [];
 
   constructor(
     connection: Connection,
     programId: PublicKey,
     commitment?: Commitment
   ) {
-    this.wallet = new Wallet(new Keypair());
     this.connection = connection;
     this.programId = programId;
     this.commitment = commitment || connection.commitment;
@@ -58,7 +56,7 @@ export class GmEventService {
   async initialize(): Promise<void> {
     this.idl = getGmLogsIDL(this.programId) as Idl;
 
-    this.provider = new AnchorProvider(this.connection, this.wallet, {
+    this.provider = new AnchorProvider(this.connection, null, {
       commitment: this.commitment,
     });
 
@@ -71,22 +69,37 @@ export class GmEventService {
 
     await this.setCurrencyInfo();
 
-    this.program.addEventListener(
+    const createId = this.program.addEventListener(
       GmLogs.InitializeMemo,
       this.handleOrderCreated
     );
-    this.program.addEventListener(
+    const exchangeId = this.program.addEventListener(
       GmLogs.ExchangeMemo,
       this.handleOrderExchanged
     );
-    this.program.addEventListener(
+    const cancelId = this.program.addEventListener(
       GmLogs.CancelOrderMemo,
       this.handleOrderCanceled
     );
-    this.program.addEventListener(
+    const registerCurrencyId = this.program.addEventListener(
       GmLogs.RegisterCurrencyMemo,
       this.handleCurrencyRegistered
     );
+
+    this.eventListeners.push(
+      createId,
+      exchangeId,
+      cancelId,
+      registerCurrencyId
+    );
+  }
+
+  async end(): Promise<void> {
+    for (const listenerId of this.eventListeners) {
+      await this.provider.connection.removeOnLogsListener(listenerId);
+    }
+
+    this.eventListeners = [];
   }
 
   setEventHandler(
@@ -110,7 +123,7 @@ export class GmEventService {
     }
   }
 
-  protected getParsedOrderFromEvent(event: GmLogEvent): Order | null {
+  protected getParsedOrderFromEvent(event: GmLogEvent, slotContext: number): Order | null {
     const currencyInfo =
       this.registeredCurrencyInfo[event.currencyMint.toString()];
 
@@ -131,13 +144,14 @@ export class GmEventService {
       ownerCurrencyTokenAccount:
         event.initializerCurrencyTokenAccount.toString(),
       createdAt: event.createdAtTimestamp.toNumber(),
+      slotContext,
     });
   }
 
   protected handleOrderCreated(event: GmLogEvent, slotContext: number): void {
     this.onEvent(
       GmEventType.orderAdded,
-      this.getParsedOrderFromEvent(event),
+      this.getParsedOrderFromEvent(event, slotContext),
       slotContext
     );
   }
@@ -145,7 +159,7 @@ export class GmEventService {
   protected handleOrderExchanged(event: GmLogEvent, slotContext: number): void {
     this.onEvent(
       GmEventType.orderModified,
-      this.getParsedOrderFromEvent(event),
+      this.getParsedOrderFromEvent(event, slotContext),
       slotContext
     );
   }
@@ -153,7 +167,7 @@ export class GmEventService {
   protected handleOrderCanceled(event: GmLogEvent, slotContext: number): void {
     this.onEvent(
       GmEventType.orderRemoved,
-      this.getParsedOrderFromEvent(event),
+      this.getParsedOrderFromEvent(event, slotContext),
       slotContext
     );
   }
