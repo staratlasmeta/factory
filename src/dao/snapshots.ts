@@ -10,6 +10,7 @@ import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/sp
 import { SystemProgram } from '@solana/web3.js';
 import { snapshotsIdl } from './idl/snapshotsIdl';
 import * as SNAPSHOTS_TYPES from './idl/snapshotsIdl';
+import { findEscrowAddress } from '.';
 
 const snapshotsProgramId = new web3.PublicKey('SnapGJHJrDbWMkxMukFDWTUq1wxNMB7CcDhPEU8aJCS');
 
@@ -19,6 +20,12 @@ type Account = SnapshotsTypes['Accounts'];
 
 export type LockerHistoryInfo = Account['LockerHistory'];
 export type EscrowHistoryInfo = Account['EscrowHistory'];
+
+const encodeU16 = (num: number): Buffer => {
+  const buf = Buffer.alloc(2);
+  buf.writeUInt16LE(num);
+  return buf;
+};
 
 /**
  * Returns the snapshots IDL
@@ -33,6 +40,42 @@ export function getSnapshotsIDL(
   _tmp['metadata']['address'] = programId.toBase58();
   return _tmp;
 }
+
+/**
+ * Finds the address of an EscrowHistory.
+ */
+export async function findEscrowHistoryAddress(
+  escrow: web3.PublicKey,
+  era: number,
+  programId: web3.PublicKey,
+): Promise<[web3.PublicKey, number]> {
+  return await web3.PublicKey.findProgramAddress(
+    [
+      Buffer.from("EscrowHistory"),
+      escrow.toBuffer(),
+      encodeU16(era),
+    ],
+    programId
+  );
+};
+
+/**
+ * Finds the address of a LockerHistory.
+ */
+export async function findLockerHistoryAddress(
+  locker: web3.PublicKey,
+  era: number,
+  programId: web3.PublicKey,
+): Promise<[web3.PublicKey, number]> {
+  return await web3.PublicKey.findProgramAddress(
+    [
+      Buffer.from("LockerHistory"),
+      locker.toBuffer(),
+      encodeU16(era),
+    ],
+    programId
+  );
+};
 
 /**
  * Returns a list of escrow history accounts
@@ -57,3 +100,35 @@ export async function getAllEscrowHistory(
   }
   return escrowHistoryAccounts;
 }
+
+/**
+ * Creates instruction to syncs a user's era (escrow history account) for snapshot history
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the program
+ * @returns - TransactionInstruction
+ */
+export async function createSyncUserEraInstruction(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+  locker: web3.PublicKey,
+  escrow: web3.PublicKey,
+  era: number
+): Promise<web3.TransactionInstruction> {
+
+  const idl = getSnapshotsIDL(programId);
+  const provider = new AnchorProvider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const [lockerHistory] = await findLockerHistoryAddress(locker, era, programId);
+  const [escrowHistory] = await findEscrowHistoryAddress(escrow, era, programId);
+  return program.instruction.sync({
+    accounts: {
+      locker,
+      escrow,
+      lockerHistory,
+      escrowHistory,
+    },
+  });
+}
+
