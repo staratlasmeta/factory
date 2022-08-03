@@ -1,0 +1,115 @@
+import {
+  AnchorProvider,
+  BN,
+  Idl,
+  Program,
+  web3
+} from '@project-serum/anchor'
+import type { AnchorTypes } from '../anchor/types';
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
+import { SystemProgram } from '@solana/web3.js';
+import { proxyRewarderIdl } from './idl/proxyRewarderIdl';
+import * as PROXYREWARDER_TYPES from './idl/proxyRewarderIdl';
+
+export type PROXYREWARDER_PROGRAM = PROXYREWARDER_TYPES.ProxyRewarder;
+export type ProxyRewarderTypes = AnchorTypes<PROXYREWARDER_PROGRAM>;
+type Account = ProxyRewarderTypes['Accounts'];
+
+export type ProxyInfo = Account['Proxy'];
+export type ProxyEscrowInfo = Account['ProxyEscrow'];
+export type RegisteredLockerInfo = Account['RegisteredLocker'];
+
+/**
+ * Returns the ProxyRewarder IDL
+ *
+ * @param programId - Deployed program ID for the program
+ * @returns - The IDL object
+ */
+export function getProxyRewarderIDL(
+  programId: web3.PublicKey,
+): unknown {
+  const _tmp = proxyRewarderIdl;
+  _tmp['metadata']['address'] = programId.toBase58();
+  return _tmp;
+}
+
+interface ProxyInfoWithAddress {
+  address: string;
+  data: ProxyInfo;
+}
+
+/**
+ * Returns a list of proxy accounts
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the program
+ * @returns - ProxyInfoWithAddress
+ */
+export async function getAllProxy(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+): Promise<ProxyInfoWithAddress[]> {
+
+  const idl = getProxyRewarderIDL(programId);
+  const provider = new AnchorProvider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const _accounts = await program.account.proxy.all();
+  const accounts = [];
+  for (const account of _accounts) {
+    let data: ProxyInfoWithAddress = {
+      address: account.publicKey.toBase58(),
+      data: <ProxyInfo>account.account
+    }
+    accounts.push(data);
+  }
+  return accounts;
+}
+
+/**
+ * Returns a list of proxy escrow accounts
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the program
+ * @returns - ProxyEscrowInfo
+ */
+export async function getAllProxyEscrow(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+): Promise<ProxyInfo[]> {
+
+  const idl = getProxyRewarderIDL(programId);
+  const provider = new AnchorProvider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const _accounts = await program.account.proxy_escrow.all();
+  const accounts = [];
+  for (const account of _accounts) {
+    accounts.push(<ProxyEscrowInfo>account.account);
+  }
+  return accounts;
+}
+
+/**
+ * Returns a list of registered locker accounts
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the program
+ * @returns - RegisteredLocker
+ */
+export async function getAllRegisteredLocker(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+): Promise<RegisteredLockerInfo[]> {
+
+  const idl = getProxyRewarderIDL(programId);
+  const provider = new AnchorProvider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+
+  const _accounts = await program.account.proxy_escrow.all();
+  const accounts = [];
+  for (const account of _accounts) {
+    accounts.push(<RegisteredLockerInfo>account.account);
+  }
+  return accounts;
+}
