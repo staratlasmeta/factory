@@ -388,15 +388,13 @@ export class GmClientService {
    * @param purchaseQty Self-explanatory
    * @param orderTaker The PublicKey purchasing the order
    * @param programId Galactic Marketplace program ID
-   * @param expectedPrice The expected price of the item.
    */
   async getCreateExchangeTransaction(
     connection: Connection,
     order: Order,
     orderTaker: PublicKey,
     purchaseQty: number,
-    programId: PublicKey,
-    expectedPrice: number,
+    programId: PublicKey
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
@@ -410,6 +408,15 @@ export class GmClientService {
       order.orderType === OrderSide.Buy ? tokenMint : currencyMint
     );
 
+    const currencyInfo = await this.getRegisteredCurrencies(
+      connection,
+      programId
+    );
+    const { decimals } = currencyInfo.find(
+      (curr) => curr.mint === order.currencyMint
+    );
+    const expectedPrice = order.price * 10 ** decimals;
+
     const { instructions, signers } = await createExchangeInstruction({
       connection,
       orderAccount,
@@ -417,7 +424,7 @@ export class GmClientService {
       orderTaker,
       orderTakerDepositTokenAccount,
       programId,
-      expectedPrice
+      expectedPrice,
     });
 
     const transaction = createTransactionFromInstructions(instructions);

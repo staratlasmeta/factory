@@ -34,7 +34,7 @@ export interface ExchangeOrderParams extends BaseParams {
  * @param orderTaker - Public key of the order taker
  * @param orderTakerDepositTokenAccount - Public key of token account for token being sent by taker
  * @param programId - Deployed program ID for GM program
- * @param expectedPrice - Expected price of the order
+ * @param expectedPrice - Expected price of the order in base token units
  */
 export async function createExchangeInstruction ({
     connection,
@@ -43,7 +43,7 @@ export async function createExchangeInstruction ({
     orderTaker,
     orderTakerDepositTokenAccount,
     programId,
-    expectedPrice,
+    expectedPrice
 }: ExchangeOrderParams): Promise<FactoryReturn> {
     const program = getMarketplaceProgram({connection, programId})
     const ixSet: FactoryReturn = {
