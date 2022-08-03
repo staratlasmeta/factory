@@ -22,6 +22,7 @@ export type GmRegisteredCurrency = {
   mint: string;
   decimals: number;
   royaltyPercentageAsDecimal: number;
+  saVault: string;
 };
 
 export type GmLogEvent = {

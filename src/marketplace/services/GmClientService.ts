@@ -52,7 +52,7 @@ export class GmClientService {
     );
 
     for (const info of currencyInfo) {
-      const { mint, royalty } = info;
+      const { mint, royalty, saVault } = info;
       const tokenSupplylInformation = await connection.getTokenSupply(
         mint,
         'recent'
@@ -64,6 +64,7 @@ export class GmClientService {
         decimals,
         mint: mint.toString(),
         royaltyPercentageAsDecimal: royalty.toNumber() / ONE_MILLION,
+        saVault: saVault.toString(),
       });
     }
 
@@ -400,19 +401,20 @@ export class GmClientService {
     signers: Keypair[];
   }> {
     const orderAccount = new PublicKey(order.id);
-    const tokenMint = new PublicKey(order.orderMint);
+    const assetMint = new PublicKey(order.orderMint);
     const currencyMint = new PublicKey(order.currencyMint);
+    const orderInitializer = new PublicKey(order.owner);
 
     const orderTakerDepositTokenAccount = await getAssociatedTokenAddress(
       orderTaker,
-      order.orderType === OrderSide.Buy ? tokenMint : currencyMint
+      order.orderType === OrderSide.Buy ? assetMint : currencyMint
     );
 
     const currencyInfo = await this.getRegisteredCurrencies(
       connection,
       programId
     );
-    const { decimals } = currencyInfo.find(
+    const { decimals, saVault } = currencyInfo.find(
       (curr) => curr.mint === order.currencyMint
     );
     const expectedPrice = order.price * 10 ** decimals;
@@ -425,6 +427,11 @@ export class GmClientService {
       orderTakerDepositTokenAccount,
       programId,
       expectedPrice,
+      orderType: order.orderType,
+      assetMint,
+      currencyMint,
+      orderInitializer,
+      saVault: new PublicKey(saVault),
     });
 
     const transaction = createTransactionFromInstructions(instructions);
