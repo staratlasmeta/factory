@@ -22,6 +22,7 @@ export interface ExchangeOrderParams extends BaseParams {
     purchaseQty: number
     orderTaker: web3.PublicKey
     orderTakerDepositTokenAccount: web3.PublicKey
+    expectedPrice: number,
 }
 
 /**
@@ -33,6 +34,7 @@ export interface ExchangeOrderParams extends BaseParams {
  * @param orderTaker - Public key of the order taker
  * @param orderTakerDepositTokenAccount - Public key of token account for token being sent by taker
  * @param programId - Deployed program ID for GM program
+ * @param expectedPrice - Expected price of the order
  */
 export async function createExchangeInstruction ({
     connection,
@@ -41,6 +43,7 @@ export async function createExchangeInstruction ({
     orderTaker,
     orderTakerDepositTokenAccount,
     programId,
+    expectedPrice,
 }: ExchangeOrderParams): Promise<FactoryReturn> {
     const program = getMarketplaceProgram({connection, programId})
     const ixSet: FactoryReturn = {
@@ -122,7 +125,7 @@ export async function createExchangeInstruction ({
 
     const exchangeIx =
         await program.methods
-            .processExchange(new BN(purchaseQty))
+            .processExchange(new BN(purchaseQty), new BN(expectedPrice))
             .accounts({
                 orderTaker,
                 orderTakerDepositTokenAccount,

@@ -388,13 +388,15 @@ export class GmClientService {
    * @param purchaseQty Self-explanatory
    * @param orderTaker The PublicKey purchasing the order
    * @param programId Galactic Marketplace program ID
+   * @param expectedPrice The expected price of the item.
    */
   async getCreateExchangeTransaction(
     connection: Connection,
     order: Order,
     orderTaker: PublicKey,
     purchaseQty: number,
-    programId: PublicKey
+    programId: PublicKey,
+    expectedPrice: number,
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
@@ -415,6 +417,7 @@ export class GmClientService {
       orderTaker,
       orderTakerDepositTokenAccount,
       programId,
+      expectedPrice
     });
 
     const transaction = createTransactionFromInstructions(instructions);
