@@ -414,7 +414,7 @@ export class GmClientService {
       connection,
       programId
     );
-    const { decimals, saVault } = currencyInfo.find(
+    const { saVault } = currencyInfo.find(
       (curr) => curr.mint === order.currencyMint
     );
 
