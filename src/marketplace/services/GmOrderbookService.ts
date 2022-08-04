@@ -251,8 +251,8 @@ export class GmOrderbookService {
     return orders.filter((order) => order.currencyMint === currencyMint);
   }
 
-  getOrdersById(id: string): Order {
-    return { ...this.orderCacheService.getOrderById(id) };
+  getOrderById(id: string): Order {
+    return this.orderCacheService.getOrderById(id);
   }
 
   getAllOrdersByItemMint(mint: string): Map<string, Order> {

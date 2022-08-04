@@ -459,8 +459,7 @@ export class GmClientService {
           : OrderSide.Sell;
       const orderMint = accountItem.account.assetMint.toString();
       const currencyMint = accountItem.account.currencyMint.toString();
-      const price = accountItem.account.price.toNumber();
-      const expectedPrice = accountItem.account.price.toString();
+      const price = accountItem.account.price;
       const orderQtyRemaining =
         accountItem.account.orderRemainingQty.toNumber();
       const orderOriginationQty =
@@ -472,7 +471,7 @@ export class GmClientService {
         accountItem.account.initializerCurrencyTokenAccount.toString();
       const createdAt = accountItem.account.createdAtTimestamp.toNumber();
 
-      const { decimals } = currencyInfo.find(
+      const { decimals: currencyDecimals } = currencyInfo.find(
         (info) => info.mint.toString() === currencyMint
       );
 
@@ -481,8 +480,8 @@ export class GmClientService {
         orderType,
         orderMint,
         currencyMint,
-        price: price / 10 ** decimals,
-        expectedPrice,
+        currencyDecimals,
+        price,
         orderQtyRemaining,
         orderOriginationQty,
         owner,

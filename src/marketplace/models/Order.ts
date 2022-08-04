@@ -1,3 +1,4 @@
+import { BN } from '@project-serum/anchor';
 import { makeObservable, observable } from 'mobx';
 
 export enum OrderSide {
@@ -10,8 +11,8 @@ export type OrderType = {
   orderType: OrderSide;
   orderMint: string;
   currencyMint: string;
-  price: number;
-  expectedPrice: string;
+  currencyDecimals: number;
+  price: BN;
   orderOriginationQty: number;
   orderQtyRemaining: number;
   owner: string;
@@ -26,7 +27,8 @@ export class Order implements OrderType {
   orderType: OrderSide = OrderSide.Buy;
   orderMint = '';
   currencyMint = '';
-  price = 0;
+  currencyDecimals = 0;
+  price = new BN(0);
   expectedPrice = '0';
   orderQtyRemaining = 0;
   orderOriginationQty = 0;
@@ -42,8 +44,8 @@ export class Order implements OrderType {
       this.orderType = order.orderType;
       this.orderMint = order.orderMint;
       this.currencyMint = order.currencyMint;
+      this.currencyDecimals = order.currencyDecimals;
       this.price = order.price;
-      this.expectedPrice = order.expectedPrice;
       this.orderQtyRemaining = order.orderQtyRemaining;
       this.orderOriginationQty = order.orderOriginationQty;
       this.owner = order.owner;
@@ -56,5 +58,17 @@ export class Order implements OrderType {
     makeObservable(this, {
       orderQtyRemaining: observable,
     });
+  }
+
+  protected get decimalDivisor(): BN {
+    return new BN(10).pow(new BN(this.currencyDecimals));
+  }
+
+  get uiPrice(): string {
+    return this.price.div(this.decimalDivisor).toString();
+  }
+
+  priceForQuantity(quantity = 1): string {
+    return this.price.mul(new BN(quantity)).div(this.decimalDivisor).toString();
   }
 }
