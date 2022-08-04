@@ -22,6 +22,7 @@ export interface OrderAccountItem {
 export type RegisteredCurrencyItem = {
     mint: web3.PublicKey;
     royalty: BN;
+    saVault: web3.PublicKey;
 }
 
 export enum GmLogs {

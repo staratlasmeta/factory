@@ -536,7 +536,10 @@ export type GmIdl =
         {
           'name': 'saVault',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'Star Atlas vault account - must match account in registerd currency'
+          ]
         },
         {
           'name': 'registeredCurrency',
@@ -573,6 +576,10 @@ export type GmIdl =
         {
           'name': 'purchaseQuantity',
           'type': 'u64'
+        },
+        {
+          'name': 'expectedPrice',
+          'type': 'u64'
         }
       ]
     },
@@ -592,7 +599,10 @@ export type GmIdl =
         {
           'name': 'initializerDepositTokenAccount',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'Mint check based on asset/currency mint - validated in assert_init_deposit_token_acct()'
+          ]
         },
         {
           'name': 'orderVaultAccount',
@@ -791,7 +801,10 @@ export type GmIdl =
         {
           'name': 'saCurrencyVault',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'New SA Currency vault'
+          ]
         },
         {
           'name': 'systemProgram',
@@ -983,6 +996,9 @@ export type GmIdl =
   'types': [
     {
       'name': 'RoyaltyTier',
+      'docs': [
+        'A royalty tier which defines a discount rate for a given staked amount of tokens'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
@@ -1121,6 +1137,11 @@ export type GmIdl =
       'code': 6018,
       'name': 'RoyaltyTierLength',
       'msg': 'Royalty Tier vector cannot hold any additional tiers'
+    },
+    {
+      'code': 6019,
+      'name': 'InvalidOrderPrice',
+      'msg': 'Order price did not match expected price'
     }
   ],
   'metadata': Record<string, unknown>
@@ -1663,7 +1684,10 @@ export const baseIdl: GmIdl =
         {
           'name': 'saVault',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'Star Atlas vault account - must match account in registerd currency'
+          ]
         },
         {
           'name': 'registeredCurrency',
@@ -1700,6 +1724,10 @@ export const baseIdl: GmIdl =
         {
           'name': 'purchaseQuantity',
           'type': 'u64'
+        },
+        {
+          'name': 'expectedPrice',
+          'type': 'u64'
         }
       ]
     },
@@ -1719,7 +1747,10 @@ export const baseIdl: GmIdl =
         {
           'name': 'initializerDepositTokenAccount',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'Mint check based on asset/currency mint - validated in assert_init_deposit_token_acct()'
+          ]
         },
         {
           'name': 'orderVaultAccount',
@@ -1918,7 +1949,10 @@ export const baseIdl: GmIdl =
         {
           'name': 'saCurrencyVault',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'New SA Currency vault'
+          ]
         },
         {
           'name': 'systemProgram',
@@ -2110,6 +2144,9 @@ export const baseIdl: GmIdl =
   'types': [
     {
       'name': 'RoyaltyTier',
+      'docs': [
+        'A royalty tier which defines a discount rate for a given staked amount of tokens'
+      ],
       'type': {
         'kind': 'struct',
         'fields': [
@@ -2248,8 +2285,13 @@ export const baseIdl: GmIdl =
       'code': 6018,
       'name': 'RoyaltyTierLength',
       'msg': 'Royalty Tier vector cannot hold any additional tiers'
+    },
+    {
+      'code': 6019,
+      'name': 'InvalidOrderPrice',
+      'msg': 'Order price did not match expected price'
     }
   ],
   'metadata': {
   }
-}
+};
