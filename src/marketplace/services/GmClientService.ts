@@ -75,8 +75,6 @@ export class GmClientService {
 
   /**
    * Fetches all open orders from the Galactic Marketplace.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param programId Marketplace program PublicKey
@@ -98,8 +96,6 @@ export class GmClientService {
 
   /**
    * Fetches all open orders for a player PublicKey.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param playerPublicKey User PublicKey
@@ -127,8 +123,6 @@ export class GmClientService {
 
   /**
    * Fetches all open orders from the Galactic Marketplace filtered by currency.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param currencyMint Currency mint - use `getAllGmRegisteredCurrencyInfo` for a list of valid currencies
@@ -157,8 +151,6 @@ export class GmClientService {
 
   /**
    * Fetches all open orders from the Galactic Marketplace filtered by asset.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param assetMint The token PublicKey
@@ -187,8 +179,6 @@ export class GmClientService {
 
   /**
    * Fetches all open orders from the Galactic Marketplace filtered by asset.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param playerPublicKey User PublicKey
@@ -220,8 +210,6 @@ export class GmClientService {
 
   /**
    * Fetches all open orders from the Galactic Marketplace filtered by asset.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param playerPublicKey User PublicKey
@@ -252,6 +240,7 @@ export class GmClientService {
   }
 
   /**
+   * Fetch a single open order
    *
    * @param connection Solana Connection
    * @param orderAccount The `order.id` as PublicKey
@@ -292,7 +281,7 @@ export class GmClientService {
    * @param itemMint Item mint, e.g. Discovery of Iris
    * @param quoteMint The quote currency, e.g. ATLAS, USDC
    * @param quantity Self-explanatory
-   * @param price The actual price of the item. Decimal places will be adjusted automatically for the currency.
+   * @param price The price of the item
    * @param programId Galactic Marketplace program ID
    * @param orderSide The order side from the perspective of the order creator
    */
@@ -302,21 +291,13 @@ export class GmClientService {
     itemMint: PublicKey,
     quoteMint: PublicKey,
     quantity: number,
-    price: number,
+    price: BN,
     programId: PublicKey,
     orderSide: OrderSide
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
   }> {
-    const allCurrencyInfo = await this.getRegisteredCurrencies(
-      connection,
-      programId
-    );
-    const { decimals } = allCurrencyInfo.find(
-      (info) => info.mint.toString() === quoteMint.toString()
-    );
-
     /** Default to sell order values */
     let orderMethod:
       | typeof createInitializeBuyOrderInstruction
@@ -342,7 +323,7 @@ export class GmClientService {
       initializerDepositTokenAccount,
       initializerMainAccount: orderCreator,
       originationQty: quantity,
-      price: new BN(price * 10 ** decimals),
+      price,
       programId,
       receiveMint,
     });
