@@ -334,6 +334,19 @@ export class GmClientService {
     return { transaction, signers };
   }
 
+  async getBnPriceForCurrency(connection: Connection, uiPrice: number, quoteCurrency: PublicKey, programId: PublicKey): Promise<BN> {
+    const allCurrencyInfo = await this.getRegisteredCurrencies(
+      connection,
+      programId
+    );
+    const { decimals } = allCurrencyInfo.find(
+      (info) => info.mint.toString() === quoteCurrency.toString()
+    );
+    const multiplyFactor = new BN(10).pow(new BN(decimals));
+    
+    return new BN(uiPrice).mul(multiplyFactor);
+  }
+
   /**
    *
    * @param connection Solana Connection
