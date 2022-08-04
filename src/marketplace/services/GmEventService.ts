@@ -129,14 +129,15 @@ export class GmEventService {
 
     if (!currencyInfo) return null;
 
-    const { decimals } = currencyInfo;
+    const { decimals: currencyDecimals } = currencyInfo;
 
     return new Order({
       id: event.orderId.toString(),
       orderType: event.orderSide === 0 ? OrderSide.Buy : OrderSide.Sell,
       orderMint: event.assetMint.toString(),
       currencyMint: event.currencyMint.toString(),
-      price: event.price.toNumber() / 10 ** decimals,
+      currencyDecimals,
+      price: event.price,
       orderQtyRemaining: event.orderRemainingQty.toNumber(),
       orderOriginationQty: event.orderOriginationQty.toNumber(),
       owner: event.orderInitializerPubkey.toString(),

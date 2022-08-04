@@ -21,7 +21,7 @@ export interface ExchangeOrderParams extends BaseParams {
     purchaseQty: number
     orderTaker: web3.PublicKey
     orderTakerDepositTokenAccount: web3.PublicKey
-    expectedPrice: number,
+    expectedPrice: BN,
     orderType: OrderSide,
     assetMint: PublicKey,
     currencyMint: PublicKey,
@@ -131,7 +131,7 @@ export async function createExchangeInstruction ({
 
     const exchangeIx =
         await program.methods
-            .processExchange(new BN(purchaseQty), new BN(expectedPrice))
+            .processExchange(new BN(purchaseQty), expectedPrice)
             .accounts({
                 orderTaker,
                 orderTakerDepositTokenAccount,

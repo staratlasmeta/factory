@@ -1,3 +1,5 @@
+import { BN } from '@project-serum/anchor';
+import BigNumber from 'big.js';
 import { makeObservable, observable } from 'mobx';
 
 export enum OrderSide {
@@ -10,7 +12,8 @@ export type OrderType = {
   orderType: OrderSide;
   orderMint: string;
   currencyMint: string;
-  price: number;
+  currencyDecimals: number;
+  price: BN;
   orderOriginationQty: number;
   orderQtyRemaining: number;
   owner: string;
@@ -25,7 +28,8 @@ export class Order implements OrderType {
   orderType: OrderSide = OrderSide.Buy;
   orderMint = '';
   currencyMint = '';
-  price = 0;
+  currencyDecimals = 0;
+  price = new BN(0);
   orderQtyRemaining = 0;
   orderOriginationQty = 0;
   owner = '';
@@ -40,6 +44,7 @@ export class Order implements OrderType {
       this.orderType = order.orderType;
       this.orderMint = order.orderMint;
       this.currencyMint = order.currencyMint;
+      this.currencyDecimals = order.currencyDecimals;
       this.price = order.price;
       this.orderQtyRemaining = order.orderQtyRemaining;
       this.orderOriginationQty = order.orderOriginationQty;
@@ -53,5 +58,24 @@ export class Order implements OrderType {
     makeObservable(this, {
       orderQtyRemaining: observable,
     });
+  }
+
+  protected get decimalDivisor(): BigNumber {
+    return new BigNumber(10).pow(this.currencyDecimals);
+  }
+
+  protected get bigNumberPrice(): BigNumber {
+    return new BigNumber(this.price.toString());
+  }
+
+  get uiPrice(): number {
+    return this.bigNumberPrice.div(this.decimalDivisor).toNumber();
+  }
+
+  priceForQuantity(quantity = 1): number {
+    return this.bigNumberPrice
+      .mul(quantity)
+      .div(this.decimalDivisor)
+      .toNumber();
   }
 }
