@@ -29,7 +29,6 @@ export class Order implements OrderType {
   currencyMint = '';
   currencyDecimals = 0;
   price = new BN(0);
-  expectedPrice = '0';
   orderQtyRemaining = 0;
   orderOriginationQty = 0;
   owner = '';

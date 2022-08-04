@@ -425,7 +425,7 @@ export class GmClientService {
       orderTaker,
       orderTakerDepositTokenAccount,
       programId,
-      expectedPrice: new BN(order.expectedPrice),
+      expectedPrice: order.price,
       orderType: order.orderType,
       assetMint,
       currencyMint,
