@@ -11,6 +11,7 @@ export type OrderType = {
   orderMint: string;
   currencyMint: string;
   price: number;
+  expectedPrice: string;
   orderOriginationQty: number;
   orderQtyRemaining: number;
   owner: string;
@@ -26,6 +27,7 @@ export class Order implements OrderType {
   orderMint = '';
   currencyMint = '';
   price = 0;
+  expectedPrice = '0';
   orderQtyRemaining = 0;
   orderOriginationQty = 0;
   owner = '';
@@ -41,6 +43,7 @@ export class Order implements OrderType {
       this.orderMint = order.orderMint;
       this.currencyMint = order.currencyMint;
       this.price = order.price;
+      this.expectedPrice = order.expectedPrice;
       this.orderQtyRemaining = order.orderQtyRemaining;
       this.orderOriginationQty = order.orderOriginationQty;
       this.owner = order.owner;

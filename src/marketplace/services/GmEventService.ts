@@ -137,6 +137,7 @@ export class GmEventService {
       orderMint: event.assetMint.toString(),
       currencyMint: event.currencyMint.toString(),
       price: event.price.toNumber() / 10 ** decimals,
+      expectedPrice: event.price.toString(),
       orderQtyRemaining: event.orderRemainingQty.toNumber(),
       orderOriginationQty: event.orderOriginationQty.toNumber(),
       owner: event.orderInitializerPubkey.toString(),

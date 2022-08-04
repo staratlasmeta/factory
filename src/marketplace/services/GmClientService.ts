@@ -417,7 +417,6 @@ export class GmClientService {
     const { decimals, saVault } = currencyInfo.find(
       (curr) => curr.mint === order.currencyMint
     );
-    const expectedPrice = order.price * 10 ** decimals;
 
     const { instructions, signers } = await createExchangeInstruction({
       connection,
@@ -426,7 +425,7 @@ export class GmClientService {
       orderTaker,
       orderTakerDepositTokenAccount,
       programId,
-      expectedPrice,
+      expectedPrice: new BN(order.expectedPrice),
       orderType: order.orderType,
       assetMint,
       currencyMint,
@@ -461,6 +460,7 @@ export class GmClientService {
       const orderMint = accountItem.account.assetMint.toString();
       const currencyMint = accountItem.account.currencyMint.toString();
       const price = accountItem.account.price.toNumber();
+      const expectedPrice = accountItem.account.price.toString();
       const orderQtyRemaining =
         accountItem.account.orderRemainingQty.toNumber();
       const orderOriginationQty =
@@ -482,6 +482,7 @@ export class GmClientService {
         orderMint,
         currencyMint,
         price: price / 10 ** decimals,
+        expectedPrice,
         orderQtyRemaining,
         orderOriginationQty,
         owner,
