@@ -1,4 +1,5 @@
 import { BN } from '@project-serum/anchor';
+import BigNumber from 'big.js';
 import { makeObservable, observable } from 'mobx';
 
 export enum OrderSide {
@@ -59,15 +60,22 @@ export class Order implements OrderType {
     });
   }
 
-  protected get decimalDivisor(): BN {
-    return new BN(10).pow(new BN(this.currencyDecimals));
+  protected get decimalDivisor(): BigNumber {
+    return new BigNumber(10).pow(this.currencyDecimals);
   }
 
-  get uiPrice(): string {
-    return this.price.div(this.decimalDivisor).toString();
+  protected get bigNumberPrice(): BigNumber {
+    return new BigNumber(this.price.toString());
   }
 
-  priceForQuantity(quantity = 1): string {
-    return this.price.mul(new BN(quantity)).div(this.decimalDivisor).toString();
+  get uiPrice(): number {
+    return this.bigNumberPrice.div(this.decimalDivisor).toNumber();
+  }
+
+  priceForQuantity(quantity = 1): number {
+    return this.bigNumberPrice
+      .mul(quantity)
+      .div(this.decimalDivisor)
+      .toNumber();
   }
 }
