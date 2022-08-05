@@ -342,9 +342,8 @@ export class GmClientService {
     const { decimals } = allCurrencyInfo.find(
       (info) => info.mint.toString() === quoteCurrency.toString()
     );
-    const multiplyFactor = new BN(10).pow(new BN(decimals));
-    
-    return new BN(uiPrice).mul(multiplyFactor);
+
+    return new BN(uiPrice * (10 ** decimals));
   }
 
   /**
