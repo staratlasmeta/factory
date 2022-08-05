@@ -23,6 +23,7 @@ import { getAssociatedTokenAddress } from '../../util';
 import { Order, OrderSide } from '../models/Order';
 import { GmRegisteredCurrency } from '../types';
 import { ONE_MILLION } from './constants';
+import { convertDecimalPriceToBn } from '../utils';
 
 /**
  * Provides utility methods and transaction builders for interacting with the Galactic Marketplace.
@@ -343,7 +344,7 @@ export class GmClientService {
       (info) => info.mint.toString() === quoteCurrency.toString()
     );
 
-    return new BN(uiPrice * (10 ** decimals));
+    return convertDecimalPriceToBn(uiPrice, decimals);
   }
 
   /**
