@@ -8,9 +8,10 @@ import {
 import type { AnchorTypes } from './anchor/types';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
 import { SystemProgram } from '@solana/web3.js';
-import { getPlayerFactionPDA } from '.';
+import { FactoryReturn, getPlayerFactionPDA } from '.';
 import { baseIdl } from './util/scoreIdl';
 import { scoreLogBaseIdl } from './util/scoreLogIdl';
+import { getTokenAccount } from './util/helpers'
 import * as SCORE_TYPES from './util/scoreIdl';
 
 const factionProgramId = new web3.PublicKey('FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe');
@@ -937,7 +938,6 @@ export async function createSettleInstruction(
  *
  * @param connection - web3.Connection object
  * @param playerPublicKey - Player's public key
- * @param playerAtlasTokenAccount - Player's atlas token account public key TODO: can replace with getAtaForMint once we have ATLAS mint address
  * @param atlasMint - Atlas mint address
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
@@ -945,11 +945,10 @@ export async function createSettleInstruction(
 export async function createHarvestInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  playerAtlasTokenAccount: web3.PublicKey,
   atlasMint: web3.PublicKey,
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction[]> {
+): Promise<FactoryReturn> {
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
   const [scoreVarsShipAccount, scoreVarsShipBump] = await getScoreVarsShipAccount(programId, shipMint);
   const [treasuryTokenAccount, treasuryBump] = await getScoreTreasuryTokenAccount(programId);
@@ -958,26 +957,30 @@ export async function createHarvestInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+  
+  const ixSet: FactoryReturn = {
+    signers: [],
+    instructions: []
+  }
 
-  const instructions = [];
-  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+  // Fetch user's atlas token account
+  let tokenAccount:  web3.PublicKey | web3.Keypair = null;
+  let playerAtlasTokenAccount: web3.PublicKey = null;
+  const response = await getTokenAccount(
+    connection,
     playerPublicKey,
-    {
-      mint: atlasMint,
-    }
+    atlasMint
   );
-  // if the token account does not exist, create it
-  if (possibleTokenAccountObj.value.length === 0) {
-    instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        atlasMint,
-        playerAtlasTokenAccount, // token account
-        playerPublicKey, // owner
-        playerPublicKey, // payer
-      )
-    );
+  tokenAccount = response.tokenAccount;
+  if ('createInstruction' in response) {
+    ixSet.instructions.push(response.createInstruction);
+  }
+
+  if (tokenAccount instanceof web3.Keypair) {
+    playerAtlasTokenAccount = tokenAccount.publicKey;
+    ixSet.signers.push(tokenAccount)
+  } else {
+    playerAtlasTokenAccount = tokenAccount
   }
 
   const ix = await program.instruction.processHarvest(
@@ -999,8 +1002,8 @@ export async function createHarvestInstruction(
       }
     }
   );
-  instructions.push(ix);
-  return instructions;
+  ixSet.instructions.push(ix);
+  return ixSet;
 }
 
 /**
@@ -1008,7 +1011,6 @@ export async function createHarvestInstruction(
  *
  * @param connection - web3.Connection object
  * @param playerPublicKey - Player's public key
- * @param fuelTokenAccount - Token account for the fuel resource being withdrawn
  * @param fuelMint - Fuel resource mint address
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
@@ -1016,11 +1018,10 @@ export async function createHarvestInstruction(
  export async function createWithdrawFuelInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  fuelTokenAccount: web3.PublicKey,
   fuelMint: web3.PublicKey,
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction[]> {
+): Promise<FactoryReturn> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [fuelEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, fuelMint, playerPublicKey);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
@@ -1030,27 +1031,32 @@ export async function createHarvestInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-
-  const instructions = [];
-  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
-    playerPublicKey,
-    {
-      mint: fuelMint,
-    }
-  );
-  // if the token account does not exist, create it
-  if (possibleTokenAccountObj.value.length === 0) {
-    instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        fuelMint,
-        fuelTokenAccount, // token account
-        playerPublicKey, // owner
-        playerPublicKey, // payer
-      )
-    );
+  
+  const ixSet: FactoryReturn = {
+    signers: [],
+    instructions: []
   }
+
+  // Fetch user's fuel token account
+  let tokenAccount:  web3.PublicKey | web3.Keypair = null;
+  let fuelTokenAccount: web3.PublicKey = null;
+  const response = await getTokenAccount(
+    connection,
+    playerPublicKey,
+    fuelMint
+  );
+  tokenAccount = response.tokenAccount;
+  if ('createInstruction' in response) {
+    ixSet.instructions.push(response.createInstruction);
+  }
+
+  if (tokenAccount instanceof web3.Keypair) {
+    fuelTokenAccount = tokenAccount.publicKey;
+    ixSet.signers.push(tokenAccount)
+  } else {
+    fuelTokenAccount = tokenAccount
+  }
+
 
   const ix = await program.instruction.processWithdrawFuel(
     stakingBump,
@@ -1074,8 +1080,8 @@ export async function createHarvestInstruction(
       }
     }
   );
-  instructions.push(ix);
-  return instructions;
+  ixSet.instructions.push(ix);
+  return ixSet;
 }
 
 /**
@@ -1083,7 +1089,6 @@ export async function createHarvestInstruction(
  *
  * @param connection - web3.Connection object
  * @param playerPublicKey - Player's public key
- * @param foodTokenAccount - Token account for the food resource being withdrawn
  * @param foodMint - Food resource mint address
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
@@ -1091,11 +1096,10 @@ export async function createHarvestInstruction(
  export async function createWithdrawFoodInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  foodTokenAccount: web3.PublicKey,
   foodMint: web3.PublicKey,
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction[]> {
+): Promise<FactoryReturn> {
 
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [foodEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, foodMint, playerPublicKey);
@@ -1106,26 +1110,30 @@ export async function createHarvestInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+  
+  const ixSet: FactoryReturn = {
+    signers: [],
+    instructions: []
+  }
 
-  const instructions = [];
-  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+  // Fetch user's food token account
+  let tokenAccount:  web3.PublicKey | web3.Keypair = null;
+  let foodTokenAccount: web3.PublicKey = null;
+  const response = await getTokenAccount(
+    connection,
     playerPublicKey,
-    {
-      mint: foodMint,
-    }
+    foodMint
   );
-  // if the token account does not exist, create it
-  if (possibleTokenAccountObj.value.length === 0) {
-    instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        foodMint,
-        foodTokenAccount, // token account
-        playerPublicKey, // owner
-        playerPublicKey, // payer
-      )
-    );
+  tokenAccount = response.tokenAccount;
+  if ('createInstruction' in response) {
+    ixSet.instructions.push(response.createInstruction);
+  }
+
+  if (tokenAccount instanceof web3.Keypair) {
+    foodTokenAccount = tokenAccount.publicKey;
+    ixSet.signers.push(tokenAccount)
+  } else {
+    foodTokenAccount = tokenAccount
   }
 
   const ix = await program.instruction.processWithdrawFood(
@@ -1150,8 +1158,8 @@ export async function createHarvestInstruction(
       }
     }
   );
-  instructions.push(ix);
-  return instructions;
+  ixSet.instructions.push(ix);
+  return ixSet;
 }
 
 /**
@@ -1159,7 +1167,6 @@ export async function createHarvestInstruction(
  *
  * @param connection - web3.Connection object
  * @param playerPublicKey - Player's public key
- * @param armsTokenAccount - Token account for the arms resource being withdrawn
  * @param armsMint - Arms resource mint address
  * @param shipMint - Ship mint address
  * @param programId - Deployed program ID for the SCORE program
@@ -1167,11 +1174,10 @@ export async function createHarvestInstruction(
  export async function createWithdrawArmsInstruction(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  armsTokenAccount: web3.PublicKey,
   armsMint: web3.PublicKey,
   shipMint: web3.PublicKey,
   programId: web3.PublicKey
-): Promise<web3.TransactionInstruction[]> {
+): Promise<FactoryReturn> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(programId, shipMint, playerPublicKey);
   const [armsEscrow, escrowBump] = await getScoreEscrowAccount(programId, shipMint, armsMint, playerPublicKey);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(programId, shipMint, playerPublicKey);
@@ -1181,26 +1187,30 @@ export async function createHarvestInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
+  
+  const ixSet: FactoryReturn = {
+    signers: [],
+    instructions: []
+  }
 
-  const instructions = [];
-  const possibleTokenAccountObj = await connection.getParsedTokenAccountsByOwner(
+  // Fetch user's arms token account
+  let tokenAccount:  web3.PublicKey | web3.Keypair = null;
+  let armsTokenAccount: web3.PublicKey = null;
+  const response = await getTokenAccount(
+    connection,
     playerPublicKey,
-    {
-      mint: armsMint,
-    }
+    armsMint
   );
-  // if the token account does not exist, create it
-  if (possibleTokenAccountObj.value.length === 0) {
-    instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        armsMint,
-        armsTokenAccount, // token account
-        playerPublicKey, // owner
-        playerPublicKey, // payer
-      )
-    );
+  tokenAccount = response.tokenAccount;
+  if ('createInstruction' in response) {
+    ixSet.instructions.push(response.createInstruction);
+  }
+
+  if (tokenAccount instanceof web3.Keypair) {
+    armsTokenAccount = tokenAccount.publicKey;
+    ixSet.signers.push(tokenAccount)
+  } else {
+    armsTokenAccount = tokenAccount
   }
 
   const ix = await program.instruction.processWithdrawArms(
@@ -1225,8 +1235,8 @@ export async function createHarvestInstruction(
       }
     }
   );
-  instructions.push(ix);
-  return instructions;
+  ixSet.instructions.push(ix);
+  return ixSet;
 }
 
 /**

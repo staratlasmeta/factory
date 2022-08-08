@@ -114,3 +114,5 @@ dist
 
 # JetBrains
 .idea
+
+test-ledger/*
