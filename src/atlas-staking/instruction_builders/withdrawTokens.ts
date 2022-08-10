@@ -7,7 +7,6 @@ import { getTokenAccount } from '../../util';
 
 export interface WithdrawTokensParams extends BaseStakingParams {
     user: web3.PublicKey,
-    tokenSource: web3.PublicKey,
     authority: web3.PublicKey
     stakeMint: web3.PublicKey,
     registeredStake: web3.PublicKey,
@@ -20,7 +19,6 @@ export interface WithdrawTokensParams extends BaseStakingParams {
  * @param connection
  * @param authority - Public key of account which registered the stake
  * @param user - Public key of user creating the staking account
- * @param tokenSource - Public key for token which user is depositing from
  * @param stakeMint - Public key for mint of tokens being staked
  * @param registeredStake - Public key of `RegisteredStake` which this staking account corresponds to
  * @param stakingAccount - Public key of user's `StakingAccount` associated with the provided `RegisteredStake`
