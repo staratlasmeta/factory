@@ -1,3 +1,5 @@
+import { BN } from '@project-serum/anchor';
+import BigNumber from 'big.js';
 import { makeObservable, observable } from 'mobx';
 
 export enum OrderSide {
@@ -10,13 +12,15 @@ export type OrderType = {
   orderType: OrderSide;
   orderMint: string;
   currencyMint: string;
-  price: number;
+  currencyDecimals: number;
+  price: BN;
   orderOriginationQty: number;
   orderQtyRemaining: number;
   owner: string;
   ownerAssetTokenAccount: string;
   ownerCurrencyTokenAccount: string;
   createdAt: number;
+  slotContext: number;
 };
 
 export class Order implements OrderType {
@@ -24,13 +28,15 @@ export class Order implements OrderType {
   orderType: OrderSide = OrderSide.Buy;
   orderMint = '';
   currencyMint = '';
-  price = 0;
+  currencyDecimals = 0;
+  price = new BN(0);
   orderQtyRemaining = 0;
   orderOriginationQty = 0;
   owner = '';
   ownerAssetTokenAccount = '';
   ownerCurrencyTokenAccount = '';
   createdAt = 0;
+  slotContext = 0;
 
   constructor(order?: OrderType) {
     if (order) {
@@ -38,6 +44,7 @@ export class Order implements OrderType {
       this.orderType = order.orderType;
       this.orderMint = order.orderMint;
       this.currencyMint = order.currencyMint;
+      this.currencyDecimals = order.currencyDecimals;
       this.price = order.price;
       this.orderQtyRemaining = order.orderQtyRemaining;
       this.orderOriginationQty = order.orderOriginationQty;
@@ -45,10 +52,30 @@ export class Order implements OrderType {
       this.ownerAssetTokenAccount = order.ownerAssetTokenAccount;
       this.ownerCurrencyTokenAccount = order.ownerCurrencyTokenAccount;
       this.createdAt = order.createdAt;
+      this.slotContext = order.slotContext;
     }
 
     makeObservable(this, {
       orderQtyRemaining: observable,
     });
+  }
+
+  protected get decimalDivisor(): BigNumber {
+    return new BigNumber(10).pow(this.currencyDecimals);
+  }
+
+  protected get bigNumberPrice(): BigNumber {
+    return new BigNumber(this.price.toString());
+  }
+
+  get uiPrice(): number {
+    return this.bigNumberPrice.div(this.decimalDivisor).toNumber();
+  }
+
+  priceForQuantity(quantity = 1): number {
+    return this.bigNumberPrice
+      .mul(quantity)
+      .div(this.decimalDivisor)
+      .toNumber();
   }
 }

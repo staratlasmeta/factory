@@ -101,7 +101,8 @@ export async function getAllRegisteredCurrencies(
     for (const currency of registeredCurrencies) {
         const someCurrency = {
             mint: currency.account.tokenMint,
-            royalty: currency.account.royalty
+            royalty: currency.account.royalty,
+            saVault: currency.account.saCurrencyVault,
         }
 
         currencyInfo.push(someCurrency);

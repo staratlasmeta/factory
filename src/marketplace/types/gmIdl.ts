@@ -906,6 +906,10 @@ export type GmIdl =
         {
           'name': 'purchaseQuantity',
           'type': 'u64'
+        },
+        {
+          'name': 'expectedPrice',
+          'type': 'u64'
         }
       ]
     },
@@ -1013,7 +1017,135 @@ export type GmIdl =
       'args': []
     },
     {
-      'name': 'initializeOpenOrdersCounter',
+      'name': 'registerCurrency',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-currency'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'currency_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'saCurrencyVault',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'royalty',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'updateCurrencyVault',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-currency'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'currency_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'saCurrencyVault',
+          'isMut': false,
+          'isSigner': false,
+          'docs': [
+            'New SA Currency vault'
+          ]
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': []
+    },
+    {
+      'name': 'updateCurrencyRoyalty',
       'accounts': [
         {
           'name': 'user',
@@ -1321,6 +1453,11 @@ export type GmIdl =
       'code': 6018,
       'name': 'RoyaltyTierLength',
       'msg': 'Royalty Tier vector cannot hold any additional tiers'
+    },
+    {
+      'code': 6019,
+      'name': 'InvalidOrderPrice',
+      'msg': 'Order price did not match expected price'
     }
   ],
   'metadata': Record<string, unknown>
@@ -2233,6 +2370,10 @@ export const baseIdl: GmIdl =
         {
           'name': 'purchaseQuantity',
           'type': 'u64'
+        },
+        {
+          'name': 'expectedPrice',
+          'type': 'u64'
         }
       ]
     },
@@ -2375,7 +2516,10 @@ export const baseIdl: GmIdl =
         {
           'name': 'depositMint',
           'isMut': false,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'New SA Currency vault'
+          ]
         },
         {
           'name': 'systemProgram',
@@ -2648,8 +2792,13 @@ export const baseIdl: GmIdl =
       'code': 6018,
       'name': 'RoyaltyTierLength',
       'msg': 'Royalty Tier vector cannot hold any additional tiers'
+    },
+    {
+      'code': 6019,
+      'name': 'InvalidOrderPrice',
+      'msg': 'Order price did not match expected price'
     }
   ],
   'metadata': {
   }
-}
+};

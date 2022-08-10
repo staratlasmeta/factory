@@ -23,6 +23,7 @@ import { getAssociatedTokenAddress } from '../../util';
 import { Order, OrderSide } from '../models/Order';
 import { GmRegisteredCurrency } from '../types';
 import { ONE_MILLION } from './constants';
+import { convertDecimalPriceToBn } from '../utils';
 
 /**
  * Provides utility methods and transaction builders for interacting with the Galactic Marketplace.
@@ -52,7 +53,7 @@ export class GmClientService {
     );
 
     for (const info of currencyInfo) {
-      const { mint, royalty } = info;
+      const { mint, royalty, saVault } = info;
       const tokenSupplylInformation = await connection.getTokenSupply(
         mint,
         'recent'
@@ -64,6 +65,7 @@ export class GmClientService {
         decimals,
         mint: mint.toString(),
         royaltyPercentageAsDecimal: royalty.toNumber() / ONE_MILLION,
+        saVault: saVault.toString(),
       });
     }
 
@@ -74,8 +76,6 @@ export class GmClientService {
 
   /**
    * Fetches all open orders from the Galactic Marketplace.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param programId Marketplace program PublicKey
@@ -85,14 +85,18 @@ export class GmClientService {
     programId: PublicKey
   ): Promise<Order[]> {
     const openOrders = await getAllOpenOrders(connection, programId);
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
    * Fetches all open orders for a player PublicKey.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param playerPublicKey User PublicKey
@@ -108,14 +112,18 @@ export class GmClientService {
       playerPublicKey,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
    * Fetches all open orders from the Galactic Marketplace filtered by currency.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param currencyMint Currency mint - use `getAllGmRegisteredCurrencyInfo` for a list of valid currencies
@@ -132,14 +140,18 @@ export class GmClientService {
       currencyMint,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
    * Fetches all open orders from the Galactic Marketplace filtered by asset.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param assetMint The token PublicKey
@@ -156,14 +168,18 @@ export class GmClientService {
       assetMint,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
    * Fetches all open orders from the Galactic Marketplace filtered by asset.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param playerPublicKey User PublicKey
@@ -183,14 +199,18 @@ export class GmClientService {
       currencyMint,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
    * Fetches all open orders from the Galactic Marketplace filtered by asset.
-   * Orders are automatically parsed to the `Order` class
-   * and price information is converted into the "UI price" - no decimal adjustment needed.
    *
    * @param connection Solana Connection
    * @param playerPublicKey User PublicKey
@@ -210,11 +230,18 @@ export class GmClientService {
       assetMint,
       programId
     );
+    const slotContext = await connection.getSlot();
 
-    return this.accountItemsToOrders(connection, programId, openOrders);
+    return this.accountItemsToOrders(
+      connection,
+      programId,
+      openOrders,
+      slotContext
+    );
   }
 
   /**
+   * Fetch a single open order
    *
    * @param connection Solana Connection
    * @param orderAccount The `order.id` as PublicKey
@@ -235,10 +262,12 @@ export class GmClientService {
       publicKey: orderAccount,
       account: orderAccountInfo,
     };
+    const slotContext = await connection.getSlot();
     const [result] = await this.accountItemsToOrders(
       connection,
       programId,
-      [orderAccountItem]
+      [orderAccountItem],
+      slotContext
     );
 
     return result;
@@ -253,7 +282,7 @@ export class GmClientService {
    * @param itemMint Item mint, e.g. Discovery of Iris
    * @param quoteMint The quote currency, e.g. ATLAS, USDC
    * @param quantity Self-explanatory
-   * @param price The actual price of the item. Decimal places will be adjusted automatically for the currency.
+   * @param price The price of the item
    * @param programId Galactic Marketplace program ID
    * @param orderSide The order side from the perspective of the order creator
    */
@@ -263,21 +292,13 @@ export class GmClientService {
     itemMint: PublicKey,
     quoteMint: PublicKey,
     quantity: number,
-    price: number,
+    price: BN,
     programId: PublicKey,
     orderSide: OrderSide
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
   }> {
-    const allCurrencyInfo = await this.getRegisteredCurrencies(
-      connection,
-      programId
-    );
-    const { decimals } = allCurrencyInfo.find(
-      (info) => info.mint.toString() === quoteMint.toString()
-    );
-
     /** Default to sell order values */
     let orderMethod:
       | typeof createInitializeBuyOrderInstruction
@@ -303,7 +324,7 @@ export class GmClientService {
       initializerDepositTokenAccount,
       initializerMainAccount: orderCreator,
       originationQty: quantity,
-      price: new BN(price * 10 ** decimals),
+      price,
       programId,
       receiveMint,
     });
@@ -312,6 +333,18 @@ export class GmClientService {
     const transaction = createTransactionFromInstructions(instructions);
 
     return { transaction, signers };
+  }
+
+  async getBnPriceForCurrency(connection: Connection, uiPrice: number, quoteCurrency: PublicKey, programId: PublicKey): Promise<BN> {
+    const allCurrencyInfo = await this.getRegisteredCurrencies(
+      connection,
+      programId
+    );
+    const { decimals } = allCurrencyInfo.find(
+      (info) => info.mint.toString() === quoteCurrency.toString()
+    );
+
+    return convertDecimalPriceToBn(uiPrice, decimals);
   }
 
   /**
@@ -362,12 +395,21 @@ export class GmClientService {
     signers: Keypair[];
   }> {
     const orderAccount = new PublicKey(order.id);
-    const tokenMint = new PublicKey(order.orderMint);
+    const assetMint = new PublicKey(order.orderMint);
     const currencyMint = new PublicKey(order.currencyMint);
+    const orderInitializer = new PublicKey(order.owner);
 
     const orderTakerDepositTokenAccount = await getAssociatedTokenAddress(
       orderTaker,
-      order.orderType === OrderSide.Buy ? tokenMint : currencyMint
+      order.orderType === OrderSide.Buy ? assetMint : currencyMint
+    );
+
+    const currencyInfo = await this.getRegisteredCurrencies(
+      connection,
+      programId
+    );
+    const { saVault } = currencyInfo.find(
+      (curr) => curr.mint === order.currencyMint
     );
 
     const { instructions, signers } = await createExchangeInstruction({
@@ -377,6 +419,12 @@ export class GmClientService {
       orderTaker,
       orderTakerDepositTokenAccount,
       programId,
+      expectedPrice: order.price,
+      orderType: order.orderType,
+      assetMint,
+      currencyMint,
+      orderInitializer,
+      saVault: new PublicKey(saVault),
     });
 
     const transaction = createTransactionFromInstructions(instructions);
@@ -387,7 +435,8 @@ export class GmClientService {
   async accountItemsToOrders(
     connection: Connection,
     programId: PublicKey,
-    orderAccountItems: OrderAccountItem[]
+    orderAccountItems: OrderAccountItem[],
+    slotContext: number
   ): Promise<Order[]> {
     if (!orderAccountItems.length) return [];
 
@@ -404,7 +453,7 @@ export class GmClientService {
           : OrderSide.Sell;
       const orderMint = accountItem.account.assetMint.toString();
       const currencyMint = accountItem.account.currencyMint.toString();
-      const price = accountItem.account.price.toNumber();
+      const price = accountItem.account.price;
       const orderQtyRemaining =
         accountItem.account.orderRemainingQty.toNumber();
       const orderOriginationQty =
@@ -416,7 +465,7 @@ export class GmClientService {
         accountItem.account.initializerCurrencyTokenAccount.toString();
       const createdAt = accountItem.account.createdAtTimestamp.toNumber();
 
-      const { decimals } = currencyInfo.find(
+      const { decimals: currencyDecimals } = currencyInfo.find(
         (info) => info.mint.toString() === currencyMint
       );
 
@@ -425,13 +474,15 @@ export class GmClientService {
         orderType,
         orderMint,
         currencyMint,
-        price: price / 10 ** decimals,
+        currencyDecimals,
+        price,
         orderQtyRemaining,
         orderOriginationQty,
         owner,
         ownerAssetTokenAccount,
         ownerCurrencyTokenAccount,
         createdAt,
+        slotContext,
       });
     });
   }

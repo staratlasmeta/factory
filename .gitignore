@@ -107,9 +107,12 @@ dist
 # TernJS port file
 .tern-port
 
-# VScode
-.vscode
+# VSCode files
+.vscode/
+
 *.code-workspace
 
 # JetBrains
 .idea
+
+test-ledger/*

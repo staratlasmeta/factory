@@ -104,6 +104,8 @@ export class GmOrderbookService {
   protected async resetEventService(): Promise<void> {
     if (this.isReloading) return;
 
+    await this.gmEventService.end();
+
     this.gmEventService = new GmEventService(
       this.connection,
       this.marketplaceProgramId
@@ -113,34 +115,38 @@ export class GmOrderbookService {
   }
 
   protected async refetchOrderData(): Promise<void> {
-    const existingOffers = this.orderCacheService.getAllOrdersCache();
+    const existingOrders = this.orderCacheService.getAllOrdersCache();
 
     try {
+      const slot = await this.connection.getSlot('confirmed');
       const fetchedOffers = await this.gmClientService.getAllOpenOrders(
         this.connection,
         this.marketplaceProgramId
       );
       const fetchedOffersMap = new Map<string, Order>();
 
-      for (const offer of fetchedOffers) {
-        /** Set new offer values in a temporary map for faster read times */
-        fetchedOffersMap.set(offer.id, offer);
+      for (const order of fetchedOffers) {
+        /** Set new order values in a temporary map for faster read times */
+        fetchedOffersMap.set(order.id, order);
 
-        const existingOffer = existingOffers.get(offer.id);
+        const existingOffer = existingOrders.get(order.id);
 
         if (!existingOffer) {
-          this.addOrderToCache(offer);
+          this.addOrderToCache(order);
         } else if (
           existingOffer &&
-          existingOffer.orderQtyRemaining !== offer.orderQtyRemaining
+          existingOffer.orderQtyRemaining !== order.orderQtyRemaining
         ) {
-          this.updateOrderInCache(offer);
+          this.updateOrderInCache(order);
         }
       }
 
       /** Remove offers which exist in the local cache, but not in the freshly fetched offers */
-      for (const existingOffer of Array.from(existingOffers.values())) {
-        if (!fetchedOffersMap.get(existingOffer.id)) {
+      for (const existingOffer of Array.from(existingOrders.values())) {
+        if (
+          existingOffer.slotContext < slot &&
+          !fetchedOffersMap.get(existingOffer.id)
+        ) {
           this.removeOrderFromCache(existingOffer);
         }
       }
@@ -245,8 +251,8 @@ export class GmOrderbookService {
     return orders.filter((order) => order.currencyMint === currencyMint);
   }
 
-  getOrdersById(id: string): Order {
-    return { ...this.orderCacheService.getOrderById(id) };
+  getOrderById(id: string): Order {
+    return this.orderCacheService.getOrderById(id);
   }
 
   getAllOrdersByItemMint(mint: string): Map<string, Order> {

@@ -1,4 +1,4 @@
-import { web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
 import { ASSOCIATED_TOKEN_PROGRAM_ID, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 
@@ -37,4 +37,8 @@ export async function initializeAtaForMint({
     }
 
     return {account: ataPubkey, instructions}
+}
+
+export const convertDecimalPriceToBn = (uiPrice: number, decimals: number): BN => {
+    return new BN(uiPrice * (10 ** decimals));
 }
