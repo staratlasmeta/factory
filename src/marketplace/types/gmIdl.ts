@@ -4,130 +4,6 @@ export type GmIdl =
   'name': 'marketplace',
   'instructions': [
     {
-      'name': 'addRoyaltyTier',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true,
-          'docs': [
-            'Transaction signer must be the update authority in the market',
-            'vars account'
-          ]
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'docs': [
-            'The `MarketVars` account'
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'docs': [
-            ''
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredCurrency',
-                'path': 'registered_currency.token_mint'
-              }
-            ]
-          }
-        }
-      ],
-      'args': [
-        {
-          'name': 'stakeAmount',
-          'type': 'u64'
-        },
-        {
-          'name': 'discount',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'deleteRoyaltyTier',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true,
-          'docs': [
-            'Transaction signer must be the update authority in the market',
-            'vars account'
-          ]
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'docs': [
-            'The `MarketVars` account'
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'docs': [
-            ''
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredCurrency',
-                'path': 'registered_currency.token_mint'
-              }
-            ]
-          }
-        }
-      ],
-      'args': [
-        {
-          'name': 'stakeAmount',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
       'name': 'deregisterCurrency',
       'accounts': [
         {
@@ -213,29 +89,15 @@ export type GmIdl =
       'args': []
     },
     {
-      'name': 'registerCurrency',
+      'name': 'initializeOpenOrdersCounter',
       'accounts': [
         {
-          'name': 'updateAuthorityAccount',
+          'name': 'user',
           'isMut': true,
           'isSigner': true
         },
         {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
+          'name': 'openOrdersCounter',
           'isMut': true,
           'isSigner': false,
           'pda': {
@@ -243,147 +105,24 @@ export type GmIdl =
               {
                 'kind': 'const',
                 'type': 'string',
-                'value': 'registered-currency'
+                'value': 'open-orders-counter'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
                 'account': 'Mint',
-                'path': 'currency_mint'
+                'path': 'deposit_mint'
               }
             ]
           }
         },
         {
-          'name': 'currencyMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'saCurrencyVault',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        }
-      ],
-      'args': [
-        {
-          'name': 'royalty',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'updateCurrencyVault',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'currency_mint'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'currencyMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'saCurrencyVault',
-          'isMut': false,
-          'isSigner': false,
-          'docs': [
-            'New SA Currency vault'
-          ]
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        }
-      ],
-      'args': []
-    },
-    {
-      'name': 'updateCurrencyRoyalty',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'currency_mint'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'currencyMint',
+          'name': 'depositMint',
           'isMut': false,
           'isSigner': false
         },
@@ -393,76 +132,7 @@ export type GmIdl =
           'isSigner': false
         }
       ],
-      'args': [
-        {
-          'name': 'royalty',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'updateRoyaltyTier',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true,
-          'docs': [
-            'Transaction signer must be the update authority in the market',
-            'vars account'
-          ]
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'docs': [
-            'The `MarketVars` account'
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'docs': [
-            ''
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredCurrency',
-                'path': 'registered_currency.token_mint'
-              }
-            ]
-          }
-        }
-      ],
-      'args': [
-        {
-          'name': 'stakeAmount',
-          'type': 'u64'
-        },
-        {
-          'name': 'discount',
-          'type': 'u64'
-        }
-      ]
+      'args': []
     },
     {
       'name': 'processInitializeBuy',
@@ -1148,12 +818,26 @@ export type GmIdl =
       'name': 'updateCurrencyRoyalty',
       'accounts': [
         {
-          'name': 'user',
+          'name': 'updateAuthorityAccount',
           'isMut': true,
           'isSigner': true
         },
         {
-          'name': 'openOrdersCounter',
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'registeredCurrency',
           'isMut': true,
           'isSigner': false,
           'pda': {
@@ -1161,24 +845,19 @@ export type GmIdl =
               {
                 'kind': 'const',
                 'type': 'string',
-                'value': 'open-orders-counter'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
+                'value': 'registered-currency'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
                 'account': 'Mint',
-                'path': 'deposit_mint'
+                'path': 'currency_mint'
               }
             ]
           }
         },
         {
-          'name': 'depositMint',
+          'name': 'currencyMint',
           'isMut': false,
           'isSigner': false
         },
@@ -1188,7 +867,12 @@ export type GmIdl =
           'isSigner': false
         }
       ],
-      'args': []
+      'args': [
+        {
+          'name': 'royalty',
+          'type': 'u64'
+        }
+      ]
     }
   ],
   'accounts': [
@@ -1468,130 +1152,6 @@ export const baseIdl: GmIdl =
   'name': 'marketplace',
   'instructions': [
     {
-      'name': 'addRoyaltyTier',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true,
-          'docs': [
-            'Transaction signer must be the update authority in the market',
-            'vars account'
-          ]
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'docs': [
-            'The `MarketVars` account'
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'docs': [
-            ''
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredCurrency',
-                'path': 'registered_currency.token_mint'
-              }
-            ]
-          }
-        }
-      ],
-      'args': [
-        {
-          'name': 'stakeAmount',
-          'type': 'u64'
-        },
-        {
-          'name': 'discount',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'deleteRoyaltyTier',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true,
-          'docs': [
-            'Transaction signer must be the update authority in the market',
-            'vars account'
-          ]
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'docs': [
-            'The `MarketVars` account'
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'docs': [
-            ''
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredCurrency',
-                'path': 'registered_currency.token_mint'
-              }
-            ]
-          }
-        }
-      ],
-      'args': [
-        {
-          'name': 'stakeAmount',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
       'name': 'deregisterCurrency',
       'accounts': [
         {
@@ -1677,29 +1237,15 @@ export const baseIdl: GmIdl =
       'args': []
     },
     {
-      'name': 'registerCurrency',
+      'name': 'initializeOpenOrdersCounter',
       'accounts': [
         {
-          'name': 'updateAuthorityAccount',
+          'name': 'user',
           'isMut': true,
           'isSigner': true
         },
         {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
+          'name': 'openOrdersCounter',
           'isMut': true,
           'isSigner': false,
           'pda': {
@@ -1707,147 +1253,24 @@ export const baseIdl: GmIdl =
               {
                 'kind': 'const',
                 'type': 'string',
-                'value': 'registered-currency'
+                'value': 'open-orders-counter'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'path': 'user'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
                 'account': 'Mint',
-                'path': 'currency_mint'
+                'path': 'deposit_mint'
               }
             ]
           }
         },
         {
-          'name': 'currencyMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'saCurrencyVault',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        }
-      ],
-      'args': [
-        {
-          'name': 'royalty',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'updateCurrencyVault',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'currency_mint'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'currencyMint',
-          'isMut': false,
-          'isSigner': false
-        },
-        {
-          'name': 'saCurrencyVault',
-          'isMut': false,
-          'isSigner': false,
-          'docs': [
-            'New SA Currency vault'
-          ]
-        },
-        {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
-        }
-      ],
-      'args': []
-    },
-    {
-      'name': 'updateCurrencyRoyalty',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'Mint',
-                'path': 'currency_mint'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'currencyMint',
+          'name': 'depositMint',
           'isMut': false,
           'isSigner': false
         },
@@ -1857,76 +1280,7 @@ export const baseIdl: GmIdl =
           'isSigner': false
         }
       ],
-      'args': [
-        {
-          'name': 'royalty',
-          'type': 'u64'
-        }
-      ]
-    },
-    {
-      'name': 'updateRoyaltyTier',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true,
-          'docs': [
-            'Transaction signer must be the update authority in the market',
-            'vars account'
-          ]
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'docs': [
-            'The `MarketVars` account'
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'registeredCurrency',
-          'isMut': true,
-          'isSigner': false,
-          'docs': [
-            ''
-          ],
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'registered-currency'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'account': 'RegisteredCurrency',
-                'path': 'registered_currency.token_mint'
-              }
-            ]
-          }
-        }
-      ],
-      'args': [
-        {
-          'name': 'stakeAmount',
-          'type': 'u64'
-        },
-        {
-          'name': 'discount',
-          'type': 'u64'
-        }
-      ]
+      'args': []
     },
     {
       'name': 'processInitializeBuy',
@@ -2481,15 +1835,29 @@ export const baseIdl: GmIdl =
       'args': []
     },
     {
-      'name': 'initializeOpenOrdersCounter',
+      'name': 'registerCurrency',
       'accounts': [
         {
-          'name': 'user',
+          'name': 'updateAuthorityAccount',
           'isMut': true,
           'isSigner': true
         },
         {
-          'name': 'openOrdersCounter',
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'registeredCurrency',
           'isMut': true,
           'isSigner': false,
           'pda': {
@@ -2497,24 +1865,89 @@ export const baseIdl: GmIdl =
               {
                 'kind': 'const',
                 'type': 'string',
-                'value': 'open-orders-counter'
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'user'
+                'value': 'registered-currency'
               },
               {
                 'kind': 'account',
                 'type': 'publicKey',
                 'account': 'Mint',
-                'path': 'deposit_mint'
+                'path': 'currency_mint'
               }
             ]
           }
         },
         {
-          'name': 'depositMint',
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'saCurrencyVault',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'royalty',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'updateCurrencyVault',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-currency'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'currency_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'saCurrencyVault',
           'isMut': false,
           'isSigner': false,
           'docs': [
@@ -2528,6 +1961,66 @@ export const baseIdl: GmIdl =
         }
       ],
       'args': []
+    },
+    {
+      'name': 'updateCurrencyRoyalty',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-currency'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'currency_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'royalty',
+          'type': 'u64'
+        }
+      ]
     }
   ],
   'accounts': [
