@@ -193,10 +193,10 @@ export type GmIdl =
       'args': []
     },
     {
-      'name': 'registerCurrency',
+      'name': 'initializeOpenOrdersCounter',
       'accounts': [
         {
-          'name': 'updateAuthorityAccount',
+          'name': 'user',
           'isMut': true,
           'isSigner': true
         },
@@ -905,25 +905,6 @@ export type GmIdl =
           'isSigner': true
         },
         {
-          'name': 'orderInitializer',
-          'isMut': true,
-          'isSigner': false
-        },
-        {
-          'name': 'marketVarsAccount',
-          'isMut': false,
-          'isSigner': false,
-          'pda': {
-            'seeds': [
-              {
-                'kind': 'const',
-                'type': 'string',
-                'value': 'market-vars'
-              }
-            ]
-          }
-        },
-        {
           'name': 'depositMint',
           'isMut': false,
           'isSigner': false
@@ -931,7 +912,10 @@ export type GmIdl =
         {
           'name': 'initializerDepositTokenAccount',
           'isMut': true,
-          'isSigner': false
+          'isSigner': false,
+          'docs': [
+            'Mint check based on asset/currency mint - validated in assert_init_deposit_token_acct()'
+          ]
         },
         {
           'name': 'orderVaultAccount',
@@ -1016,15 +1000,114 @@ export type GmIdl =
       'args': []
     },
     {
-      'name': 'initializeOpenOrdersCounter',
+      'name': 'registerCurrency',
       'accounts': [
         {
-          'name': 'payer',
+          'name': 'updateAuthorityAccount',
           'isMut': true,
           'isSigner': true
         },
         {
-          'name': 'user',
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-currency'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'currency_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'currencyMint',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'saCurrencyVault',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'systemProgram',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'royalty',
+          'type': 'u64'
+        }
+      ]
+    },
+    {
+      'name': 'updateCurrencyVault',
+      'accounts': [
+        {
+          'name': 'updateAuthorityAccount',
+          'isMut': true,
+          'isSigner': true
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'registeredCurrency',
+          'isMut': true,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'registered-currency'
+              },
+              {
+                'kind': 'account',
+                'type': 'publicKey',
+                'account': 'Mint',
+                'path': 'currency_mint'
+              }
+            ]
+          }
+        },
+        {
+          'name': 'currencyMint',
           'isMut': false,
           'isSigner': false
         },
