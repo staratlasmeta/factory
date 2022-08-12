@@ -92,6 +92,8 @@ export class GmOrderbookService {
   }
 
   protected async resetOrdersData(): Promise<void> {
+    if (this.isReloading) return;
+    
     this.isReloading = true;
 
     await this.resetEventService();
@@ -102,8 +104,6 @@ export class GmOrderbookService {
   }
 
   protected async resetEventService(): Promise<void> {
-    if (this.isReloading) return;
-
     await this.gmEventService.end();
 
     this.gmEventService = new GmEventService(
