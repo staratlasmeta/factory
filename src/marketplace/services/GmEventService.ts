@@ -96,7 +96,7 @@ export class GmEventService {
 
   async end(): Promise<void> {
     for (const listenerId of this.eventListeners) {
-      await this.provider.connection.removeOnLogsListener(listenerId);
+      await this.program.removeEventListener(listenerId);
     }
 
     this.eventListeners = [];
