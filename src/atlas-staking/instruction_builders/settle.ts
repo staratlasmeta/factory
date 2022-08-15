@@ -4,10 +4,10 @@ import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
 
 export interface SettleParams extends BaseStakingParams {
-    authority: web3.PublicKey,
-    registeredStake: web3.PublicKey,
-    stakingAccount: web3.PublicKey,
-    updatedStakingPeriod: number,
+  authority: web3.PublicKey;
+  registeredStake: web3.PublicKey;
+  stakingAccount: web3.PublicKey;
+  updatedStakingPeriod: number;
 }
 
 /**
@@ -23,32 +23,30 @@ export interface SettleParams extends BaseStakingParams {
  * @param programId - Deployed program ID for Staking program
  */
 export async function createSettleStakingAccountInstruction({
-    connection,
-    authority,
-    registeredStake,
-    stakingAccount,
-    updatedStakingPeriod,
-    programId
+  connection,
+  authority,
+  registeredStake,
+  stakingAccount,
+  updatedStakingPeriod,
+  programId,
 }: SettleParams): Promise<FactoryReturn> {
-    const program = getStakingProgram({connection, programId});
+  const program = getStakingProgram({ connection, programId });
 
-    const ixSet: FactoryReturn = {
-        instructions: [],
-        signers: []
-    }
+  const ixSet: FactoryReturn = {
+    instructions: [],
+    signers: [],
+  };
 
-    const ix = await program.methods
-            .settle(
-                updatedStakingPeriod
-            )
-            .accounts({
-                authority,
-                registeredStake,
-                stakingAccount,
-            })
-            .instruction();
+  const ix = await program.methods
+    .settle(updatedStakingPeriod)
+    .accounts({
+      authority,
+      registeredStake,
+      stakingAccount,
+    })
+    .instruction();
 
-    ixSet.instructions.push(ix);
+  ixSet.instructions.push(ix);
 
-    return ixSet;
+  return ixSet;
 }

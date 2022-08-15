@@ -1,12 +1,12 @@
 import { web3 } from '@project-serum/anchor';
 import {
-    getMarketVarsAccount,
-    getRegisteredCurrencyAccount,
+  getMarketVarsAccount,
+  getRegisteredCurrencyAccount,
 } from './pda_getters';
-import { getMarketplaceProgram } from './../utils/getMarketplaceProgram'
+import { getMarketplaceProgram } from './../utils/getMarketplaceProgram';
 import {
-    MarketVarsAccountInfo,
-    RegisteredCurrencyInfo
+  MarketVarsAccountInfo,
+  RegisteredCurrencyInfo,
 } from '../types/marketplace_accounts';
 
 /**
@@ -16,14 +16,19 @@ import {
  * @param programId - Deployed program ID for Galactic Marketplace
  */
 export async function getMarketVarsAccountInfo(
-    connection: web3.Connection,
-    programId: web3.PublicKey,
+  connection: web3.Connection,
+  programId: web3.PublicKey
 ): Promise<MarketVarsAccountInfo> {
-    const program = getMarketplaceProgram({connection: connection, programId: programId})
+  const program = getMarketplaceProgram({
+    connection: connection,
+    programId: programId,
+  });
 
-    const [marketVarsAccount] = await getMarketVarsAccount(programId);
-    const marketVarsInfo = await program.account.marketVars.fetch(marketVarsAccount);
-    return marketVarsInfo as MarketVarsAccountInfo;
+  const [marketVarsAccount] = await getMarketVarsAccount(programId);
+  const marketVarsInfo = await program.account.marketVars.fetch(
+    marketVarsAccount
+  );
+  return marketVarsInfo as MarketVarsAccountInfo;
 }
 
 /**
@@ -34,13 +39,21 @@ export async function getMarketVarsAccountInfo(
  * @param currencyMint - Mint address of currency
  */
 export async function getRegisteredCurrencyAccountInfo(
-    connection: web3.Connection,
-    programId: web3.PublicKey,
-    currencyMint: web3.PublicKey,
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+  currencyMint: web3.PublicKey
 ): Promise<RegisteredCurrencyInfo> {
-    const program = getMarketplaceProgram({connection: connection, programId: programId});
+  const program = getMarketplaceProgram({
+    connection: connection,
+    programId: programId,
+  });
 
-    const [registeredCurrencyAccount] = await getRegisteredCurrencyAccount(programId, currencyMint);
-    const registeredCurrencyInfo = await program.account.registeredCurrency.fetch(registeredCurrencyAccount);
-    return registeredCurrencyInfo as RegisteredCurrencyInfo;
+  const [registeredCurrencyAccount] = await getRegisteredCurrencyAccount(
+    programId,
+    currencyMint
+  );
+  const registeredCurrencyInfo = await program.account.registeredCurrency.fetch(
+    registeredCurrencyAccount
+  );
+  return registeredCurrencyInfo as RegisteredCurrencyInfo;
 }

@@ -1,189 +1,176 @@
-import {
-  AnchorProvider,
-  Idl,
-  IdlTypes,
-  Program,
-  web3
-} from '@project-serum/anchor';
+import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
 import { AnchorTypes } from './anchor/types';
 
 export type FactionEnlistment = {
-  'version': '0.0.0',
-  'name': 'enlist_to_faction',
-  'instructions': [
+  version: '0.0.0';
+  name: 'enlist_to_faction';
+  instructions: [
     {
-      'name': 'processEnlistPlayer',
-      'accounts': [
+      name: 'processEnlistPlayer';
+      accounts: [
         {
-          'name': 'playerFactionAccount',
-          'isMut': true,
-          'isSigner': false
+          name: 'playerFactionAccount';
+          isMut: true;
+          isSigner: false;
         },
         {
-          'name': 'playerAccount',
-          'isMut': false,
-          'isSigner': true
+          name: 'playerAccount';
+          isMut: false;
+          isSigner: true;
         },
         {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
+          name: 'systemProgram';
+          isMut: false;
+          isSigner: false;
         },
         {
-          'name': 'clock',
-          'isMut': false,
-          'isSigner': false
+          name: 'clock';
+          isMut: false;
+          isSigner: false;
         }
-      ],
-      'args': [
+      ];
+      args: [
         {
-          'name': 'bump',
-          'type': 'u8'
+          name: 'bump';
+          type: 'u8';
         },
         {
-          'name': 'factionId',
-          'type': 'u8'
+          name: 'factionId';
+          type: 'u8';
         }
-      ]
+      ];
     }
-  ],
-  'accounts': [
+  ];
+  accounts: [
     {
-      'name': 'PlayerFactionData',
-      'type': {
-        'kind': 'struct',
-        'fields': [
+      name: 'PlayerFactionData';
+      type: {
+        kind: 'struct';
+        fields: [
           {
-            'name': 'owner',
-            'type': 'publicKey'
+            name: 'owner';
+            type: 'publicKey';
           },
           {
-            'name': 'enlistedAtTimestamp',
-            'type': 'i64'
+            name: 'enlistedAtTimestamp';
+            type: 'i64';
           },
           {
-            'name': 'factionId',
-            'type': 'u8'
+            name: 'factionId';
+            type: 'u8';
           },
           {
-            'name': 'bump',
-            'type': 'u8'
+            name: 'bump';
+            type: 'u8';
           },
           {
-            'name': 'padding',
-            'type': {
-              'array': [
-                'u64',
-                5
-              ]
-            }
+            name: 'padding';
+            type: {
+              array: ['u64', 5];
+            };
           }
-        ]
-      }
+        ];
+      };
     }
-  ],
-  'errors': [
+  ];
+  errors: [
     {
-      'code': 300,
-      'name': 'FactionTypeError',
-      'msg': 'Faction ID must be 0, 1, or 2.'
+      code: 300;
+      name: 'FactionTypeError';
+      msg: 'Faction ID must be 0, 1, or 2.';
     }
-  ],
-  'metadata': {
-  }
+  ];
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  metadata: {};
 };
 
 const baseIdl: FactionEnlistment = {
-  'version': '0.0.0',
-  'name': 'enlist_to_faction',
-  'instructions': [
+  version: '0.0.0',
+  name: 'enlist_to_faction',
+  instructions: [
     {
-      'name': 'processEnlistPlayer',
-      'accounts': [
+      name: 'processEnlistPlayer',
+      accounts: [
         {
-          'name': 'playerFactionAccount',
-          'isMut': true,
-          'isSigner': false
+          name: 'playerFactionAccount',
+          isMut: true,
+          isSigner: false,
         },
         {
-          'name': 'playerAccount',
-          'isMut': false,
-          'isSigner': true
+          name: 'playerAccount',
+          isMut: false,
+          isSigner: true,
         },
         {
-          'name': 'systemProgram',
-          'isMut': false,
-          'isSigner': false
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
         },
         {
-          'name': 'clock',
-          'isMut': false,
-          'isSigner': false
-        }
+          name: 'clock',
+          isMut: false,
+          isSigner: false,
+        },
       ],
-      'args': [
+      args: [
         {
-          'name': 'bump',
-          'type': 'u8'
+          name: 'bump',
+          type: 'u8',
         },
         {
-          'name': 'factionId',
-          'type': 'u8'
-        }
-      ]
-    }
+          name: 'factionId',
+          type: 'u8',
+        },
+      ],
+    },
   ],
-  'accounts': [
+  accounts: [
     {
-      'name': 'PlayerFactionData',
-      'type': {
-        'kind': 'struct',
-        'fields': [
+      name: 'PlayerFactionData',
+      type: {
+        kind: 'struct',
+        fields: [
           {
-            'name': 'owner',
-            'type': 'publicKey'
+            name: 'owner',
+            type: 'publicKey',
           },
           {
-            'name': 'enlistedAtTimestamp',
-            'type': 'i64'
+            name: 'enlistedAtTimestamp',
+            type: 'i64',
           },
           {
-            'name': 'factionId',
-            'type': 'u8'
+            name: 'factionId',
+            type: 'u8',
           },
           {
-            'name': 'bump',
-            'type': 'u8'
+            name: 'bump',
+            type: 'u8',
           },
           {
-            'name': 'padding',
-            'type': {
-              'array': [
-                'u64',
-                5
-              ]
-            }
-          }
-        ]
-      }
-    }
+            name: 'padding',
+            type: {
+              array: ['u64', 5],
+            },
+          },
+        ],
+      },
+    },
   ],
-  'errors': [
+  errors: [
     {
-      'code': 300,
-      'name': 'FactionTypeError',
-      'msg': 'Faction ID must be 0, 1, or 2.'
-    }
+      code: 300,
+      name: 'FactionTypeError',
+      msg: 'Faction ID must be 0, 1, or 2.',
+    },
   ],
-  'metadata': {
-  }
+  metadata: {},
 };
 
 const FACTION_PREFIX = 'FACTION_ENLISTMENT';
 
 type FactionEnlistmentTypes = AnchorTypes<FactionEnlistment>;
 type Accounts = FactionEnlistmentTypes['Accounts'];
-export type PlayerFaction = Accounts['PlayerFactionData']
+export type PlayerFaction = Accounts['PlayerFactionData'];
 
 export enum FactionType {
   Unenlisted = -1,
@@ -192,9 +179,7 @@ export enum FactionType {
   Ustur = 2,
 }
 
-export function getIDL(
-  programId: web3.PublicKey,
-): unknown {
+export function getIDL(programId: web3.PublicKey): unknown {
   const _tmp = baseIdl;
   _tmp['metadata']['address'] = programId.toBase58();
   return _tmp;
@@ -204,10 +189,10 @@ export async function getPlayerFactionPDA(
   playerPublicKey: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress([
-    Buffer.from(FACTION_PREFIX, 'utf8'),
-    playerPublicKey.toBuffer(),
-  ], programId);
+  return web3.PublicKey.findProgramAddress(
+    [Buffer.from(FACTION_PREFIX, 'utf8'), playerPublicKey.toBuffer()],
+    programId
+  );
 }
 
 /**
@@ -219,20 +204,27 @@ export async function enlistToFaction(
   playerPublicKey: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<web3.TransactionInstruction> {
-  const [playerFactionPda, bump] = await getPlayerFactionPDA(playerPublicKey, programId);
+  const [playerFactionPda, bump] = await getPlayerFactionPDA(
+    playerPublicKey,
+    programId
+  );
 
   const idl = getIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const txInstruction = await program.instruction.processEnlistPlayer(bump, factionID, {
-    accounts: {
-      playerFactionAccount: playerFactionPda,
-      playerAccount: playerPublicKey,
-      systemProgram: web3.SystemProgram.programId,
-      clock: web3.SYSVAR_CLOCK_PUBKEY,
-    },
-  });
-  
+  const txInstruction = await program.instruction.processEnlistPlayer(
+    bump,
+    factionID,
+    {
+      accounts: {
+        playerFactionAccount: playerFactionPda,
+        playerAccount: playerPublicKey,
+        systemProgram: web3.SystemProgram.programId,
+        clock: web3.SYSVAR_CLOCK_PUBKEY,
+      },
+    }
+  );
+
   return txInstruction;
 }
 
@@ -244,13 +236,15 @@ export async function getPlayer(
   playerPublicKey: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<PlayerFaction> {
-
   // Wallet not required to query player faction account
   const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
-  
-  const [playerFactionPDA] = await getPlayerFactionPDA(playerPublicKey, programId);
+
+  const [playerFactionPDA] = await getPlayerFactionPDA(
+    playerPublicKey,
+    programId
+  );
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
   return obj as PlayerFaction;
 }
@@ -262,16 +256,16 @@ export async function getAllPlayers(
   connection: web3.Connection,
   programId: web3.PublicKey
 ): Promise<PlayerFaction[]> {
-
   // Wallet not required to query player faction accounts
   const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
-  
-  const players = programAccounts
-    .map(player => <PlayerFaction>player.account);
-  
+
+  const players = programAccounts.map(
+    (player) => <PlayerFaction>player.account
+  );
+
   return players;
 }
 
@@ -283,16 +277,15 @@ export async function getPlayersOfFaction(
   factionID: FactionType,
   programId: web3.PublicKey
 ): Promise<PlayerFaction[]> {
-  
   // Wallet not required to query player faction accounts
   const provider = new AnchorProvider(connection, null, null);
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
-  
+
   const filtered = programAccounts
-    .map(player => <PlayerFaction>player.account)
-    .filter(player => player.factionId == factionID);
+    .map((player) => <PlayerFaction>player.account)
+    .filter((player) => player.factionId == factionID);
 
   return filtered;
 }
