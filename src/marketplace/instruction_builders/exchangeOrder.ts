@@ -92,18 +92,12 @@ export async function createExchangeInstruction ({
     if ('createInstruction' in response) {
         ixSet.instructions.push(response.createInstruction);
 
-      if (response.tokenAccount instanceof web3.Keypair) {
-        initializerDepositTokenAccount = response.tokenAccount.publicKey;
-        ixSet.signers.push(response.tokenAccount);
-      } else {
-        initializerDepositTokenAccount = response.tokenAccount;
-      }
-    }
-        else {
-        initializerDepositTokenAccount = response.tokenAccount;
-    }
-    
-
+  if (tokenAccount instanceof web3.Keypair) {
+    initializerDepositTokenAccount = tokenAccount.publicKey;
+    ixSet.signers.push(tokenAccount);
+  } else {
+    initializerDepositTokenAccount = tokenAccount;
+  }
 
   // Get initializer receive mint token account
   response = await getTokenAccount(
@@ -112,17 +106,16 @@ export async function createExchangeInstruction ({
     initializerReceiveMint,
     orderTaker
   );
+  tokenAccount = response.tokenAccount;
   if ('createInstruction' in response) {
     ixSet.instructions.push(response.createInstruction);
+  }
 
-    if (response.tokenAccount instanceof web3.Keypair) {
-      initializerReceiveTokenAccount = response.tokenAccount.publicKey;
-      ixSet.signers.push(response.tokenAccount);
-    } else {
-      initializerReceiveTokenAccount = response.tokenAccount;
-    }
+  if (tokenAccount instanceof web3.Keypair) {
+    initializerReceiveTokenAccount = tokenAccount.publicKey;
+    ixSet.signers.push(tokenAccount);
   } else {
-    initializerReceiveTokenAccount = response.tokenAccount;
+    initializerReceiveTokenAccount = tokenAccount;
   }
 
   const [orderVaultAccount] = await getOrderVault(

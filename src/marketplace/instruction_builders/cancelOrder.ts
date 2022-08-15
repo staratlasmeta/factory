@@ -64,6 +64,7 @@ export async function createCancelOrderInstruction({
   if ('createInstruction' in response) {
     ixSet.instructions.push(response.createInstruction);
   }
+<<<<<<< HEAD
 
   if (tokenAccount instanceof web3.Keypair) {
     initializerDepositTokenAccount = tokenAccount.publicKey;
