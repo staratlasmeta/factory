@@ -4,8 +4,8 @@ import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
 
 export interface CancelUnstakeParams extends BaseStakingParams {
-    user: web3.PublicKey,
-    registeredStake: web3.PublicKey,
+  user: web3.PublicKey;
+  registeredStake: web3.PublicKey;
 }
 
 /**
@@ -17,28 +17,27 @@ export interface CancelUnstakeParams extends BaseStakingParams {
  * @param programId - Deployed program ID for Staking program
  */
 export async function cancelUnstakeInstruction({
-    connection,
-    user,
-    registeredStake,
-    programId
+  connection,
+  user,
+  registeredStake,
+  programId,
 }: CancelUnstakeParams): Promise<FactoryReturn> {
-    const program = getStakingProgram({connection, programId});
+  const program = getStakingProgram({ connection, programId });
 
-    const ixSet: FactoryReturn = {
-        instructions: [],
-        signers: []
-    }
+  const ixSet: FactoryReturn = {
+    instructions: [],
+    signers: [],
+  };
 
-    const ix = await program.methods
-            .cancelUnstake()
-            .accounts({
-                user,
-                registeredStake,
-            })
-            .instruction();
+  const ix = await program.methods
+    .cancelUnstake()
+    .accounts({
+      user,
+      registeredStake,
+    })
+    .instruction();
 
-    ixSet.instructions.push(ix);
+  ixSet.instructions.push(ix);
 
-    return ixSet;
+  return ixSet;
 }
-

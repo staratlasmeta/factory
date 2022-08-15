@@ -335,7 +335,12 @@ export class GmClientService {
     return { transaction, signers };
   }
 
-  async getBnPriceForCurrency(connection: Connection, uiPrice: number, quoteCurrency: PublicKey, programId: PublicKey): Promise<BN> {
+  async getBnPriceForCurrency(
+    connection: Connection,
+    uiPrice: number,
+    quoteCurrency: PublicKey,
+    programId: PublicKey
+  ): Promise<BN> {
     const allCurrencyInfo = await this.getRegisteredCurrencies(
       connection,
       programId

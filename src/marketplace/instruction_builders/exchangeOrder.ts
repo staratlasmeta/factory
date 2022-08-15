@@ -1,16 +1,9 @@
-import {
-    BN,
-    web3
-} from '@project-serum/anchor';
+import { BN, web3 } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
-import {
-    getMarketplaceProgram,
-} from '../utils';
-import { getOrderVault } from '../pda_getters/pda_getters';
+import { getMarketplaceProgram } from '../utils';
+import { getOrderVault } from '../pda_getters';
 import { BaseParams } from './BaseParams';
-import {
-    getOpenOrdersCounter,
-} from '../pda_getters';
+import { getOpenOrdersCounter } from '../pda_getters';
 import { FactoryReturn } from '../../types';
 import { getTokenAccount } from '../../util';
 import { OrderSide } from '../models';
@@ -68,21 +61,27 @@ export async function createExchangeInstruction ({
     registeredStake,
     stakingAccount,
 }: ExchangeOrderParams): Promise<FactoryReturn> {
-    const program = getMarketplaceProgram({connection, programId})
-    const ixSet: FactoryReturn = {
-        signers: [],
-        instructions: []
-    };
+  const program = getMarketplaceProgram({ connection, programId });
+  const ixSet: FactoryReturn = {
+    signers: [],
+    instructions: [],
+  };
 
-    // Get order account and info
-    const initializerDepositMint = (orderType === OrderSide.Sell) ? new PublicKey(assetMint) : new PublicKey(currencyMint);
-    const initializerReceiveMint  = (orderType === OrderSide.Sell) ? new PublicKey(currencyMint): new PublicKey(assetMint);
+  // Get order account and info
+  const initializerDepositMint =
+    orderType === OrderSide.Sell
+      ? new PublicKey(assetMint)
+      : new PublicKey(currencyMint);
+  const initializerReceiveMint =
+    orderType === OrderSide.Sell
+      ? new PublicKey(currencyMint)
+      : new PublicKey(assetMint);
 
-    // Get user's token accounts
-    let tokenAccount: web3.PublicKey | web3.Keypair = null;
-    let initializerDepositTokenAccount: web3.PublicKey = null;
-    let initializerReceiveTokenAccount: web3.PublicKey = null;
-    let orderTakerReceiveTokenAccount: web3.PublicKey = null;
+  // Get user's token accounts
+  let tokenAccount: web3.PublicKey | web3.Keypair = null;
+  let initializerDepositTokenAccount: web3.PublicKey = null;
+  let initializerReceiveTokenAccount: web3.PublicKey = null;
+  let orderTakerReceiveTokenAccount: web3.PublicKey = null;
 
     // Get initializer deposit mint token account
     let response = await getTokenAccount(
@@ -94,12 +93,12 @@ export async function createExchangeInstruction ({
     if ('createInstruction' in response) {
         ixSet.instructions.push(response.createInstruction);
 
-        if (response.tokenAccount instanceof web3.Keypair) {
-            initializerDepositTokenAccount = response.tokenAccount.publicKey;
-            ixSet.signers.push(response.tokenAccount)
-        } else {
-            initializerDepositTokenAccount = response.tokenAccount;
-        }
+      if (response.tokenAccount instanceof web3.Keypair) {
+        initializerDepositTokenAccount = response.tokenAccount.publicKey;
+        ixSet.signers.push(response.tokenAccount);
+      } else {
+        initializerDepositTokenAccount = response.tokenAccount;
+      }
     }
         else {
         initializerDepositTokenAccount = response.tokenAccount;
@@ -107,29 +106,36 @@ export async function createExchangeInstruction ({
     
 
 
-    // Get initializer receive mint token account
-    response = await getTokenAccount(
-        connection,
-        orderInitializer,
-        initializerReceiveMint,
-        orderTaker
-    );
-    if ('createInstruction' in response) {
-        ixSet.instructions.push(response.createInstruction);
+  // Get initializer receive mint token account
+  response = await getTokenAccount(
+    connection,
+    orderInitializer,
+    initializerReceiveMint,
+    orderTaker
+  );
+  tokenAccount = response.tokenAccount;
+  if ('createInstruction' in response) {
+    ixSet.instructions.push(response.createInstruction);
+  }
 
-        if (response.tokenAccount instanceof web3.Keypair) {
-            initializerReceiveTokenAccount = response.tokenAccount.publicKey;
-            ixSet.signers.push(response.tokenAccount)
-        } else {
-            initializerReceiveTokenAccount = response.tokenAccount;
-        }
-    } else {
-        initializerReceiveTokenAccount = response.tokenAccount;
-    }
+  if (tokenAccount instanceof web3.Keypair) {
+    initializerReceiveTokenAccount = tokenAccount.publicKey;
+    ixSet.signers.push(tokenAccount);
+  } else {
+    initializerReceiveTokenAccount = tokenAccount;
+  }
+>>>>>>> 6a28e45 (Added prettier)
 
-
-    const [orderVaultAccount] = await getOrderVault(orderInitializer, initializerDepositMint, programId);
-    const [openOrdersCounter] = await getOpenOrdersCounter(orderInitializer, initializerDepositMint, programId);
+  const [orderVaultAccount] = await getOrderVault(
+    orderInitializer,
+    initializerDepositMint,
+    programId
+  );
+  const [openOrdersCounter] = await getOpenOrdersCounter(
+    orderInitializer,
+    initializerDepositMint,
+    programId
+  );
 
     // Get order taker receive token account
     response = await getTokenAccount(
@@ -174,7 +180,7 @@ export async function createExchangeInstruction ({
             })
             .instruction();
 
-    ixSet.instructions.push(exchangeIx);
+  ixSet.instructions.push(exchangeIx);
 
-    return ixSet;
+  return ixSet;
 }

@@ -1,12 +1,5 @@
-import {
-    Idl,
-    Program,
-    AnchorProvider,
-    web3,
-} from '@project-serum/anchor';
-import {
-    baseIdl
-} from './../types/gmIdl';
+import { Idl, Program, AnchorProvider, web3 } from '@project-serum/anchor';
+import { baseIdl } from './../types/gmIdl';
 import * as gmLogsIdl from './../types/gmLogsIdl';
 
 /**
@@ -14,12 +7,10 @@ import * as gmLogsIdl from './../types/gmLogsIdl';
  *
  * @param programId - Deployed program ID for Galactic Marketplace
  */
-export function getGmIDL(
-    programId: web3.PublicKey
-): unknown {
-    const _tmp = baseIdl;
-    _tmp['metadata']['address'] = programId.toBase58();
-    return _tmp;
+export function getGmIDL(programId: web3.PublicKey): unknown {
+  const _tmp = baseIdl;
+  _tmp['metadata']['address'] = programId.toBase58();
+  return _tmp;
 }
 
 /**
@@ -27,12 +18,10 @@ export function getGmIDL(
  *
  * @param programId - Deployed program ID for GM-Logs
  */
-export function getGmLogsIDL(
-    programId: web3.PublicKey
-): unknown {
-    const _tmp = gmLogsIdl.baseIdl;
-    _tmp['metadata']['address'] = programId.toBase58();
-    return _tmp;
+export function getGmLogsIDL(programId: web3.PublicKey): unknown {
+  const _tmp = gmLogsIdl.baseIdl;
+  _tmp['metadata']['address'] = programId.toBase58();
+  return _tmp;
 }
 
 /**
@@ -41,12 +30,16 @@ export function getGmLogsIDL(
  * @param connection - the Solana connection object
  * @param programId - Deployed program ID for Galactic Marketplace
  */
-export function getMarketplaceProgram(
-{ connection, programId }: { connection: web3.Connection; programId: web3.PublicKey; },
-): Program<Idl> {
-    const idl = getGmIDL(programId);
-    const provider = new AnchorProvider(connection, null, null);
-    const program = new Program(idl as Idl, programId, provider);
+export function getMarketplaceProgram({
+  connection,
+  programId,
+}: {
+  connection: web3.Connection;
+  programId: web3.PublicKey;
+}): Program<Idl> {
+  const idl = getGmIDL(programId);
+  const provider = new AnchorProvider(connection, null, null);
+  const program = new Program(idl as Idl, programId, provider);
 
-    return program
+  return program;
 }
