@@ -1,12 +1,12 @@
-import { queueProcessor, IDisposer } from 'mobx-utils';
-import { pull } from 'lodash';
-import { Commitment, Connection, PublicKey } from '@solana/web3.js';
+import { queueProcessor, IDisposer } from "mobx-utils";
+import { pull } from "lodash";
+import { Commitment, Connection, PublicKey } from "@solana/web3.js";
 
-import { OrderCacheService } from './OrderCacheService';
-import { Order } from '../models/Order';
-import { GmEventHandler, GmEventType } from '../types';
-import { GmClientService } from './GmClientService';
-import { GmEventService } from './GmEventService';
+import { OrderCacheService } from "./OrderCacheService";
+import { Order } from "../models/Order";
+import { GmEventHandler, GmEventType } from "../types";
+import { GmClientService } from "./GmClientService";
+import { GmEventService } from "./GmEventService";
 
 /**
  * Establishes a connection to the Galactic Marketplace and maintains an up-to-date
@@ -78,6 +78,8 @@ export class GmOrderbookService {
   }
 
   async end(): Promise<boolean> {
+    await this.gmEventService.end();
+
     this.eventCallBacks = [];
     this.changeObserverDisposer = null;
 
@@ -93,7 +95,7 @@ export class GmOrderbookService {
 
   protected async resetOrdersData(): Promise<void> {
     if (this.isReloading) return;
-    
+
     this.isReloading = true;
 
     await this.resetEventService();
@@ -111,6 +113,8 @@ export class GmOrderbookService {
       this.marketplaceProgramId
     );
 
+    this.gmEventService.setEventHandler(this.handleMarketplaceEvent);
+
     await this.gmEventService.initialize();
   }
 
@@ -118,7 +122,7 @@ export class GmOrderbookService {
     const existingOrders = this.orderCacheService.getAllOrdersCache();
 
     try {
-      const slot = await this.connection.getSlot('confirmed');
+      const slot = await this.connection.getSlot("confirmed");
       const fetchedOffers = await this.gmClientService.getAllOpenOrders(
         this.connection,
         this.marketplaceProgramId
@@ -151,7 +155,7 @@ export class GmOrderbookService {
         }
       }
     } catch (error) {
-      console.log('There was an error refreshing all marketplace data', error);
+      console.log("There was an error refreshing all marketplace data", error);
     }
   }
 
@@ -208,8 +212,8 @@ export class GmOrderbookService {
     return this.orderCacheService.sellOrdersCache.get(mint);
   }
 
-  getOrdersByType(orderType: 'buy' | 'sell'): Map<string, Map<string, Order>> {
-    return orderType === 'buy' ? this.getBuyOrders() : this.getSellOrders();
+  getOrdersByType(orderType: "buy" | "sell"): Map<string, Map<string, Order>> {
+    return orderType === "buy" ? this.getBuyOrders() : this.getSellOrders();
   }
 
   getBuyOrdersByCurrencyAndItem(

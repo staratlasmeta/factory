@@ -5,14 +5,20 @@ import {
   BorshInstructionCoder,
   Idl,
   Program,
-} from '@project-serum/anchor';
-import { Commitment, Connection, PublicKey } from '@solana/web3.js';
+} from "@project-serum/anchor";
+import { Commitment, Connection, PublicKey } from "@solana/web3.js";
 
-import { Order, OrderSide } from '../models';
-import { GmEventType, GmLogEvent, GmRegisteredCurrency } from '../types';
-import { GmClientService } from './GmClientService';
-import { getGmLogsIDL } from '../utils';
-import { GmLogs } from '../types';
+import { Order, OrderSide } from "../models";
+import { GmEventType, GmLogEvent, GmRegisteredCurrency } from "../types";
+import { GmClientService } from "./GmClientService";
+import { getGmLogsIDL } from "../utils";
+import { GmLogs } from "../types";
+
+type BlockChainEvent = {
+  eventType: GmEventType;
+  order: Order;
+  slotContext: number;
+};
 
 /**
  * Listens to events emitted by the Galactic Marketplace program and will call the registered
@@ -38,6 +44,8 @@ export class GmEventService {
     slotContext: number
   ) => void;
   protected eventListeners: number[] = [];
+
+  protected queuedEvents: Array<BlockChainEvent> = [];
 
   constructor(
     connection: Connection,
@@ -100,12 +108,17 @@ export class GmEventService {
     }
 
     this.eventListeners = [];
+
+    this.onEvent = null;
   }
 
   setEventHandler(
     handler: (eventType: GmEventType, order: Order, slotContext: number) => void
   ): void {
     this.onEvent = handler;
+    for (const event of this.queuedEvents) {
+      this.onEvent(event.eventType, event.order, event.slotContext);
+    }
   }
 
   protected async setCurrencyInfo(): Promise<void> {
@@ -123,7 +136,10 @@ export class GmEventService {
     }
   }
 
-  protected getParsedOrderFromEvent(event: GmLogEvent, slotContext: number): Order | null {
+  protected getParsedOrderFromEvent(
+    event: GmLogEvent,
+    slotContext: number
+  ): Order | null {
     const currencyInfo =
       this.registeredCurrencyInfo[event.currencyMint.toString()];
 
@@ -150,7 +166,7 @@ export class GmEventService {
   }
 
   protected handleOrderCreated(event: GmLogEvent, slotContext: number): void {
-    this.onEvent(
+    this.processEvent(
       GmEventType.orderAdded,
       this.getParsedOrderFromEvent(event, slotContext),
       slotContext
@@ -158,7 +174,7 @@ export class GmEventService {
   }
 
   protected handleOrderExchanged(event: GmLogEvent, slotContext: number): void {
-    this.onEvent(
+    this.processEvent(
       GmEventType.orderModified,
       this.getParsedOrderFromEvent(event, slotContext),
       slotContext
@@ -166,11 +182,37 @@ export class GmEventService {
   }
 
   protected handleOrderCanceled(event: GmLogEvent, slotContext: number): void {
-    this.onEvent(
+    this.processEvent(
       GmEventType.orderRemoved,
       this.getParsedOrderFromEvent(event, slotContext),
       slotContext
     );
+  }
+
+  /**
+   * Add this code to centralize specific error handling
+   * @param eventType
+   * @param order
+   * @param slotContext
+   * @protected
+   */
+  protected processEvent(
+    eventType: GmEventType,
+    order: Order,
+    slotContext: number
+  ): void {
+    // this can happen if StarCOMM has de-commissioned all rooms, or hasn't
+    // had a connection from a client and hasn't created rooms yet
+    if (!this.onEvent) {
+      this.queuedEvents.push({
+        eventType,
+        order,
+        slotContext,
+      } as BlockChainEvent);
+      return;
+    }
+
+    this.onEvent(eventType, order, slotContext);
   }
 
   protected async handleCurrencyRegistered(): Promise<void> {
