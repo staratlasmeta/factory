@@ -5,14 +5,14 @@ import {
   BorshInstructionCoder,
   Idl,
   Program,
-} from "@project-serum/anchor";
-import { Commitment, Connection, PublicKey } from "@solana/web3.js";
+} from '@project-serum/anchor';
+import { Commitment, Connection, PublicKey } from '@solana/web3.js';
 
-import { Order, OrderSide } from "../models";
-import { GmEventType, GmLogEvent, GmRegisteredCurrency } from "../types";
-import { GmClientService } from "./GmClientService";
-import { getGmLogsIDL } from "../utils";
-import { GmLogs } from "../types";
+import { Order, OrderSide } from '../models';
+import { GmEventType, GmLogEvent, GmRegisteredCurrency } from '../types';
+import { GmClientService } from './GmClientService';
+import { getGmLogsIDL } from '../utils';
+import { GmLogs } from '../types';
 
 type BlockChainEvent = {
   eventType: GmEventType;
@@ -201,8 +201,6 @@ export class GmEventService {
     order: Order,
     slotContext: number
   ): void {
-    // this can happen if StarCOMM has de-commissioned all rooms, or hasn't
-    // had a connection from a client and hasn't created rooms yet
     if (!this.onEvent) {
       this.queuedEvents.push({
         eventType,
