@@ -1,9 +1,9 @@
 import { queueProcessor, IDisposer } from 'mobx-utils';
 import { pull } from 'lodash';
-import { Commitment, Connection, PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 
 import { OrderCacheService } from './OrderCacheService';
-import { Order } from '../models/Order';
+import { Order } from '../models';
 import { GmEventHandler, GmEventType } from '../types';
 import { GmClientService } from './GmClientService';
 import { GmEventService } from './GmEventService';
@@ -93,7 +93,7 @@ export class GmOrderbookService {
 
   protected async resetOrdersData(): Promise<void> {
     if (this.isReloading) return;
-    
+
     this.isReloading = true;
 
     await this.resetEventService();

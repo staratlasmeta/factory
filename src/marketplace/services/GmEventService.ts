@@ -123,7 +123,10 @@ export class GmEventService {
     }
   }
 
-  protected getParsedOrderFromEvent(event: GmLogEvent, slotContext: number): Order | null {
+  protected getParsedOrderFromEvent(
+    event: GmLogEvent,
+    slotContext: number
+  ): Order | null {
     const currencyInfo =
       this.registeredCurrencyInfo[event.currencyMint.toString()];
 

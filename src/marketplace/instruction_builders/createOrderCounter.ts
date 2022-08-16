@@ -4,26 +4,25 @@ import { BaseParams } from './BaseParams';
 
 /**  Params for Create Order Counter instruction */
 export interface CreateOrderCounterParams extends BaseParams {
-    initializerMainAccount: web3.PublicKey,
-    depositMint: web3.PublicKey,
+  initializerMainAccount: web3.PublicKey;
+  depositMint: web3.PublicKey;
 }
 
 export async function createOrderCounterInstruction({
-    connection,
-    initializerMainAccount,
-    depositMint,
-    programId
-
+  connection,
+  initializerMainAccount,
+  depositMint,
+  programId,
 }: CreateOrderCounterParams): Promise<web3.TransactionInstruction> {
-    const program = getMarketplaceProgram({connection, programId})
+  const program = getMarketplaceProgram({ connection, programId });
 
-    const ix = await program.methods
-        .initializeOpenOrdersCounter()
-        .accounts({
-            user: initializerMainAccount,
-            depositMint,
-        })
-        .instruction()
+  const ix = await program.methods
+    .initializeOpenOrdersCounter()
+    .accounts({
+      user: initializerMainAccount,
+      depositMint,
+    })
+    .instruction();
 
-    return ix
+  return ix;
 }

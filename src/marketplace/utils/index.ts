@@ -1,2 +1,2 @@
-export * from './getMarketplaceProgram'
-export * from './gmHelper'
+export * from './getMarketplaceProgram';
+export * from './gmHelper';

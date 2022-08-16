@@ -1,7 +1,7 @@
 import { BN, web3 } from '@project-serum/anchor';
 import type { AnchorTypes } from '../../anchor/types';
 export interface MarketVarsInfo {
-updateAuthorityMaster: web3.PublicKey,
+  updateAuthorityMaster: web3.PublicKey;
 }
 import * as GM_TYPES from './gmIdl';
 
@@ -15,19 +15,19 @@ export type OrderAccountInfo = Account['OrderAccount'];
 export type RegisteredCurrencyInfo = Account['RegisteredCurrency'];
 
 export interface OrderAccountItem {
-    publicKey: web3.PublicKey;
-    account: OrderAccountInfo;
+  publicKey: web3.PublicKey;
+  account: OrderAccountInfo;
 }
 
 export type RegisteredCurrencyItem = {
-    mint: web3.PublicKey;
-    royalty: BN;
-    saVault: web3.PublicKey;
-}
+  mint: web3.PublicKey;
+  royalty: BN;
+  saVault: web3.PublicKey;
+};
 
 export enum GmLogs {
-    CancelOrderMemo = 'CancelOrderMemo',
-    ExchangeMemo = 'ExchangeMemo',
-    InitializeMemo = 'InitializeMemo',
-    RegisterCurrencyMemo = 'RegisterCurrencyMemo',
+  CancelOrderMemo = 'CancelOrderMemo',
+  ExchangeMemo = 'ExchangeMemo',
+  InitializeMemo = 'InitializeMemo',
+  RegisterCurrencyMemo = 'RegisterCurrencyMemo',
 }

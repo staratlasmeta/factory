@@ -5,12 +5,12 @@ import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
 
 export interface StakeTokensParams extends BaseStakingParams {
-    user: web3.PublicKey,
-    tokenSource: web3.PublicKey,
-    stakeMint: web3.PublicKey,
-    registeredStake: web3.PublicKey,
-    stakingAccount: web3.PublicKey,
-    stakeQuantity: number
+  user: web3.PublicKey;
+  tokenSource: web3.PublicKey;
+  stakeMint: web3.PublicKey;
+  registeredStake: web3.PublicKey;
+  stakingAccount: web3.PublicKey;
+  stakeQuantity: number;
 }
 
 /**
@@ -26,35 +26,38 @@ export interface StakeTokensParams extends BaseStakingParams {
  * @param programId - Deployed program ID for Staking program
  */
 export async function stakeTokensInstruction({
-    connection,
-    user,
-    stakeMint,
-    tokenSource,
-    stakeQuantity,
-    registeredStake,
-    stakingAccount,
-    programId
+  connection,
+  user,
+  stakeMint,
+  tokenSource,
+  stakeQuantity,
+  registeredStake,
+  stakingAccount,
+  programId,
 }: StakeTokensParams): Promise<FactoryReturn> {
-    const program = getStakingProgram({connection, programId});
-    const tokenEscrow = await associatedAddress({ owner: stakingAccount, mint: stakeMint});
+  const program = getStakingProgram({ connection, programId });
+  const tokenEscrow = await associatedAddress({
+    owner: stakingAccount,
+    mint: stakeMint,
+  });
 
-    const ixSet: FactoryReturn = {
-        instructions: [],
-        signers: []
-    }
+  const ixSet: FactoryReturn = {
+    instructions: [],
+    signers: [],
+  };
 
-    const ix = await program.methods
-            .stakeTokens(new BN(stakeQuantity))
-            .accounts({
-                user,
-                stakeMint,
-                tokenSource,
-                registeredStake,
-                tokenEscrow,
-            })
-            .instruction();
+  const ix = await program.methods
+    .stakeTokens(new BN(stakeQuantity))
+    .accounts({
+      user,
+      stakeMint,
+      tokenSource,
+      registeredStake,
+      tokenEscrow,
+    })
+    .instruction();
 
-    ixSet.instructions.push(ix);
+  ixSet.instructions.push(ix);
 
-    return ixSet;
+  return ixSet;
 }

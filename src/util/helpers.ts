@@ -1,7 +1,11 @@
-import { FactionType} from '..';
+import { FactionType } from '..';
 import { BN, web3 } from '@project-serum/anchor';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+  Token,
+} from '@solana/spl-token';
 
 type TokenAccount = {
   type: 'account';
@@ -41,7 +45,7 @@ export function stringToByteArray(str: string, length: number): any[] {
 export function byteArrayToLong(byteArray: Buffer): number {
   let value = 0;
   for (let i = byteArray.length - 1; i >= 0; i -= 1) {
-    value = (value * 256) + byteArray[i];
+    value = value * 256 + byteArray[i];
   }
   return value;
 }
@@ -81,10 +85,13 @@ export async function convertFactionStringToNum(
  * @param mint - the mint
  * @returns a promise of the associated token address
  */
- export async function getAssociatedTokenAddress(owner: PublicKey, mint: PublicKey): Promise<PublicKey> {
+export async function getAssociatedTokenAddress(
+  owner: PublicKey,
+  mint: PublicKey
+): Promise<PublicKey> {
   const [address] = await PublicKey.findProgramAddress(
-      [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
-      ASSOCIATED_TOKEN_PROGRAM_ID,
+    [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+    ASSOCIATED_TOKEN_PROGRAM_ID
   );
   return address;
 }
@@ -97,15 +104,16 @@ export async function getTokenAccount(
   amountNeededHeuristic?: number
 ): Promise<
   | {
-    tokenAccount: web3.PublicKey;
-  }
+      tokenAccount: web3.PublicKey;
+    }
   | {
-    tokenAccount: web3.Keypair | web3.PublicKey;
-    createInstruction: web3.TransactionInstruction;
-  }
+      tokenAccount: web3.Keypair | web3.PublicKey;
+      createInstruction: web3.TransactionInstruction;
+    }
 > {
   // Get all parsed token accounts for a given owner and mint
-  const { value: tokenAccounts } = await connection.getParsedTokenAccountsByOwner(wallet, { mint });
+  const { value: tokenAccounts } =
+    await connection.getParsedTokenAccountsByOwner(wallet, { mint });
   let tokenAccount: web3.PublicKey | null = null;
   if (amountNeededHeuristic === undefined) {
     let maxTokens: BN | null = null;
@@ -139,7 +147,7 @@ export async function getTokenAccount(
   if (tokenAccount === null) {
     const associatedTokenAddress = await getAssociatedTokenAddress(
       wallet,
-      mint,
+      mint
     );
     const { value: account } = await connection.getParsedAccountInfo(
       associatedTokenAddress,
@@ -183,16 +191,16 @@ export async function getTokenAccount(
     }
   } else {
     return {
-      tokenAccount
+      tokenAccount,
     };
   }
 }
 
 export async function getAccountInfo(
   connection: web3.Connection,
-  account: web3.PublicKey,
+  account: web3.PublicKey
 ) {
   const { value: accountInfo } = await connection.getParsedAccountInfo(account);
   const someInfo = accountInfo.data as web3.ParsedAccountData;
-  return someInfo
+  return someInfo;
 }

@@ -6,10 +6,10 @@ import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
 
 export interface HarvestRewardsParams extends BaseStakingParams {
-    user: web3.PublicKey,
-    rewardMint: web3.PublicKey,
-    registeredStake: web3.PublicKey,
-    stakingAccount: web3.PublicKey,
+  user: web3.PublicKey;
+  rewardMint: web3.PublicKey;
+  registeredStake: web3.PublicKey;
+  stakingAccount: web3.PublicKey;
 }
 
 /**
@@ -23,55 +23,54 @@ export interface HarvestRewardsParams extends BaseStakingParams {
  * @param programId - Deployed program ID for Staking program
  */
 export async function harvestRewardsInstruction({
-    connection,
-    user,
-    rewardMint,
-    registeredStake,
-    stakingAccount,
-    programId
+  connection,
+  user,
+  rewardMint,
+  registeredStake,
+  stakingAccount,
+  programId,
 }: HarvestRewardsParams): Promise<FactoryReturn> {
-    const program = getStakingProgram({connection, programId});
+  const program = getStakingProgram({ connection, programId });
 
-    const ixSet: FactoryReturn = {
-        signers: [],
-        instructions: []
-    }
+  const ixSet: FactoryReturn = {
+    signers: [],
+    instructions: [],
+  };
 
-    // Derive ATA for user's reward account
-    let tokenAccount: web3.PublicKey | web3.Keypair = null;
-    let userRewardAccount: web3.PublicKey = null;
+  // Derive ATA for user's reward account
+  let tokenAccount: web3.PublicKey | web3.Keypair = null;
+  let userRewardAccount: web3.PublicKey = null;
 
-    const response = await getTokenAccount(
-        connection,
-        user,
-        rewardMint
-    );
-    tokenAccount = response.tokenAccount;
-    if ('createInstruction' in response) {
-        ixSet.instructions.push(response.createInstruction);
-    }
+  const response = await getTokenAccount(connection, user, rewardMint);
+  tokenAccount = response.tokenAccount;
+  if ('createInstruction' in response) {
+    ixSet.instructions.push(response.createInstruction);
+  }
 
-    if (tokenAccount instanceof web3.Keypair) {
-        userRewardAccount = tokenAccount.publicKey;
-        ixSet.signers.push(tokenAccount);
-    } else {
-        userRewardAccount = tokenAccount;
-    }
+  if (tokenAccount instanceof web3.Keypair) {
+    userRewardAccount = tokenAccount.publicKey;
+    ixSet.signers.push(tokenAccount);
+  } else {
+    userRewardAccount = tokenAccount;
+  }
 
-    const rewardAta = await associatedAddress({owner: registeredStake, mint: rewardMint});
+  const rewardAta = await associatedAddress({
+    owner: registeredStake,
+    mint: rewardMint,
+  });
 
-    const ix = await program.methods
-            .harvest()
-            .accounts({
-                user,
-                rewardMint,
-                registeredStake,
-                stakingAccount,
-                userRewardAccount,
-                rewardAta
-            })
-            .instruction();
+  const ix = await program.methods
+    .harvest()
+    .accounts({
+      user,
+      rewardMint,
+      registeredStake,
+      stakingAccount,
+      userRewardAccount,
+      rewardAta,
+    })
+    .instruction();
 
-    ixSet.instructions.push(ix);
-    return ixSet;
+  ixSet.instructions.push(ix);
+  return ixSet;
 }
