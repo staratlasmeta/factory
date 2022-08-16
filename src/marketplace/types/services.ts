@@ -47,4 +47,3 @@ export type GmCurrencyLogEvent = {
   royalty: BN;
   timestamp: BN;
 };
-

@@ -1,12 +1,12 @@
-import { queueProcessor, IDisposer } from "mobx-utils";
-import { pull } from "lodash";
-import { Commitment, Connection, PublicKey } from "@solana/web3.js";
+import { queueProcessor, IDisposer } from 'mobx-utils';
+import { pull } from 'lodash';
+import { Connection, PublicKey } from '@solana/web3.js';
 
-import { OrderCacheService } from "./OrderCacheService";
-import { Order } from "../models/Order";
-import { GmEventHandler, GmEventType } from "../types";
-import { GmClientService } from "./GmClientService";
-import { GmEventService } from "./GmEventService";
+import { OrderCacheService } from './OrderCacheService';
+import { Order } from '../models';
+import { GmEventHandler, GmEventType } from '../types';
+import { GmClientService } from './GmClientService';
+import { GmEventService } from './GmEventService';
 
 /**
  * Establishes a connection to the Galactic Marketplace and maintains an up-to-date
