@@ -122,7 +122,7 @@ export class GmOrderbookService {
     const existingOrders = this.orderCacheService.getAllOrdersCache();
 
     try {
-      const slot = await this.connection.getSlot("confirmed");
+      const slot = await this.connection.getSlot('confirmed');
       const fetchedOffers = await this.gmClientService.getAllOpenOrders(
         this.connection,
         this.marketplaceProgramId
@@ -155,7 +155,7 @@ export class GmOrderbookService {
         }
       }
     } catch (error) {
-      console.log("There was an error refreshing all marketplace data", error);
+      console.log('There was an error refreshing all marketplace data', error);
     }
   }
 
@@ -212,8 +212,8 @@ export class GmOrderbookService {
     return this.orderCacheService.sellOrdersCache.get(mint);
   }
 
-  getOrdersByType(orderType: "buy" | "sell"): Map<string, Map<string, Order>> {
-    return orderType === "buy" ? this.getBuyOrders() : this.getSellOrders();
+  getOrdersByType(orderType: 'buy' | 'sell'): Map<string, Map<string, Order>> {
+    return orderType === 'buy' ? this.getBuyOrders() : this.getSellOrders();
   }
 
   getBuyOrdersByCurrencyAndItem(
