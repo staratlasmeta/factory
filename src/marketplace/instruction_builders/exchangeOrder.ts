@@ -81,17 +81,19 @@ export async function createExchangeInstruction({
     initializerDepositMint,
     orderTaker
   );
-  tokenAccount = response.tokenAccount;
   if ('createInstruction' in response) {
     ixSet.instructions.push(response.createInstruction);
+
+    if (response.tokenAccount instanceof web3.Keypair) {
+      initializerDepositTokenAccount = response.tokenAccount.publicKey;
+      ixSet.signers.push(response.tokenAccount);
+    } else {
+      initializerDepositTokenAccount = response.tokenAccount;
+    }
+  } else {
+    initializerDepositTokenAccount = response.tokenAccount;
   }
 
-  if (tokenAccount instanceof web3.Keypair) {
-    initializerDepositTokenAccount = tokenAccount.publicKey;
-    ixSet.signers.push(tokenAccount);
-  } else {
-    initializerDepositTokenAccount = tokenAccount;
-  }
 
   // Get initializer receive mint token account
   response = await getTokenAccount(
@@ -100,16 +102,17 @@ export async function createExchangeInstruction({
     initializerReceiveMint,
     orderTaker
   );
-  tokenAccount = response.tokenAccount;
   if ('createInstruction' in response) {
     ixSet.instructions.push(response.createInstruction);
-  }
 
-  if (tokenAccount instanceof web3.Keypair) {
-    initializerReceiveTokenAccount = tokenAccount.publicKey;
-    ixSet.signers.push(tokenAccount);
+    if (response.tokenAccount instanceof web3.Keypair) {
+      initializerReceiveTokenAccount = response.tokenAccount.publicKey;
+      ixSet.signers.push(response.tokenAccount);
+    } else {
+      initializerReceiveTokenAccount = response.tokenAccount;
+    }
   } else {
-    initializerReceiveTokenAccount = tokenAccount;
+    initializerReceiveTokenAccount = response.tokenAccount;
   }
 
   const [orderVaultAccount] = await getOrderVault(
@@ -129,16 +132,17 @@ export async function createExchangeInstruction({
     orderTaker,
     initializerDepositMint
   );
-  tokenAccount = response.tokenAccount;
   if ('createInstruction' in response) {
     ixSet.instructions.push(response.createInstruction);
-  }
 
-  if (tokenAccount instanceof web3.Keypair) {
-    orderTakerReceiveTokenAccount = tokenAccount.publicKey;
-    ixSet.signers.push(tokenAccount);
+    if (response.tokenAccount instanceof web3.Keypair) {
+      orderTakerReceiveTokenAccount = response.tokenAccount.publicKey;
+      ixSet.signers.push(response.tokenAccount);
+    } else {
+      orderTakerReceiveTokenAccount = response.tokenAccount;
+    }
   } else {
-    orderTakerReceiveTokenAccount = tokenAccount;
+    orderTakerReceiveTokenAccount = response.tokenAccount;
   }
 
   const exchangeIx = await program.methods

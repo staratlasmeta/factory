@@ -1,4 +1,6 @@
 import { web3 } from '@project-serum/anchor';
+import { getOpenOrdersCounter } from '../pda_getters';
+import { createOrderCounterInstruction } from './createOrderCounter';
 import { getMarketplaceProgram, getOrderSide } from '../utils';
 import { FactoryReturn } from '../../types';
 import { BaseParams } from './BaseParams';
@@ -9,6 +11,8 @@ import { getTokenAccount } from '../../util';
 export interface CancelOrderParams extends BaseParams {
   orderInitializer: web3.PublicKey;
   orderAccount: web3.PublicKey;
+  payer: web3.PublicKey;
+  signer: web3.PublicKey;
 }
 
 /**
@@ -16,15 +20,19 @@ export interface CancelOrderParams extends BaseParams {
  * and refunds rent fees.
  *
  * @param connection
+ * @param signer - The market authority or the order initializer
  * @param orderInitializer - Public key of order initializer
  * @param initializerDepositTokenAccount - Public key of token account for token being returned
  * @param orderAccount - Public key of orderAccount being closed
+ * @param payer - Funding account for possible rent accounts
  * @param programId - Deployed program ID for GM program
  */
 export async function createCancelOrderInstruction({
   connection,
+  signer,
   orderInitializer,
   orderAccount,
+  payer,
   programId,
 }: CancelOrderParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
@@ -64,9 +72,28 @@ export async function createCancelOrderInstruction({
     initializerDepositTokenAccount = tokenAccount;
   }
 
+  // Derive the open orders counter, initializing if necessary
+  const [counterAddress] = await getOpenOrdersCounter(
+    orderInitializer,
+    depositMint,
+    programId
+  );
+  const orderCounter = await connection.getAccountInfo(counterAddress);
+  if (orderCounter === null) {
+    const createCounterIx = await createOrderCounterInstruction({
+      connection,
+      payer,
+      initializerMainAccount: orderInitializer,
+      depositMint,
+      programId,
+    });
+    ixSet.instructions.push(createCounterIx);
+  }
+
   const ix = await program.methods
     .processCancel()
     .accounts({
+      signer,
       depositMint,
       orderInitializer,
       initializerDepositTokenAccount,

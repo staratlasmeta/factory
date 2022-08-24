@@ -82,6 +82,7 @@ export async function createInitializeBuyOrderInstruction({
   if (orderCounter === null) {
     const createCounterIx = await createOrderCounterInstruction({
       connection,
+      payer: initializerMainAccount,
       initializerMainAccount,
       depositMint,
       programId,
@@ -182,6 +183,7 @@ export async function createInitializeSellOrderInstruction({
   if (orderCounter === null) {
     const createCounterIx = await createOrderCounterInstruction({
       connection,
+      payer: initializerMainAccount,
       initializerMainAccount,
       depositMint,
       programId,
