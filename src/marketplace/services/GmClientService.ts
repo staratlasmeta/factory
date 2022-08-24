@@ -355,14 +355,17 @@ export class GmClientService {
   /**
    *
    * @param connection Solana Connection
+   * @param signer The market authority or the order initializer
    * @param orderAccount The order account PublicKey (order ID)
    * @param orderInitializer The PublicKey which created the order
    * @param programId Galactic Marketplace program ID
    */
   async getCancelOrderTransaction(
     connection: Connection,
+    signer: PublicKey,
     orderAccount: PublicKey,
     orderInitializer: PublicKey,
+    payer: PublicKey,
     programId: PublicKey
   ): Promise<{
     transaction: Transaction;
@@ -370,8 +373,10 @@ export class GmClientService {
   }> {
     const { instructions, signers } = await createCancelOrderInstruction({
       connection,
+      signer,
       orderAccount,
       orderInitializer,
+      payer,
       programId,
     });
 
