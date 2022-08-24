@@ -69,7 +69,6 @@ export async function createExchangeInstruction({
       : new PublicKey(assetMint);
 
   // Get user's token accounts
-  let tokenAccount: web3.PublicKey | web3.Keypair = null;
   let initializerDepositTokenAccount: web3.PublicKey = null;
   let initializerReceiveTokenAccount: web3.PublicKey = null;
   let orderTakerReceiveTokenAccount: web3.PublicKey = null;
@@ -93,7 +92,6 @@ export async function createExchangeInstruction({
   } else {
     initializerDepositTokenAccount = response.tokenAccount;
   }
-
 
   // Get initializer receive mint token account
   response = await getTokenAccount(
