@@ -1,4 +1,4 @@
-import { web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@project-serum/anchor';
 import {
   getMarketVarsAccount,
   getRegisteredCurrencyAccount,
@@ -7,7 +7,9 @@ import { getMarketplaceProgram } from './../utils/getMarketplaceProgram';
 import {
   MarketVarsAccountInfo,
   RegisteredCurrencyInfo,
+  RoyaltyTiers,
 } from '../types/marketplace_accounts';
+import { getStakingAccount, getStakingAccountInfo } from '../../atlas-staking';
 
 /**
  * Returns the contents of the market vars account as detailed in the MarketVarsInfo interface
@@ -56,4 +58,86 @@ export async function getRegisteredCurrencyAccountInfo(
     registeredCurrencyAccount
   );
   return registeredCurrencyInfo as RegisteredCurrencyInfo;
+}
+
+/**
+ * Retursn the contents of a registered currency info for a provided RegisteredCurrency pubkey
+ * 
+ * @param connection 
+ * @param programId - Deployed program ID for Galactic Marketplace
+ * @param registeredCurrency - Public key for a RegisteredCurrency
+ * @returns 
+ */
+export async function getRegisteredCurrencyInfoFromPubkey(
+  connection: web3.Connection,
+  programId: web3.PublicKey,
+  registeredCurrency: web3.PublicKey
+): Promise<RegisteredCurrencyInfo> {
+  const program = getMarketplaceProgram({
+    connection,
+    programId
+  });
+
+  const registeredCurrencyInfo = await program.account.registeredCurrency.fetch(
+    registeredCurrency
+  );
+  return registeredCurrencyInfo as RegisteredCurrencyInfo;
+}
+
+export async function getRoyaltyReductionForUserAndMint(
+  connection: web3.Connection,
+  gmProgramId: web3.PublicKey,
+  stakingProgramId: web3.PublicKey,
+  playerPubkey: web3.PublicKey,
+  registeredCurrency: web3.PublicKey,
+  registeredStake: web3.PublicKey,
+): Promise<number> {
+  // Find registered currency info
+  const registeredCurrencyInfo = await getRegisteredCurrencyInfoFromPubkey(connection, gmProgramId, registeredCurrency);
+  
+  // Find user's staking account
+  const [stakingAccount] = await getStakingAccount(stakingProgramId, playerPubkey, registeredStake);
+  const stakingAccountInfo = await getStakingAccountInfo(connection, stakingAccount, stakingProgramId);
+
+  // Match user's total stake with the correct royalty tier 
+  const tiers: RoyaltyTiers = registeredCurrencyInfo.royaltyTiers as RoyaltyTiers;
+  let discount = new BN(0);
+  for (let tier of tiers) {
+    if (stakingAccountInfo.totalStake.gte(tier.stakeAmount)) {
+      discount = tier.discount;
+    }
+  }
+  // Format discount rate
+  const formattedDiscount = discount.toNumber() / 10_000;
+
+  // Return discount rate
+  return formattedDiscount
+}
+
+export async function getRoyaltyReductionForStakingAccount(
+  connection: web3.Connection,
+  gmProgramId: web3.PublicKey,
+  stakingProgramId: web3.PublicKey,
+  stakingAccount: web3.PublicKey,
+  registeredCurrency: web3.PublicKey,
+): Promise<number> {
+  // Find registered currency info 
+  const registeredCurrencyInfo = await getRegisteredCurrencyInfoFromPubkey(connection, gmProgramId, registeredCurrency);
+
+  // Find user's atlas staking account info
+  const stakingAccountInfo = await getStakingAccountInfo(connection, stakingAccount, stakingProgramId);
+
+  // Match user's total stake with the correct royalty tier 
+  const tiers: RoyaltyTiers = registeredCurrencyInfo.royaltyTiers as RoyaltyTiers;
+  let discount = new BN(0);
+  for (let tier of tiers) {
+    if (stakingAccountInfo.totalStake.gte(tier.stakeAmount)) {
+      discount = tier.discount;
+    }
+  }
+  // Format discount rate
+  const formattedDiscount = discount.toNumber() / 10_000;
+
+  // Return discount rate
+  return formattedDiscount
 }

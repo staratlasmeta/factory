@@ -25,6 +25,13 @@ export type RegisteredCurrencyItem = {
   saVault: web3.PublicKey;
 };
 
+export type RoyaltyTier = {
+  stakeAmount: BN,
+  discount: BN
+}
+
+export type RoyaltyTiers = [RoyaltyTier]
+
 export enum GmLogs {
   CancelOrderMemo = 'CancelOrderMemo',
   ExchangeMemo = 'ExchangeMemo',
