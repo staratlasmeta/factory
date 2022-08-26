@@ -156,23 +156,29 @@ export async function createExchangeInstruction ({
         orderTakerReceiveTokenAccount = response.tokenAccount;
     }
 
-  const exchangeIx = await program.methods
-    .processExchange(new BN(purchaseQty), expectedPrice)
-    .accounts({
-      orderTaker,
-      orderTakerDepositTokenAccount,
-      orderTakerReceiveTokenAccount,
-      currencyMint,
-      assetMint,
-      orderInitializer,
-      initializerDepositTokenAccount,
-      initializerReceiveTokenAccount,
-      orderVaultAccount,
-      orderAccount,
-      openOrdersCounter,
-      saVault,
-    })
-    .instruction();
+    const seller = ((orderType === OrderSide.Buy) ? orderTaker : orderInitializer);
+
+    const exchangeIx =
+        await program.methods
+            .processExchange(new BN(purchaseQty), expectedPrice, seller)
+            .accounts({
+                orderTaker,
+                orderTakerDepositTokenAccount,
+                orderTakerReceiveTokenAccount,
+                currencyMint,
+                assetMint,
+                orderInitializer,
+                initializerDepositTokenAccount,
+                initializerReceiveTokenAccount,
+                orderVaultAccount,
+                orderAccount,
+                openOrdersCounter,
+                saVault,
+                atlasStaking: stakingProgramId,
+                registeredStake,
+                stakingAccount
+            })
+            .instruction();
 
   ixSet.instructions.push(exchangeIx);
 
