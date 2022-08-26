@@ -92,6 +92,7 @@ export async function getRoyaltyReductionForUserAndMint(
   registeredCurrency: web3.PublicKey,
   registeredStake: web3.PublicKey,
 ): Promise<number> {
+  let formattedDiscount = 0;
   // Find registered currency info
   const registeredCurrencyInfo = await getRegisteredCurrencyInfoFromPubkey(connection, gmProgramId, registeredCurrency);
   
@@ -99,16 +100,18 @@ export async function getRoyaltyReductionForUserAndMint(
   const [stakingAccount] = await getStakingAccount(stakingProgramId, playerPubkey, registeredStake);
   const stakingAccountInfo = await getStakingAccountInfo(connection, stakingAccount, stakingProgramId);
 
-  // Match user's total stake with the correct royalty tier 
-  const tiers: RoyaltyTiers = registeredCurrencyInfo.royaltyTiers as RoyaltyTiers;
-  let discount = new BN(0);
-  for (let tier of tiers) {
-    if (stakingAccountInfo.totalStake.gte(tier.stakeAmount)) {
-      discount = tier.discount;
+  if (stakingAccountInfo.unstakedTs.eq(new BN(0))) {
+    // Match user's total stake with the correct royalty tier 
+    const tiers: RoyaltyTiers = registeredCurrencyInfo.royaltyTiers as RoyaltyTiers;
+    let discount = new BN(0);
+    for (let tier of tiers) {
+      if (stakingAccountInfo.totalStake.gte(tier.stakeAmount)) {
+        discount = tier.discount;
+      }
     }
+    // Format discount rate
+    formattedDiscount = discount.toNumber() / 10_000;
   }
-  // Format discount rate
-  const formattedDiscount = discount.toNumber() / 10_000;
 
   // Return discount rate
   return formattedDiscount
@@ -121,22 +124,26 @@ export async function getRoyaltyReductionForStakingAccount(
   stakingAccount: web3.PublicKey,
   registeredCurrency: web3.PublicKey,
 ): Promise<number> {
+  let formattedDiscount = 0;
   // Find registered currency info 
   const registeredCurrencyInfo = await getRegisteredCurrencyInfoFromPubkey(connection, gmProgramId, registeredCurrency);
 
   // Find user's atlas staking account info
   const stakingAccountInfo = await getStakingAccountInfo(connection, stakingAccount, stakingProgramId);
 
-  // Match user's total stake with the correct royalty tier 
-  const tiers: RoyaltyTiers = registeredCurrencyInfo.royaltyTiers as RoyaltyTiers;
-  let discount = new BN(0);
-  for (let tier of tiers) {
-    if (stakingAccountInfo.totalStake.gte(tier.stakeAmount)) {
-      discount = tier.discount;
-    }
+  if (stakingAccountInfo.unstakedTs.eq(new BN(0))) {
+    // Match user's total stake with the correct royalty tier 
+    const tiers: RoyaltyTiers = registeredCurrencyInfo.royaltyTiers as RoyaltyTiers;
+    let discount = new BN(0);
+    for (let tier of tiers) {
+      if (stakingAccountInfo.totalStake.gte(tier.stakeAmount)) {
+        discount = tier.discount;
+      }
   }
   // Format discount rate
-  const formattedDiscount = discount.toNumber() / 10_000;
+  formattedDiscount = discount.toNumber() / 10_000;
+
+  }
 
   // Return discount rate
   return formattedDiscount
