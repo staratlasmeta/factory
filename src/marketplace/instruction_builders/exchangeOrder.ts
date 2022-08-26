@@ -82,7 +82,6 @@ export async function createExchangeInstruction ({
   let initializerReceiveTokenAccount: web3.PublicKey = null;
   let orderTakerReceiveTokenAccount: web3.PublicKey = null;
 
-<<<<<<< HEAD
     // Get initializer deposit mint token account
     let response = await getTokenAccount(
         connection,
@@ -92,18 +91,6 @@ export async function createExchangeInstruction ({
     );
     if ('createInstruction' in response) {
         ixSet.instructions.push(response.createInstruction);
-=======
-  // Get initializer deposit mint token account
-  let response = await getTokenAccount(
-    connection,
-    orderInitializer,
-    initializerDepositMint,
-    orderTaker
-  );
-  if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
->>>>>>> 693579f (Update cancel and exchange (#99))
-
     if (response.tokenAccount instanceof web3.Keypair) {
       initializerDepositTokenAccount = response.tokenAccount.publicKey;
       ixSet.signers.push(response.tokenAccount);
@@ -145,26 +132,6 @@ export async function createExchangeInstruction ({
     programId
   );
 
-<<<<<<< HEAD
-    // Get order taker receive token account
-    response = await getTokenAccount(
-        connection,
-        orderTaker,
-        initializerDepositMint,
-    );
-    if ('createInstruction' in response) {
-        ixSet.instructions.push(response.createInstruction);
-
-        if (response.tokenAccount instanceof web3.Keypair) {
-            orderTakerReceiveTokenAccount = response.tokenAccount.publicKey;
-            ixSet.signers.push(response.tokenAccount)
-        } else {
-            orderTakerReceiveTokenAccount = response.tokenAccount;
-        }
-    } else {
-        orderTakerReceiveTokenAccount = response.tokenAccount;
-    }
-=======
   // Get order taker receive token account
   response = await getTokenAccount(
     connection,
@@ -183,25 +150,30 @@ export async function createExchangeInstruction ({
   } else {
     orderTakerReceiveTokenAccount = response.tokenAccount;
   }
->>>>>>> 693579f (Update cancel and exchange (#99))
 
-  const exchangeIx = await program.methods
-    .processExchange(new BN(purchaseQty), expectedPrice)
-    .accounts({
-      orderTaker,
-      orderTakerDepositTokenAccount,
-      orderTakerReceiveTokenAccount,
-      currencyMint,
-      assetMint,
-      orderInitializer,
-      initializerDepositTokenAccount,
-      initializerReceiveTokenAccount,
-      orderVaultAccount,
-      orderAccount,
-      openOrdersCounter,
-      saVault,
-    })
-    .instruction();
+  const seller = ((orderType === OrderSide.Buy) ? orderTaker : orderInitializer);
+
+  const exchangeIx = 
+    await program.methods
+      .processExchange(new BN(purchaseQty), expectedPrice, seller)
+      .accounts({
+        orderTaker,
+        orderTakerDepositTokenAccount,
+        orderTakerReceiveTokenAccount,
+        currencyMint,
+        assetMint,
+        orderInitializer,
+        initializerDepositTokenAccount,
+        initializerReceiveTokenAccount,
+        orderVaultAccount,
+        orderAccount,
+        openOrdersCounter,
+        saVault,
+        atlasStaking: stakingProgramId,
+        registeredStake,
+        stakingAccount
+      })
+      .instruction();
 
   ixSet.instructions.push(exchangeIx);
 
