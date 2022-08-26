@@ -675,142 +675,58 @@ export type GmIdl =
           'name': 'tokenProgram',
           'isMut': false,
           'isSigner': false
-        }
-      ];
-      args: [
+        },
         {
-          name: 'purchaseQuantity';
-          type: 'u64';
+          'name': 'atlasStaking',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'registeredStake',
+          'isMut': false,
+          'isSigner': false
+        },
+        {
+          'name': 'stakingAccount',
+          'isMut': false,
+          'isSigner': false
+        }
+      ],
+      'args': [
+        {
+          'name': 'purchaseQuantity',
+          'type': 'u64'
         },
         {
           'name': 'expectedPrice',
           'type': 'u64'
+        },
+        {
+          'name': 'seller',
+          'type': 'publicKey'
         }
-      ];
+      ]
     },
     {
-      name: 'processCancel';
-      accounts: [
+      'name': 'processCancel',
+      'accounts': [
         {
-<<<<<<< HEAD
-          'name': 'signer',
+          'name': 'orderInitializer',
           'isMut': true,
           'isSigner': true
-=======
-          name: 'orderInitializer';
-=======
-export type GmIdl = {
-  version: '0.1.0';
-  name: 'marketplace';
-  instructions: [
-    {
-      name: 'deregisterCurrency';
-      accounts: [
-        {
-          name: 'updateAuthorityAccount';
->>>>>>> 36ee9ae (Update cancel and exchange (#99))
-          isMut: true;
-          isSigner: true;
->>>>>>> ef6c4f9 (Added prettier)
         },
         {
-<<<<<<< HEAD
-          name: 'depositMint';
-          isMut: false;
-          isSigner: false;
+          'name': 'depositMint',
+          'isMut': false,
+          'isSigner': false
         },
         {
-<<<<<<< HEAD
-          name: 'initializerDepositTokenAccount';
-          isMut: true;
-          isSigner: false;
-          docs: [
-            'Mint check based on asset/currency mint - validated in assert_init_deposit_token_acct()'
-          ];
-=======
           'name': 'initializerDepositTokenAccount',
-          'isMut': true,
-          'isSigner': false,
-          'docs': [
-            'Mint check based on asset/currency mint - validated in assert_init_deposit_token_acct()'
-          ]
->>>>>>> ef6c4f9 (Added prettier)
-        },
-        {
-          name: 'orderVaultAccount';
-          isMut: true;
-          isSigner: false;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                type: 'string';
-                value: 'order-vault-account';
-              },
-              {
-                kind: 'account';
-                type: 'publicKey';
-                path: 'order_initializer';
-              },
-              {
-                kind: 'account';
-                type: 'publicKey';
-                account: 'Mint';
-                path: 'deposit_mint';
-              }
-            ];
-          };
-        },
-        {
-          name: 'orderVaultAuthority';
-          isMut: false;
-          isSigner: false;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                type: 'string';
-                value: 'order-vault-auth';
-              },
-              {
-                kind: 'account';
-                type: 'publicKey';
-                path: 'order_initializer';
-              }
-            ];
-          };
-        },
-        {
-          name: 'orderAccount';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'openOrdersCounter';
-          isMut: true;
-          isSigner: false;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                type: 'string';
-                value: 'open-orders-counter';
-              },
-              {
-                'kind': 'account',
-                'type': 'publicKey',
-                'path': 'order_initializer'
-              }
-            ]
-          }
-        },
-        {
-          'name': 'orderAccount',
           'isMut': true,
           'isSigner': false
         },
         {
-          'name': 'openOrdersCounter',
+          'name': 'orderVaultAccount',
           'isMut': true,
           'isSigner': false,
           'pda': {
@@ -818,7 +734,7 @@ export type GmIdl = {
               {
                 'kind': 'const',
                 'type': 'string',
-                'value': 'open-orders-counter'
+                'value': 'order-vault-account'
               },
               {
                 'kind': 'account',
@@ -835,171 +751,17 @@ export type GmIdl = {
           }
         },
         {
-          'name': 'tokenProgram',
+          'name': 'orderVaultAuthority',
           'isMut': false,
-          'isSigner': false
-        }
-      ],
-      'args': []
-    },
-    {
-      'name': 'registerCurrency',
-      'accounts': [
-        {
-          'name': 'updateAuthorityAccount',
-          'isMut': true,
-          'isSigner': true
-        },
-        {
-          name: 'marketVarsAccount';
-          isMut: false;
-          isSigner: false;
-          pda: {
-            seeds: [
+          'isSigner': false,
+          'pda': {
+            'seeds': [
               {
-                kind: 'const';
-                type: 'string';
-                value: 'market-vars';
-              }
-            ];
-          };
-        },
-        {
-          name: 'depositMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'receiveMint';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'orderVaultAccount';
-          isMut: true;
-          isSigner: false;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                type: 'string';
-                value: 'order-vault-account';
+                'kind': 'const',
+                'type': 'string',
+                'value': 'order-vault-auth'
               },
               {
-                kind: 'account';
-                type: 'publicKey';
-                path: 'order_initializer';
-              },
-              {
-                kind: 'account';
-                type: 'publicKey';
-                account: 'Mint';
-                path: 'deposit_mint';
-              }
-            ];
-          };
-        },
-        {
-          name: 'orderVaultAuthority';
-          isMut: false;
-          isSigner: false;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                type: 'string';
-                value: 'order-vault-auth';
-              },
-              {
-                kind: 'account';
-                type: 'publicKey';
-                path: 'order_initializer';
-              }
-            ];
-          };
-        },
-        {
-          name: 'initializerDepositTokenAccount';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'initializerReceiveTokenAccount';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'orderAccount';
-          isMut: true;
-          isSigner: false;
-        },
-        {
-          name: 'registeredCurrency';
-          isMut: false;
-          isSigner: false;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                type: 'string';
-                value: 'registered-currency';
-              },
-              {
-                kind: 'account';
-                type: 'publicKey';
-                account: 'Mint';
-                path: 'receive_mint';
-              }
-            ];
-          };
-        },
-        {
-          name: 'openOrdersCounter';
-          isMut: true;
-          isSigner: false;
-          pda: {
-            seeds: [
-              {
-                kind: 'const';
-                type: 'string';
-                value: 'open-orders-counter';
-              },
-              {
-                kind: 'account';
-                type: 'publicKey';
-                path: 'order_initializer';
-              },
-              {
-                kind: 'account';
-                type: 'publicKey';
-                account: 'Mint';
-                path: 'deposit_mint';
-              }
-            ];
-          };
-        },
-        {
-          name: 'systemProgram';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'rent';
-          isMut: false;
-          isSigner: false;
-        },
-        {
-          name: 'tokenProgram';
-          isMut: false;
-          isSigner: false;
-        }
-      ];
-      args: [
-        {
-          name: 'price';
-          type: 'u64';
-        },
-        {
           name: 'originationQty';
           type: 'u64';
         }
@@ -1191,7 +953,7 @@ export type GmIdl = {
       'args': []
     },
     {
-      'name': 'updateCurrencyRoyalty',
+      'name': 'initializeOpenOrdersCounter',
       'accounts': [
         {
           'name': 'updateAuthorityAccount',
@@ -1199,8 +961,8 @@ export type GmIdl = {
           'isSigner': true
         },
         {
-          'name': 'marketVarsAccount',
-          'isMut': false,
+          'name': 'openOrdersCounter',
+          'isMut': true,
           'isSigner': false,
           'pda': {
             'seeds': [
@@ -2440,9 +2202,28 @@ export const baseIdl: GmIdl =
       'name': 'processCancel',
       'accounts': [
         {
-          'name': 'orderInitializer',
+          'name': 'signer',
           'isMut': true,
           'isSigner': true
+        },
+        {
+          'name': 'orderInitializer',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
         },
         {
           'name': 'depositMint',
@@ -2540,9 +2321,14 @@ export const baseIdl: GmIdl =
       'name': 'initializeOpenOrdersCounter',
       'accounts': [
         {
-          'name': 'user',
+          'name': 'payer',
           'isMut': true,
           'isSigner': true
+        },
+        {
+          'name': 'user',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'openOrdersCounter',
