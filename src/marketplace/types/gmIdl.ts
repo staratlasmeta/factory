@@ -900,9 +900,28 @@ export type GmIdl =
       'name': 'processCancel',
       'accounts': [
         {
-          'name': 'orderInitializer',
+          'name': 'signer',
           'isMut': true,
           'isSigner': true
+        },
+        {
+          'name': 'orderInitializer',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
         },
         {
           'name': 'depositMint',
@@ -1000,9 +1019,14 @@ export type GmIdl =
       'name': 'initializeOpenOrdersCounter',
       'accounts': [
         {
-          'name': 'user',
+          'name': 'payer',
           'isMut': true,
           'isSigner': true
+        },
+        {
+          'name': 'user',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'openOrdersCounter',
@@ -2221,9 +2245,28 @@ export const baseIdl: GmIdl =
       'name': 'processCancel',
       'accounts': [
         {
-          'name': 'orderInitializer',
+          'name': 'signer',
           'isMut': true,
           'isSigner': true
+        },
+        {
+          'name': 'orderInitializer',
+          'isMut': true,
+          'isSigner': false
+        },
+        {
+          'name': 'marketVarsAccount',
+          'isMut': false,
+          'isSigner': false,
+          'pda': {
+            'seeds': [
+              {
+                'kind': 'const',
+                'type': 'string',
+                'value': 'market-vars'
+              }
+            ]
+          }
         },
         {
           'name': 'depositMint',
@@ -2321,9 +2364,14 @@ export const baseIdl: GmIdl =
       'name': 'initializeOpenOrdersCounter',
       'accounts': [
         {
-          'name': 'user',
+          'name': 'payer',
           'isMut': true,
           'isSigner': true
+        },
+        {
+          'name': 'user',
+          'isMut': false,
+          'isSigner': false
         },
         {
           'name': 'openOrdersCounter',

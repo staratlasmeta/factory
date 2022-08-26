@@ -124,7 +124,6 @@ export async function createExchangeInstruction ({
   } else {
     initializerReceiveTokenAccount = response.tokenAccount;
   }
->>>>>>> 6a28e45 (Added prettier)
 
   const [orderVaultAccount] = await getOrderVault(
     orderInitializer,
