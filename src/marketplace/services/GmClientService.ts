@@ -399,7 +399,10 @@ export class GmClientService {
     order: Order,
     orderTaker: PublicKey,
     purchaseQty: number,
-    programId: PublicKey
+    programId: PublicKey,
+    stakingProgramId: PublicKey,
+    registeredStake: PublicKey,
+    stakingAccount: PublicKey,
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
@@ -435,6 +438,9 @@ export class GmClientService {
       currencyMint,
       orderInitializer,
       saVault: new PublicKey(saVault),
+      stakingProgramId,
+      registeredStake,
+      stakingAccount,
     });
 
     const transaction = createTransactionFromInstructions(instructions);

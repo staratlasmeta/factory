@@ -10,16 +10,19 @@ import { OrderSide } from '../models';
 
 /**  Params for Exchange instruction */
 export interface ExchangeOrderParams extends BaseParams {
-  orderAccount: web3.PublicKey;
-  purchaseQty: number;
-  orderTaker: web3.PublicKey;
-  orderTakerDepositTokenAccount: web3.PublicKey;
-  expectedPrice: BN;
-  orderType: OrderSide;
-  assetMint: PublicKey;
-  currencyMint: PublicKey;
-  orderInitializer: PublicKey;
-  saVault: PublicKey;
+    orderAccount: web3.PublicKey
+    purchaseQty: number
+    orderTaker: web3.PublicKey
+    orderTakerDepositTokenAccount: web3.PublicKey
+    expectedPrice: BN,
+    orderType: OrderSide,
+    assetMint: PublicKey,
+    currencyMint: PublicKey,
+    orderInitializer: PublicKey,
+    saVault: PublicKey,
+    stakingProgramId: web3.PublicKey,
+    registeredStake: web3.PublicKey,
+    stakingAccount: web3.PublicKey,
 }
 
 /**
@@ -32,25 +35,31 @@ export interface ExchangeOrderParams extends BaseParams {
  * @param orderTakerDepositTokenAccount - Public key of token account for token being sent by taker
  * @param programId - Deployed program ID for GM program
  * @param expectedPrice - Expected price of the order in base token units
- * @param orderType
- * @param assetMint
- * @param currencyMint
- * @param orderInitializer
- * @param saVault
+ * @param orderType - The OrderSide for this order - Buy or Sell
+ * @param assetMint - Mint of the underlying asset
+ * @param currencyMint - Mint of the currency being exchanged
+ * @param orderInitializer - Public key of the order initializer
+ * @param saVault - Token account for SA currency mint royalties
+ * @param stakingProgramId - Deployed program ID for the Staking program
+ * @param registeredStake - ATLAS staking `RegisteredStake` account
+ * @param stakingAccount - Seller's ATLAS staking account
  */
-export async function createExchangeInstruction({
-  connection,
-  orderAccount,
-  purchaseQty,
-  orderTaker,
-  orderTakerDepositTokenAccount,
-  programId,
-  expectedPrice,
-  orderType,
-  assetMint,
-  currencyMint,
-  orderInitializer,
-  saVault,
+export async function createExchangeInstruction ({
+    connection,
+    orderAccount,
+    purchaseQty,
+    orderTaker,
+    orderTakerDepositTokenAccount,
+    programId,
+    expectedPrice,
+    orderType,
+    assetMint,
+    currencyMint,
+    orderInitializer,
+    saVault,
+    stakingProgramId,
+    registeredStake,
+    stakingAccount,
 }: ExchangeOrderParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
   const ixSet: FactoryReturn = {
@@ -73,16 +82,15 @@ export async function createExchangeInstruction({
   let initializerReceiveTokenAccount: web3.PublicKey = null;
   let orderTakerReceiveTokenAccount: web3.PublicKey = null;
 
-  // Get initializer deposit mint token account
-  let response = await getTokenAccount(
-    connection,
-    orderInitializer,
-    initializerDepositMint,
-    orderTaker
-  );
-  if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
-
+    // Get initializer deposit mint token account
+    let response = await getTokenAccount(
+        connection,
+        orderInitializer,
+        initializerDepositMint,
+        orderTaker
+    );
+    if ('createInstruction' in response) {
+        ixSet.instructions.push(response.createInstruction);
     if (response.tokenAccount instanceof web3.Keypair) {
       initializerDepositTokenAccount = response.tokenAccount.publicKey;
       ixSet.signers.push(response.tokenAccount);
@@ -143,23 +151,29 @@ export async function createExchangeInstruction({
     orderTakerReceiveTokenAccount = response.tokenAccount;
   }
 
-  const exchangeIx = await program.methods
-    .processExchange(new BN(purchaseQty), expectedPrice)
-    .accounts({
-      orderTaker,
-      orderTakerDepositTokenAccount,
-      orderTakerReceiveTokenAccount,
-      currencyMint,
-      assetMint,
-      orderInitializer,
-      initializerDepositTokenAccount,
-      initializerReceiveTokenAccount,
-      orderVaultAccount,
-      orderAccount,
-      openOrdersCounter,
-      saVault,
-    })
-    .instruction();
+  const seller = ((orderType === OrderSide.Buy) ? orderTaker : orderInitializer);
+
+  const exchangeIx = 
+    await program.methods
+      .processExchange(new BN(purchaseQty), expectedPrice, seller)
+      .accounts({
+        orderTaker,
+        orderTakerDepositTokenAccount,
+        orderTakerReceiveTokenAccount,
+        currencyMint,
+        assetMint,
+        orderInitializer,
+        initializerDepositTokenAccount,
+        initializerReceiveTokenAccount,
+        orderVaultAccount,
+        orderAccount,
+        openOrdersCounter,
+        saVault,
+        atlasStaking: stakingProgramId,
+        registeredStake,
+        stakingAccount
+      })
+      .instruction();
 
   ixSet.instructions.push(exchangeIx);
 
