@@ -30,7 +30,7 @@ export async function createCancelOrderInstruction({
   orderInitializer,
   orderAccount,
   programId,
-  payer = orderInitializer
+  payer = orderInitializer,
 }: CancelOrderParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
 

@@ -26,11 +26,11 @@ export type RegisteredCurrencyItem = {
 };
 
 export type RoyaltyTier = {
-  stakeAmount: BN,
-  discount: BN
-}
+  stakeAmount: BN;
+  discount: BN;
+};
 
-export type RoyaltyTiers = [RoyaltyTier]
+export type RoyaltyTiers = [RoyaltyTier];
 
 export enum GmLogs {
   CancelOrderMemo = 'CancelOrderMemo',

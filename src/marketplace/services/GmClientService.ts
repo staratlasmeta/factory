@@ -395,7 +395,7 @@ export class GmClientService {
     order: Order,
     orderTaker: PublicKey,
     purchaseQty: number,
-    programId: PublicKey,
+    programId: PublicKey
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
