@@ -81,7 +81,7 @@ export async function getAllProxyEscrow(
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const _accounts = await program.account.proxy_escrow.all();
+  const _accounts = await program.account.proxyEscrow.all();
   const accounts = [];
   for (const account of _accounts) {
     let data: ProxyEscrowInfoWithAddress = {
