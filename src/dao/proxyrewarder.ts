@@ -61,17 +61,22 @@ export async function getAllProxy(
   return accounts;
 }
 
+interface ProxyEscrowInfoWithAddress {
+  address: string;
+  data: ProxyEscrowInfo;
+}
+
 /**
  * Returns a list of proxy escrow accounts
  *
  * @param connection - web3.Connection object
  * @param programId - Deployed program ID for the program
- * @returns - ProxyEscrowInfo
+ * @returns - ProxyEscrowInfoWithAddress
  */
 export async function getAllProxyEscrow(
   connection: web3.Connection,
   programId: web3.PublicKey
-): Promise<ProxyEscrowInfo[]> {
+): Promise<ProxyEscrowInfoWithAddress[]> {
   const idl = getProxyRewarderIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
@@ -79,7 +84,11 @@ export async function getAllProxyEscrow(
   const _accounts = await program.account.proxy_escrow.all();
   const accounts = [];
   for (const account of _accounts) {
-    accounts.push(<ProxyEscrowInfo>account.account);
+    let data: ProxyEscrowInfoWithAddress = {
+      address: account.publicKey.toBase58(),
+      data: <ProxyEscrowInfo>account.account,
+    };
+    accounts.push(data);
   }
   return accounts;
 }
