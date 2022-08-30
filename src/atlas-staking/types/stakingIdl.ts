@@ -970,7 +970,7 @@ export type Staking = {
       msg: 'Staking account is not on cooldown';
     }
   ];
-  metadata: {};
+  metadata: Record<string, unknown>;
 };
 
 export const stakingIdl: Staking = {

@@ -117,7 +117,7 @@ export async function getRoyaltyReductionForUserAndMint(
     const tiers: RoyaltyTiers =
       registeredCurrencyInfo.royaltyTiers as RoyaltyTiers;
     let discount = new BN(0);
-    for (let tier of tiers) {
+    for (const tier of tiers) {
       if (stakingAccountInfo.totalStake.gte(tier.stakeAmount)) {
         discount = tier.discount;
       }
@@ -157,7 +157,7 @@ export async function getRoyaltyReductionForStakingAccount(
     const tiers: RoyaltyTiers =
       registeredCurrencyInfo.royaltyTiers as RoyaltyTiers;
     let discount = new BN(0);
-    for (let tier of tiers) {
+    for (const tier of tiers) {
       if (stakingAccountInfo.totalStake.gte(tier.stakeAmount)) {
         discount = tier.discount;
       }
