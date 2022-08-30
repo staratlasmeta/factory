@@ -3,7 +3,7 @@ import { getStakingProgram } from './../utils/getStakingProgram';
 import {
   RegisteredStakeAccountInfo,
   StakingAccountInfo,
-  StakingVarsAccountInfo
+  StakingVarsAccountInfo,
 } from './../types/stakingProgramAccounts';
 import { getStakingVarsAccount } from './pda_getters';
 

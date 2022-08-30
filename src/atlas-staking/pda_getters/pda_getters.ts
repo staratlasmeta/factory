@@ -4,7 +4,7 @@ import {
   REWARD_AUTH,
   STAKING_ACCOUNT,
   STAKING_ESCROW,
-  STAKING_VARS
+  STAKING_VARS,
 } from './seeds';
 
 /**
@@ -44,7 +44,7 @@ export async function getStakingAccount(
 /**
  * Returns the public key and bump seed for the staking program variables account
  *
- * @param programId - Deployed program ID for the Staking Program 
+ * @param programId - Deployed program ID for the Staking Program
  */
 export async function getStakingVarsAccount(
   programId: PublicKey

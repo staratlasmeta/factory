@@ -402,7 +402,7 @@ export class GmClientService {
     programId: PublicKey,
     stakingProgramId: PublicKey,
     registeredStake: PublicKey,
-    stakingAccount: PublicKey,
+    stakingAccount: PublicKey
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
