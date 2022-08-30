@@ -78,6 +78,8 @@ export class GmOrderbookService {
   }
 
   async end(): Promise<boolean> {
+    await this.gmEventService.end();
+
     this.eventCallBacks = [];
     this.changeObserverDisposer = null;
 
@@ -110,6 +112,8 @@ export class GmOrderbookService {
       this.connection,
       this.marketplaceProgramId
     );
+
+    this.gmEventService.setEventHandler(this.handleMarketplaceEvent);
 
     await this.gmEventService.initialize();
   }
