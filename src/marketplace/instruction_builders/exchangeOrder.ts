@@ -67,9 +67,15 @@ export async function createExchangeInstruction({
     instructions: [],
   };
   // TODO - Remove dummy values when staking launches
-  if (stakingProgramId === null) {stakingProgramId = web3.Keypair.generate().publicKey};
-  if (registeredStake === null) {registeredStake = web3.Keypair.generate().publicKey};
-  if (stakingAccount === null) {stakingAccount = web3.Keypair.generate().publicKey};
+  if (stakingProgramId === null) {
+    stakingProgramId = web3.Keypair.generate().publicKey;
+  }
+  if (registeredStake === null) {
+    registeredStake = web3.Keypair.generate().publicKey;
+  }
+  if (stakingAccount === null) {
+    stakingAccount = web3.Keypair.generate().publicKey;
+  }
 
   // Get order account and info
   const initializerDepositMint =
