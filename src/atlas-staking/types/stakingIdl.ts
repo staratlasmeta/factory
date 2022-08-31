@@ -248,12 +248,56 @@ export type Staking = {
       args: [];
     },
     {
+      name: 'initializeStaking';
+      accounts: [
+        {
+          name: 'updateAuthorityAccount';
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: 'stakingVarsAccount';
+          isMut: true;
+          isSigner: false;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                type: 'string';
+                value: 'staking-vars';
+              }
+            ];
+          };
+        },
+        {
+          name: 'systemProgram';
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
       name: 'registerStake';
       accounts: [
         {
           name: 'authority';
           isMut: true;
           isSigner: true;
+        },
+        {
+          name: 'stakingVarsAccount';
+          isMut: false;
+          isSigner: false;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                type: 'string';
+                value: 'staking-vars';
+              }
+            ];
+          };
         },
         {
           name: 'stakeMint';
@@ -851,6 +895,22 @@ export type Staking = {
           }
         ];
       };
+    },
+    {
+      name: 'StakingVars';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'authority';
+            type: 'publicKey';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          }
+        ];
+      };
     }
   ];
   errors: [
@@ -910,8 +970,7 @@ export type Staking = {
       msg: 'Staking account is not on cooldown';
     }
   ];
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  metadata: {};
+  metadata: Record<string, unknown>;
 };
 
 export const stakingIdl: Staking = {
@@ -1164,12 +1223,56 @@ export const stakingIdl: Staking = {
       args: [],
     },
     {
+      name: 'initializeStaking',
+      accounts: [
+        {
+          name: 'updateAuthorityAccount',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'stakingVarsAccount',
+          isMut: true,
+          isSigner: false,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                type: 'string',
+                value: 'staking-vars',
+              },
+            ],
+          },
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
       name: 'registerStake',
       accounts: [
         {
           name: 'authority',
           isMut: true,
           isSigner: true,
+        },
+        {
+          name: 'stakingVarsAccount',
+          isMut: false,
+          isSigner: false,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                type: 'string',
+                value: 'staking-vars',
+              },
+            ],
+          },
         },
         {
           name: 'stakeMint',
@@ -1760,6 +1863,22 @@ export const stakingIdl: Staking = {
           {
             name: 'unstakedTs',
             type: 'i64',
+          },
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+        ],
+      },
+    },
+    {
+      name: 'StakingVars',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'authority',
+            type: 'publicKey',
           },
           {
             name: 'bump',

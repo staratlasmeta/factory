@@ -7,3 +7,4 @@ export type StakingTypes = AnchorTypes<STAKING_PROGRAM>;
 type Accounts = StakingTypes['Accounts'];
 export type RegisteredStakeAccountInfo = Accounts['RegisteredStake'];
 export type StakingAccountInfo = Accounts['StakingAccount'];
+export type StakingVarsAccountInfo = Accounts['StakingVars'];

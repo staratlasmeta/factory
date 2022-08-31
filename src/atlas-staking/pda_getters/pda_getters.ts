@@ -4,6 +4,7 @@ import {
   REWARD_AUTH,
   STAKING_ACCOUNT,
   STAKING_ESCROW,
+  STAKING_VARS,
 } from './seeds';
 
 /**
@@ -38,6 +39,17 @@ export async function getStakingAccount(
     [STAKING_ACCOUNT, user.toBuffer(), registeredStake.toBuffer()],
     programId
   );
+}
+
+/**
+ * Returns the public key and bump seed for the staking program variables account
+ *
+ * @param programId - Deployed program ID for the Staking Program
+ */
+export async function getStakingVarsAccount(
+  programId: PublicKey
+): Promise<[PublicKey, number]> {
+  return PublicKey.findProgramAddress([STAKING_VARS], programId);
 }
 
 /**

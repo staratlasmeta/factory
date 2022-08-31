@@ -2,6 +2,7 @@ export * from './baseParams';
 export * from './cancelUnstake';
 export * from './createStakeAccount';
 export * from './harvestRewards';
+export * from './initializeStaking';
 export * from './registerStake';
 export * from './settle';
 export * from './stakeTokens';
