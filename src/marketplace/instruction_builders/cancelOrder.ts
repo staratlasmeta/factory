@@ -11,8 +11,7 @@ import { getTokenAccount } from '../../util';
 export interface CancelOrderParams extends BaseParams {
   orderInitializer: web3.PublicKey;
   orderAccount: web3.PublicKey;
-  payer: web3.PublicKey;
-  signer: web3.PublicKey;
+  payer?: web3.PublicKey;
 }
 
 /**
@@ -20,7 +19,6 @@ export interface CancelOrderParams extends BaseParams {
  * and refunds rent fees.
  *
  * @param connection
- * @param signer - The market authority or the order initializer
  * @param orderInitializer - Public key of order initializer
  * @param initializerDepositTokenAccount - Public key of token account for token being returned
  * @param orderAccount - Public key of orderAccount being closed
@@ -29,11 +27,10 @@ export interface CancelOrderParams extends BaseParams {
  */
 export async function createCancelOrderInstruction({
   connection,
-  signer,
   orderInitializer,
   orderAccount,
-  payer,
   programId,
+  payer = orderInitializer,
 }: CancelOrderParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
 
@@ -93,7 +90,7 @@ export async function createCancelOrderInstruction({
   const ix = await program.methods
     .processCancel()
     .accounts({
-      signer,
+      signer: payer,
       depositMint,
       orderInitializer,
       initializerDepositTokenAccount,

@@ -362,10 +362,8 @@ export class GmClientService {
    */
   async getCancelOrderTransaction(
     connection: Connection,
-    signer: PublicKey,
     orderAccount: PublicKey,
     orderInitializer: PublicKey,
-    payer: PublicKey,
     programId: PublicKey
   ): Promise<{
     transaction: Transaction;
@@ -373,10 +371,8 @@ export class GmClientService {
   }> {
     const { instructions, signers } = await createCancelOrderInstruction({
       connection,
-      signer,
       orderAccount,
       orderInitializer,
-      payer,
       programId,
     });
 
@@ -399,10 +395,7 @@ export class GmClientService {
     order: Order,
     orderTaker: PublicKey,
     purchaseQty: number,
-    programId: PublicKey,
-    stakingProgramId: PublicKey,
-    registeredStake: PublicKey,
-    stakingAccount: PublicKey,
+    programId: PublicKey
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
@@ -438,9 +431,6 @@ export class GmClientService {
       currencyMint,
       orderInitializer,
       saVault: new PublicKey(saVault),
-      stakingProgramId,
-      registeredStake,
-      stakingAccount,
     });
 
     const transaction = createTransactionFromInstructions(instructions);
