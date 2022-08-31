@@ -20,9 +20,9 @@ export interface ExchangeOrderParams extends BaseParams {
   currencyMint: PublicKey;
   orderInitializer: PublicKey;
   saVault: PublicKey;
-  stakingProgramId: web3.PublicKey;
-  registeredStake: web3.PublicKey;
-  stakingAccount: web3.PublicKey;
+  stakingProgramId?: web3.PublicKey;
+  registeredStake?: web3.PublicKey;
+  stakingAccount?: web3.PublicKey;
 }
 
 /**
@@ -66,6 +66,10 @@ export async function createExchangeInstruction({
     signers: [],
     instructions: [],
   };
+  // TODO - Remove dummy values when staking launches
+  stakingProgramId = web3.Keypair.generate().publicKey;
+  registeredStake = web3.Keypair.generate().publicKey;
+  stakingAccount = web3.Keypair.generate().publicKey;
 
   // Get order account and info
   const initializerDepositMint =
