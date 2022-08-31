@@ -1,4 +1,4 @@
-import { AnchorError, BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 import { getMarketplaceProgram } from '../utils';
 import { getOrderVault } from '../pda_getters';
