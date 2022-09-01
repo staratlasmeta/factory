@@ -663,6 +663,53 @@ export type Staking = {
       args: [];
     },
     {
+      name: 'updateCooldownPeriod';
+      accounts: [
+        {
+          name: 'authority';
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: 'registeredStake';
+          isMut: true;
+          isSigner: false;
+          pda: {
+            seeds: [
+              {
+                kind: 'const';
+                type: 'string';
+                value: 'registered-stake';
+              },
+              {
+                kind: 'account';
+                type: 'publicKey';
+                path: 'authority';
+              },
+              {
+                kind: 'account';
+                type: 'publicKey';
+                account: 'RegisteredStake';
+                path: 'registered_stake.stake_mint';
+              },
+              {
+                kind: 'account';
+                type: 'publicKey';
+                account: 'RegisteredStake';
+                path: 'registered_stake.reward_mint';
+              }
+            ];
+          };
+        }
+      ];
+      args: [
+        {
+          name: 'cooldownPeriod';
+          type: 'u64';
+        }
+      ];
+    },
+    {
       name: 'updateRewardMultiplier';
       accounts: [
         {
@@ -1636,6 +1683,53 @@ export const stakingIdl: Staking = {
         },
       ],
       args: [],
+    },
+    {
+      name: 'updateCooldownPeriod',
+      accounts: [
+        {
+          name: 'authority',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'registeredStake',
+          isMut: true,
+          isSigner: false,
+          pda: {
+            seeds: [
+              {
+                kind: 'const',
+                type: 'string',
+                value: 'registered-stake',
+              },
+              {
+                kind: 'account',
+                type: 'publicKey',
+                path: 'authority',
+              },
+              {
+                kind: 'account',
+                type: 'publicKey',
+                account: 'RegisteredStake',
+                path: 'registered_stake.stake_mint',
+              },
+              {
+                kind: 'account',
+                type: 'publicKey',
+                account: 'RegisteredStake',
+                path: 'registered_stake.reward_mint',
+              },
+            ],
+          },
+        },
+      ],
+      args: [
+        {
+          name: 'cooldownPeriod',
+          type: 'u64',
+        },
+      ],
     },
     {
       name: 'updateRewardMultiplier',
