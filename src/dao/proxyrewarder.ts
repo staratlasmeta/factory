@@ -71,26 +71,22 @@ interface ProxyEscrowInfoWithAddress {
  *
  * @param connection - web3.Connection object
  * @param programId - Deployed program ID for the program
- * @returns - ProxyEscrowInfoWithAddress
+ * @returns - proxyEscrowAccounts
  */
 export async function getAllProxyEscrow(
   connection: web3.Connection,
   programId: web3.PublicKey
-): Promise<ProxyEscrowInfoWithAddress[]> {
+): Promise<ProxyEscrowInfo[]> {
   const idl = getProxyRewarderIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const _accounts = await program.account.proxyEscrow.all();
-  const accounts = [];
-  for (const account of _accounts) {
-    let data: ProxyEscrowInfoWithAddress = {
-      address: account.publicKey.toBase58(),
-      data: <ProxyEscrowInfo>account.account,
-    };
-    accounts.push(data);
+  const _proxyEscrowAccounts = await program.account.proxyEscrow.all();
+  const proxyEscrowAccounts = [];
+  for (const proxyEscrow of _proxyEscrowAccounts) {
+    proxyEscrowAccounts.push(<ProxyEscrowInfo>proxyEscrow.account);
   }
-  return accounts;
+  return proxyEscrowAccounts;
 }
 
 /**

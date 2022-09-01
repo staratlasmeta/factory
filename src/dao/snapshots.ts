@@ -1,25 +1,25 @@
+import { AnchorProvider, BN, Idl, Program, web3 } from "@project-serum/anchor";
+import type { AnchorTypes } from "../anchor/types";
 import {
-  AnchorProvider,
-  BN,
-  Idl,
-  Program,
-  web3
-} from '@project-serum/anchor'
-import type { AnchorTypes } from '../anchor/types';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
-import { SystemProgram } from '@solana/web3.js';
-import { snapshotsIdl } from './idl/snapshotsIdl';
-import * as SNAPSHOTS_TYPES from './idl/snapshotsIdl';
-import { findEscrowAddress } from '.';
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+  Token,
+} from "@solana/spl-token";
+import { SystemProgram } from "@solana/web3.js";
+import { snapshotsIdl } from "./idl/snapshotsIdl";
+import * as SNAPSHOTS_TYPES from "./idl/snapshotsIdl";
+import { findEscrowAddress } from ".";
 
-const snapshotsProgramId = new web3.PublicKey('SnapGJHJrDbWMkxMukFDWTUq1wxNMB7CcDhPEU8aJCS');
+const snapshotsProgramId = new web3.PublicKey(
+  "SnapGJHJrDbWMkxMukFDWTUq1wxNMB7CcDhPEU8aJCS"
+);
 
 export type SNAPSHOTS_PROGRAM = SNAPSHOTS_TYPES.Snapshots;
 export type SnapshotsTypes = AnchorTypes<SNAPSHOTS_PROGRAM>;
-type Account = SnapshotsTypes['Accounts'];
+type Account = SnapshotsTypes["Accounts"];
 
-export type LockerHistoryInfo = Account['LockerHistory'];
-export type EscrowHistoryInfo = Account['EscrowHistory'];
+export type LockerHistoryInfo = Account["LockerHistory"];
+export type EscrowHistoryInfo = Account["EscrowHistory"];
 
 const encodeU16 = (num: number): Buffer => {
   const buf = Buffer.alloc(2);
@@ -33,11 +33,9 @@ const encodeU16 = (num: number): Buffer => {
  * @param programId - Deployed program ID for the program
  * @returns - The IDL object
  */
-export function getSnapshotsIDL(
-  programId: web3.PublicKey,
-): unknown {
+export function getSnapshotsIDL(programId: web3.PublicKey): unknown {
   const _tmp = snapshotsIdl;
-  _tmp['metadata']['address'] = programId.toBase58();
+  _tmp["metadata"]["address"] = programId.toBase58();
   return _tmp;
 }
 
@@ -47,17 +45,13 @@ export function getSnapshotsIDL(
 export async function findEscrowHistoryAddress(
   escrow: web3.PublicKey,
   era: number,
-  programId: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
   return await web3.PublicKey.findProgramAddress(
-    [
-      Buffer.from("EscrowHistory"),
-      escrow.toBuffer(),
-      encodeU16(era),
-    ],
+    [Buffer.from("EscrowHistory"), escrow.toBuffer(), encodeU16(era)],
     programId
   );
-};
+}
 
 /**
  * Finds the address of a LockerHistory.
@@ -65,17 +59,13 @@ export async function findEscrowHistoryAddress(
 export async function findLockerHistoryAddress(
   locker: web3.PublicKey,
   era: number,
-  programId: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
   return await web3.PublicKey.findProgramAddress(
-    [
-      Buffer.from("LockerHistory"),
-      locker.toBuffer(),
-      encodeU16(era),
-    ],
+    [Buffer.from("LockerHistory"), locker.toBuffer(), encodeU16(era)],
     programId
   );
-};
+}
 
 /**
  * Returns a list of escrow history accounts
@@ -86,9 +76,8 @@ export async function findLockerHistoryAddress(
  */
 export async function getAllEscrowHistory(
   connection: web3.Connection,
-  programId: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<EscrowHistoryInfo[]> {
-
   const idl = getSnapshotsIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
@@ -99,6 +88,34 @@ export async function getAllEscrowHistory(
     escrowHistoryAccounts.push(<EscrowHistoryInfo>escrowHistory.account);
   }
   return escrowHistoryAccounts;
+}
+
+/**
+ * Returns a locker history account
+ *
+ * @param connection - web3.Connection object
+ * @param programId - Deployed program ID for the program
+ * @returns - LockerHistoryInfo
+ */
+export async function getAllLockerHistory(
+  connection: web3.Connection,
+  programId: web3.PublicKey
+): Promise<LockerHistoryInfo[]> {
+  const idl = getSnapshotsIDL(programId);
+  const provider = new AnchorProvider(connection, null, null);
+  const program = new Program(<Idl>idl, programId, provider);
+  // const [lockerHistory] = await findLockerHistoryAddress(
+  //   locker,
+  //   era,
+  //   programId
+  // );
+
+  const _lockerHistoryAccount = await program.account.lockerHistory.all();
+  const lockerHistoryAccount = [];
+  for (const lockerHistory of _lockerHistoryAccount) {
+    lockerHistoryAccount.push(<LockerHistoryInfo>lockerHistory.account);
+  }
+  return lockerHistoryAccount;
 }
 
 /**
@@ -115,13 +132,20 @@ export async function createSyncUserEraInstruction(
   escrow: web3.PublicKey,
   era: number
 ): Promise<web3.TransactionInstruction> {
-
   const idl = getSnapshotsIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const [lockerHistory] = await findLockerHistoryAddress(locker, era, programId);
-  const [escrowHistory] = await findEscrowHistoryAddress(escrow, era, programId);
+  const [lockerHistory] = await findLockerHistoryAddress(
+    locker,
+    era,
+    programId
+  );
+  const [escrowHistory] = await findEscrowHistoryAddress(
+    escrow,
+    era,
+    programId
+  );
   return program.instruction.sync({
     accounts: {
       locker,
@@ -131,4 +155,3 @@ export async function createSyncUserEraInstruction(
     },
   });
 }
-
