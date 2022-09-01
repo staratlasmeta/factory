@@ -7,5 +7,6 @@ export * from './registerStake';
 export * from './settle';
 export * from './stakeTokens';
 export * from './unstakeTokens';
+export * from './updateCooldownPeriod';
 export * from './updateRewardMultiplier';
 export * from './withdrawTokens';
