@@ -11,6 +11,6 @@ export type StakingAccountInfo = Accounts['StakingAccount'];
 export type StakingVarsAccountInfo = Accounts['StakingVars'];
 
 export interface StakingAccountItem {
-    publicKey: web3.PublicKey;
-    account: StakingAccountInfo;
+  publicKey: web3.PublicKey;
+  account: StakingAccountInfo;
 }
