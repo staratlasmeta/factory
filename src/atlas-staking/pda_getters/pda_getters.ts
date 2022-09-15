@@ -1,4 +1,8 @@
+import { AnchorProvider, Program, web3 } from '@project-serum/anchor';
+import { Idl } from '@project-serum/anchor/dist/esm';
 import { PublicKey } from '@solana/web3.js';
+import { StakingAccountItem } from '../types';
+import { getStakingIdl } from '../utils';
 import {
   REGISTERED_STAKE,
   REWARD_AUTH,
@@ -39,6 +43,30 @@ export async function getStakingAccount(
     [STAKING_ACCOUNT, user.toBuffer(), registeredStake.toBuffer()],
     programId
   );
+}
+
+export async function getStakingAccountsForRegisteredStake(
+  connection: web3.Connection,
+  programId: PublicKey,
+  registeredStake: PublicKey
+): Promise<StakingAccountItem[]> {
+  const provider = new AnchorProvider(connection, null, null);
+  const idl = getStakingIdl(programId);
+  const program = new Program(idl as Idl, programId, provider);
+  const filter = [
+    {
+      dataSize: 171,
+    },
+    {
+      memcmp: {
+        offset: 40,
+        bytes: registeredStake.toBase58(),
+      },
+    },
+  ];
+  const stakingAccounts = await program.account.stakingAccount.all(filter);
+
+  return stakingAccounts as StakingAccountItem[];
 }
 
 /**

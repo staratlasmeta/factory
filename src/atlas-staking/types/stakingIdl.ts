@@ -897,6 +897,10 @@ export type Staking = {
             type: 'publicKey';
           },
           {
+            name: 'registeredStake';
+            type: 'publicKey';
+          },
+          {
             name: 'stakeMint';
             type: 'publicKey';
           },
@@ -1916,6 +1920,10 @@ export const stakingIdl: Staking = {
         fields: [
           {
             name: 'owner',
+            type: 'publicKey',
+          },
+          {
+            name: 'registeredStake',
             type: 'publicKey',
           },
           {
