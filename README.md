@@ -20,9 +20,14 @@ Tokens:
 * POLIS: poLisWXnNRwC6oBu1vHiuKQzFjGL4XDSu4g9qjz9qVk'
 
 Programs:
-* Faction Enlistment Program: FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe
+* Faction Enlistment: FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe
 * SCORE: FLEET1qqzpexyaDpqb2DGsSzE2sDCizewCg9WjrA6DBW
 * Global Marketplace: traderDnaR5w6Tcoi3NFm53i48FTDNbGjBSZwWXDRrg
+* DAO POLIS Locker (See Notes Below):
+    * Proxy & Rewarder = gateVwTnKyFrE8nxUUgfzoZTPKgJQZUbLsEidpG4Dp2
+    * Locked Voter = Lock7kBijGCQLEFAmXcengzXKA88iDNQPriQ7TbgeyG
+    * Snapshot = snapNQkxsiqDWdbNfz8KVB7e3NPzLwtHHA6WV8kKgUc
+* DAO ATLAS Locker: ATLocKpzDbTokxgvnLew3d7drZkEzLzDpzwgrgWKDbmc
 
 R4: 
 * ATMTA 'NPC' Sales account: NPCxfjPxh6pvRJbGbWZjxfkqWfGBvKkqPbtiJar3mom
@@ -33,7 +38,8 @@ R4:
 
 Canonical source of NFT metadata, including mints: https://galaxy.staratlas.com/nfts Pull this data to create maps of mints to asset names, for example. Can also be used to query token mint directly, e.g. https://galaxy.staratlas.com/nfts/BrzwWsG845VttbTsacZMLKhyc2jAZU12MaPkTYrJHoqm
 
-
+## DAO POLIS Locker Notes:
+The locked voter program is not meant to be called directly, all clients should use the proxy-rewarder (GATE) program to call proxy-lock, claim rewards, and exit. After any lock creation or update operation, clients must call the snapshot sync function to update the history accounts, else their pro rata rewards calculations will be incorrect. 
 
 
 ## Packages
