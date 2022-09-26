@@ -2,7 +2,7 @@
   <h1>Factory</h1>
 </div>
 
-Star Atlas Factory for constructing Transactions targeting Solana on-chain programs
+Star Atlas Factory for constructing Transactions targeting Solana on-chain programs. See https://build.staratlas.com/ for additional information.
 
 This library is published to NPM: https://www.npmjs.com/package/@staratlas/factory
 
