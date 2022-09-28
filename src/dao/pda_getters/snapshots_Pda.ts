@@ -1,4 +1,3 @@
-import { utils } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 import * as Seeds from './seeds';
 import { STAR_ATLAS_ADDRESSES, DAO_ADDRESSES } from '../constants';
