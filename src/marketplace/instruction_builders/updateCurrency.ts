@@ -1,4 +1,5 @@
 import { BN, web3 } from '@project-serum/anchor';
+import { TransactionInstruction } from '@solana/web3.js';
 import { getMarketplaceProgram } from '../utils';
 import { BaseParams } from './BaseParams';
 
@@ -31,10 +32,7 @@ export async function createUpdateRegisteredCurrencyRoyaltyInstruction({
   royalty,
   currencyMint,
   programId,
-}: UpdateCurrencyRoyaltyParams): Promise<{
-  accounts: web3.PublicKey[];
-  instructions: web3.TransactionInstruction[];
-}> {
+}: UpdateCurrencyRoyaltyParams): Promise<TransactionInstruction[]> {
   const program = getMarketplaceProgram({ connection, programId });
 
   const instructions = [
@@ -46,10 +44,8 @@ export async function createUpdateRegisteredCurrencyRoyaltyInstruction({
       })
       .instruction(),
   ];
-  return {
-    accounts: [],
-    instructions,
-  };
+
+  return instructions
 }
 
 /**
@@ -67,10 +63,7 @@ export async function createUpdateRegisteredCurrencyVaultInstruction({
   saCurrencyVault,
   currencyMint,
   programId,
-}: UpdateCurrencyVaultParams): Promise<{
-  accounts: web3.PublicKey[];
-  instructions: web3.TransactionInstruction[];
-}> {
+}: UpdateCurrencyVaultParams): Promise<TransactionInstruction[]> {
   const program = getMarketplaceProgram({ connection, programId });
 
   const instructions = [
@@ -83,8 +76,5 @@ export async function createUpdateRegisteredCurrencyVaultInstruction({
       })
       .instruction(),
   ];
-  return {
-    accounts: [],
-    instructions,
-  };
+  return instructions
 }
