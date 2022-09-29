@@ -59,6 +59,8 @@ export class GmEventService {
     this.handleOrderCreated = this.handleOrderCreated.bind(this);
     this.handleOrderExchanged = this.handleOrderExchanged.bind(this);
     this.handleOrderCanceled = this.handleOrderCanceled.bind(this);
+    this.setCurrencyInfo = this.setCurrencyInfo.bind(this);
+    this.handleCurrencyRegistered = this.handleCurrencyRegistered.bind(this);
   }
 
   async initialize(): Promise<void> {
