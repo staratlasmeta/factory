@@ -45,7 +45,7 @@ export async function createUpdateRegisteredCurrencyRoyaltyInstruction({
       .instruction(),
   ];
 
-  return instructions
+  return instructions;
 }
 
 /**
@@ -76,5 +76,5 @@ export async function createUpdateRegisteredCurrencyVaultInstruction({
       })
       .instruction(),
   ];
-  return instructions
+  return instructions;
 }
