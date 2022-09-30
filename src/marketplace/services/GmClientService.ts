@@ -397,7 +397,9 @@ export class GmClientService {
     orderTaker: PublicKey,
     purchaseQty: number,
     programId: PublicKey,
-    stakingProgramId: PublicKey,
+    stakingProgramId: PublicKey = new PublicKey(
+      'ATLocKpzDbTokxgvnLew3d7drZkEzLzDpzwgrgWKDbmc'
+    ),
     registeredStake: PublicKey = new PublicKey(
       'J5GhV1WKcEU98c1kZt36ixjaErrrPNWbZhg3JQDg114E'
     )
