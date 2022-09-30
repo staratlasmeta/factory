@@ -389,7 +389,8 @@ export class GmClientService {
    * @param orderTaker The PublicKey purchasing the order
    * @param purchaseQty Self-explanatory
    * @param programId Galactic Marketplace program ID
-   * @param stakingProgramId Atlas Staking program ID
+   * @param stakingProgramId (optional) Atlas Staking program ID, used to find seller's ATLAS staking account for market fee reductions - defaults to mainnet staking program ID
+   * @param registeredStake (optional) A `RegisteredStake` account, used to validate the seller's ATLAS staking account - defaults to the Atlas locker deployed by Star Atlas on mainnet
    */
   async getCreateExchangeTransaction(
     connection: Connection,
@@ -397,7 +398,9 @@ export class GmClientService {
     orderTaker: PublicKey,
     purchaseQty: number,
     programId: PublicKey,
-    stakingProgramId: PublicKey,
+    stakingProgramId: PublicKey = new PublicKey(
+      'ATLocKpzDbTokxgvnLew3d7drZkEzLzDpzwgrgWKDbmc'
+    ),
     registeredStake: PublicKey = new PublicKey(
       'J5GhV1WKcEU98c1kZt36ixjaErrrPNWbZhg3JQDg114E'
     )
