@@ -2,10 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import * as Seeds from './seeds';
 import { DAO_PROGRAM_ADDRESSES, DAO_ACCOUNT_ADDRESSES } from '../constants';
 
-/**
- * Finds the address of an Escrow.
- */
-export const findEscrowAddress = (
+export const findUserLockerEscrowAddress = (
   authority: PublicKey
 ): Promise<[PublicKey, number]> => {
   return PublicKey.findProgramAddress(
