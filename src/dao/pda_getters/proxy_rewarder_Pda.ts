@@ -1,17 +1,18 @@
 import { PublicKey } from '@solana/web3.js';
 import * as Seeds from './seeds';
-import { DAO_PROGRAM_ADDRESSES } from '../constants';
+import { DAO_MAINNET_PROGRAM_ADDRESSES } from '../constants';
 
 /**
  * Returns the public key for the proxy account
  */
 export const findProxyAddress = (
   escrowKey: PublicKey,
-  user: PublicKey
+  user: PublicKey,
+  proxyRewarder: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.ProxyRewarder
 ): Promise<[PublicKey, number]> => {
   return PublicKey.findProgramAddress(
     [Seeds.PROXY_SEED, escrowKey.toBuffer(), user.toBuffer()],
-    DAO_PROGRAM_ADDRESSES.ProxyRewarder
+    proxyRewarder
   );
 };
 
@@ -19,10 +20,11 @@ export const findProxyAddress = (
  * Returns the public key for the proxy escrow account
  */
 export const findProxyEscrowAddress = (
-  base: PublicKey
+  base: PublicKey,
+  proxyRewarder: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.ProxyRewarder
 ): Promise<[PublicKey, number]> => {
   return PublicKey.findProgramAddress(
     [Seeds.PROXY_ESCROW_SEED, base.toBuffer()],
-    DAO_PROGRAM_ADDRESSES.ProxyRewarder
+    proxyRewarder
   );
 };

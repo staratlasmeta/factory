@@ -1,6 +1,9 @@
 import { PublicKey } from '@solana/web3.js';
 import * as Seeds from './seeds';
-import { DAO_PROGRAM_ADDRESSES, DAO_ACCOUNT_ADDRESSES } from '../constants';
+import {
+  DAO_MAINNET_PROGRAM_ADDRESSES,
+  DAO_MAINNET_ACCOUNT_ADDRESSES,
+} from '../constants';
 
 const encodeU16 = (num: number): Buffer => {
   const buf = Buffer.alloc(2);
@@ -13,11 +16,12 @@ const encodeU16 = (num: number): Buffer => {
  */
 export const findEscrowHistoryAddress = (
   escrow: PublicKey,
-  era: number
+  era: number,
+  snapshotsProgram: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.Snapshots
 ): Promise<[PublicKey, number]> => {
   return PublicKey.findProgramAddress(
     [Seeds.ESCROW_HISTORY_SEED, escrow.toBuffer(), encodeU16(era)],
-    DAO_PROGRAM_ADDRESSES.Snapshots
+    snapshotsProgram
   );
 };
 
@@ -25,14 +29,12 @@ export const findEscrowHistoryAddress = (
  * Finds the address of a LockerHistory.
  */
 export const findLockerHistoryAddress = (
-  era: number
+  era: number,
+  locker: PublicKey = DAO_MAINNET_ACCOUNT_ADDRESSES.LOCKER,
+  snapshotsProgram: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.Snapshots
 ): Promise<[PublicKey, number]> => {
   return PublicKey.findProgramAddress(
-    [
-      Seeds.LOCKER_HISTORY_SEED,
-      DAO_ACCOUNT_ADDRESSES.LOCKER.toBuffer(),
-      encodeU16(era),
-    ],
-    DAO_PROGRAM_ADDRESSES.Snapshots
+    [Seeds.LOCKER_HISTORY_SEED, locker.toBuffer(), encodeU16(era)],
+    snapshotsProgram
   );
 };

@@ -1,16 +1,17 @@
 import { PublicKey } from '@solana/web3.js';
 import * as Seeds from './seeds';
-import { DAO_PROGRAM_ADDRESSES, DAO_ACCOUNT_ADDRESSES } from '../constants';
+import {
+  DAO_MAINNET_PROGRAM_ADDRESSES,
+  DAO_MAINNET_ACCOUNT_ADDRESSES,
+} from '../constants';
 
 export const findUserLockerEscrowAddress = (
-  authority: PublicKey
+  authority: PublicKey,
+  locker: PublicKey = DAO_MAINNET_ACCOUNT_ADDRESSES.LOCKER,
+  lockedVoterProgram: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.LockedVoter
 ): Promise<[PublicKey, number]> => {
   return PublicKey.findProgramAddress(
-    [
-      Seeds.ESCROW_SEED,
-      DAO_ACCOUNT_ADDRESSES.LOCKER.toBuffer(),
-      authority.toBuffer(),
-    ],
-    DAO_PROGRAM_ADDRESSES.LockedVoter
+    [Seeds.ESCROW_SEED, locker.toBuffer(), authority.toBuffer()],
+    lockedVoterProgram
   );
 };
