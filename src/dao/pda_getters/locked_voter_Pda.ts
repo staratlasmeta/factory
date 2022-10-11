@@ -1,15 +1,19 @@
 import { PublicKey } from '@solana/web3.js';
 import * as Seeds from './seeds';
-import { STAR_ATLAS_ADDRESSES, DAO_ADDRESSES } from '../constants';
+import { DAO_PROGRAM_ADDRESSES, DAO_ACCOUNT_ADDRESSES } from '../constants';
 
 /**
  * Finds the address of an Escrow.
  */
-export const findEscrowAddress = async (
+export const findEscrowAddress = (
   authority: PublicKey
 ): Promise<[PublicKey, number]> => {
-  return await PublicKey.findProgramAddress(
-    [Seeds.ESCROW_SEED, DAO_ADDRESSES.LOCKER.toBuffer(), authority.toBuffer()],
-    STAR_ATLAS_ADDRESSES.LockedVoter
+  return PublicKey.findProgramAddress(
+    [
+      Seeds.ESCROW_SEED,
+      DAO_ACCOUNT_ADDRESSES.LOCKER.toBuffer(),
+      authority.toBuffer(),
+    ],
+    DAO_PROGRAM_ADDRESSES.LockedVoter
   );
 };
