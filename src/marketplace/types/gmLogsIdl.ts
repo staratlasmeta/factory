@@ -217,10 +217,124 @@ export type GmLogsIdl = {
           index: false;
         }
       ];
+    },
+    {
+      name: 'StakeMemo';
+      fields: [
+        {
+          name: 'user';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'registeredStake';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'stakingAccount';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'stakeAmount';
+          type: 'u64';
+          index: false;
+        },
+        {
+          name: 'timestamp';
+          type: 'i64';
+          index: false;
+        }
+      ];
+    },
+    {
+      name: 'TransferMemo';
+      fields: [
+        {
+          name: 'user';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'registeredStake';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'stakingAccount';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'transferAmount';
+          type: 'u64';
+          index: false;
+        },
+        {
+          name: 'timestamp';
+          type: 'i64';
+          index: false;
+        }
+      ];
+    },
+    {
+      name: 'WithdrawMemo';
+      fields: [
+        {
+          name: 'user';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'registeredStake';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'stakingAccount';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'withdrawAmount';
+          type: 'u64';
+          index: false;
+        },
+        {
+          name: 'timestamp';
+          type: 'i64';
+          index: false;
+        }
+      ];
+    },
+    {
+      name: 'SettleMemo';
+      fields: [
+        {
+          name: 'user';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'registeredStake';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'stakingAccount';
+          type: 'publicKey';
+          index: false;
+        },
+        {
+          name: 'timestamp';
+          type: 'i64';
+          index: false;
+        }
+      ];
     }
   ];
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  metadata: {};
+  metadata: Record<string, unknown>;
 };
 
 export const baseIdl: GmLogsIdl = {
@@ -439,6 +553,121 @@ export const baseIdl: GmLogsIdl = {
         {
           name: 'orderId',
           type: 'publicKey',
+          index: false,
+        },
+      ],
+    },
+    {
+      name: 'StakeMemo',
+      fields: [
+        {
+          name: 'user',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'registeredStake',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'stakingAccount',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'stakeAmount',
+          type: 'u64',
+          index: false,
+        },
+        {
+          name: 'timestamp',
+          type: 'i64',
+          index: false,
+        },
+      ],
+    },
+    {
+      name: 'TransferMemo',
+      fields: [
+        {
+          name: 'user',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'registeredStake',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'stakingAccount',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'transferAmount',
+          type: 'u64',
+          index: false,
+        },
+        {
+          name: 'timestamp',
+          type: 'i64',
+          index: false,
+        },
+      ],
+    },
+    {
+      name: 'WithdrawMemo',
+      fields: [
+        {
+          name: 'user',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'registeredStake',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'stakingAccount',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'withdrawAmount',
+          type: 'u64',
+          index: false,
+        },
+        {
+          name: 'timestamp',
+          type: 'i64',
+          index: false,
+        },
+      ],
+    },
+    {
+      name: 'SettleMemo',
+      fields: [
+        {
+          name: 'user',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'registeredStake',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'stakingAccount',
+          type: 'publicKey',
+          index: false,
+        },
+        {
+          name: 'timestamp',
+          type: 'i64',
           index: false,
         },
       ],

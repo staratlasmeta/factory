@@ -24,6 +24,7 @@ import { Order, OrderSide } from '../models/Order';
 import { GmRegisteredCurrency } from '../types';
 import { ONE_MILLION } from './constants';
 import { convertDecimalPriceToBn } from '../utils';
+import { getStakingAccount } from '../../atlas-staking';
 
 /**
  * Provides utility methods and transaction builders for interacting with the Galactic Marketplace.
@@ -384,18 +385,25 @@ export class GmClientService {
   /**
    *
    * @param connection Solana Connection
-   * @param orderAccount The order account PublicKey (order ID)
-   * @param tokenMint The mint for the item being exchanged
-   * @param purchaseQty Self-explanatory
+   * @param order The order account PublicKey (order ID)
    * @param orderTaker The PublicKey purchasing the order
+   * @param purchaseQty Self-explanatory
    * @param programId Galactic Marketplace program ID
+   * @param stakingProgramId (optional) Atlas Staking program ID, used to find seller's ATLAS staking account for market fee reductions - defaults to mainnet staking program ID
+   * @param registeredStake (optional) A `RegisteredStake` account, used to validate the seller's ATLAS staking account - defaults to the Atlas locker deployed by Star Atlas on mainnet
    */
   async getCreateExchangeTransaction(
     connection: Connection,
     order: Order,
     orderTaker: PublicKey,
     purchaseQty: number,
-    programId: PublicKey
+    programId: PublicKey,
+    stakingProgramId: PublicKey = new PublicKey(
+      'ATLocKpzDbTokxgvnLew3d7drZkEzLzDpzwgrgWKDbmc'
+    ),
+    registeredStake: PublicKey = new PublicKey(
+      'J5GhV1WKcEU98c1kZt36ixjaErrrPNWbZhg3JQDg114E'
+    )
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
@@ -404,6 +412,11 @@ export class GmClientService {
     const assetMint = new PublicKey(order.orderMint);
     const currencyMint = new PublicKey(order.currencyMint);
     const orderInitializer = new PublicKey(order.owner);
+
+    const seller: PublicKey =
+      order.orderType === OrderSide.Buy
+        ? orderTaker
+        : new PublicKey(order.owner);
 
     const orderTakerDepositTokenAccount = await getAssociatedTokenAddress(
       orderTaker,
@@ -416,6 +429,12 @@ export class GmClientService {
     );
     const { saVault } = currencyInfo.find(
       (curr) => curr.mint === order.currencyMint
+    );
+
+    const [stakingAccount] = await getStakingAccount(
+      stakingProgramId,
+      seller,
+      registeredStake
     );
 
     const { instructions, signers } = await createExchangeInstruction({
@@ -431,6 +450,9 @@ export class GmClientService {
       currencyMint,
       orderInitializer,
       saVault: new PublicKey(saVault),
+      stakingProgramId,
+      registeredStake,
+      stakingAccount,
     });
 
     const transaction = createTransactionFromInstructions(instructions);
