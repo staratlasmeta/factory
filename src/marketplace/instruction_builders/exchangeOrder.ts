@@ -23,6 +23,7 @@ export interface ExchangeOrderParams extends BaseParams {
   stakingProgramId: web3.PublicKey;
   registeredStake: web3.PublicKey;
   stakingAccount: web3.PublicKey;
+  feeReduction: web3.PublicKey;
 }
 
 /**
@@ -43,6 +44,7 @@ export interface ExchangeOrderParams extends BaseParams {
  * @param stakingProgramId - Deployed program ID for the Staking program
  * @param registeredStake - ATLAS staking `RegisteredStake` account
  * @param stakingAccount - Seller's ATLAS staking account
+ * @param feeReduction - Fee reduction account
  */
 export async function createExchangeInstruction({
   connection,
@@ -60,6 +62,7 @@ export async function createExchangeInstruction({
   stakingProgramId,
   registeredStake,
   stakingAccount,
+  feeReduction,
 }: ExchangeOrderParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
   const ixSet: FactoryReturn = {
@@ -171,6 +174,7 @@ export async function createExchangeInstruction({
       atlasStaking: stakingProgramId,
       registeredStake,
       stakingAccount,
+      feeReduction,
     })
     .instruction();
 

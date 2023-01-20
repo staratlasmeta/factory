@@ -2,17 +2,13 @@ import { BN, web3 } from '@project-serum/anchor';
 import { getMarketplaceProgram } from '../utils';
 import { BaseParams } from './BaseParams';
 import { FactoryReturn } from '../../types';
-import { getFeeExemptAccount } from '../pda_getters';
+import { getFeeExemptAccount, getMarketVarsAccount } from '../pda_getters';
 
 /**  Params for Register Currency instruction */
-export interface RemoveFeeExemptParams extends BaseParams {
+export interface FeeExemptParams extends BaseParams {
   updateAuthorityAccount: web3.PublicKey;
   funder: web3.PublicKey;
   feeExemptTarget: web3.PublicKey;
-}
-
-export interface AddFeeExemptParams extends RemoveFeeExemptParams {
-  discount: number;
 }
 
 /**
@@ -30,7 +26,7 @@ export async function createAddFeeExemptionInstruction({
   funder,
   feeExemptTarget,
   programId,
-}: AddFeeExemptParams): Promise<FactoryReturn> {
+}: FeeExemptParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
   const ixSet: FactoryReturn = {
     signers: [],
@@ -42,6 +38,7 @@ export async function createAddFeeExemptionInstruction({
     feeExemptTarget,
     programId
   );
+  const [marketVarsAccount] = await getMarketVarsAccount(programId);
   const instruction = [
     await program.methods
       .addFeeExemption(new BN(FEE_EXEMPTION))
@@ -50,6 +47,7 @@ export async function createAddFeeExemptionInstruction({
         funder,
         feeExemptTarget,
         feeExemptAccount,
+        marketVarsAccount,
       })
       .instruction(),
   ];
@@ -72,7 +70,7 @@ export async function createRemoveFeeExemptionInstruction({
   funder,
   feeExemptTarget,
   programId,
-}: RemoveFeeExemptParams): Promise<FactoryReturn> {
+}: FeeExemptParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
   const ixSet: FactoryReturn = {
     signers: [],
@@ -83,6 +81,7 @@ export async function createRemoveFeeExemptionInstruction({
     feeExemptTarget,
     programId
   );
+  const [marketVarsAccount] = await getMarketVarsAccount(programId);
   const instruction = [
     await program.methods
       .removeFeeExemption()
@@ -90,6 +89,8 @@ export async function createRemoveFeeExemptionInstruction({
         updateAuthorityMaster: updateAuthorityAccount,
         funder,
         feeExemptAccount,
+        feeExemptTarget,
+        marketVarsAccount,
       })
       .instruction(),
   ];

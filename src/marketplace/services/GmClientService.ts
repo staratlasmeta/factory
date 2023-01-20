@@ -16,6 +16,7 @@ import {
   getOpenOrdersForPlayerAndAsset,
   getOpenOrdersForPlayerAndCurrency,
   getAllRegisteredCurrencies,
+  getFeeExemptAccount,
 } from '../pda_getters';
 import { OrderAccountItem } from '../types';
 import { createTransactionFromInstructions } from './helpers';
@@ -437,6 +438,8 @@ export class GmClientService {
       registeredStake
     );
 
+    const [feeReduction] = await getFeeExemptAccount(seller, programId);
+
     const { instructions, signers } = await createExchangeInstruction({
       connection,
       orderAccount,
@@ -453,6 +456,7 @@ export class GmClientService {
       stakingProgramId,
       registeredStake,
       stakingAccount,
+      feeReduction,
     });
 
     const transaction = createTransactionFromInstructions(instructions);
