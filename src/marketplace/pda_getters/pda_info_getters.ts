@@ -1,10 +1,12 @@
 import { BN, web3 } from '@project-serum/anchor';
 import {
+  getFeeExemptAccount,
   getMarketVarsAccount,
   getRegisteredCurrencyAccount,
 } from './pda_getters';
 import { getMarketplaceProgram } from './../utils/getMarketplaceProgram';
 import {
+  FeeExemptInfo,
   MarketVarsAccountInfo,
   RegisteredCurrencyInfo,
   RoyaltyTiers,
@@ -31,6 +33,24 @@ export async function getMarketVarsAccountInfo(
     marketVarsAccount
   );
   return marketVarsInfo as MarketVarsAccountInfo;
+}
+
+export async function getFeeExemptAccountInfo(
+  connection: web3.Connection,
+  targetAccount: web3.PublicKey,
+  programId: web3.PublicKey
+): Promise<FeeExemptInfo> {
+  const program = getMarketplaceProgram({
+    connection: connection,
+    programId: programId,
+  });
+
+  const [feeExemptAccount] = await getFeeExemptAccount(
+    targetAccount,
+    programId
+  );
+  const feeExemptInfo = await program.account.feeExempt.fetch(feeExemptAccount);
+  return feeExemptInfo as FeeExemptInfo;
 }
 
 /**
