@@ -431,6 +431,73 @@ export type GmIdl = {
       ];
     },
     {
+      name: 'addFeeExemption';
+      accounts: [
+        {
+          name: 'updateAuthorityMaster';
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: 'funder';
+          isMut: true;
+          isSigner: true;
+        },
+        {
+          name: 'marketVarsAccount';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'feeExemptTarget';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'feeExemptAccount';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'systemProgram';
+          isMut: false;
+          isSigner: false;
+        }
+      ];
+      args: [
+        {
+          name: 'discount';
+          type: 'u64';
+        }
+      ];
+    },
+    {
+      name: 'removeFeeExemption';
+      accounts: [
+        {
+          name: 'updateAuthorityMaster';
+          isMut: false;
+          isSigner: true;
+        },
+        {
+          name: 'funder';
+          isMut: true;
+          isSigner: false;
+        },
+        {
+          name: 'marketVarsAccount';
+          isMut: false;
+          isSigner: false;
+        },
+        {
+          name: 'feeExemptAccount';
+          isMut: true;
+          isSigner: false;
+        }
+      ];
+      args: [];
+    },
+    {
       name: 'processInitializeBuy';
       accounts: [
         {
@@ -878,6 +945,11 @@ export type GmIdl = {
           name: 'stakingAccount';
           isMut: false;
           isSigner: false;
+        },
+        {
+          name: 'feeReduction';
+          isMut: false;
+          isSigner: false;
         }
       ];
       args: [
@@ -1067,6 +1139,26 @@ export type GmIdl = {
     }
   ];
   accounts: [
+    {
+      name: 'FeeReduction';
+      type: {
+        kind: 'struct';
+        fields: [
+          {
+            name: 'account';
+            type: 'publicKey';
+          },
+          {
+            name: 'bump';
+            type: 'u8';
+          },
+          {
+            name: 'discount';
+            type: 'u64';
+          }
+        ];
+      };
+    },
     {
       name: 'MarketVars';
       type: {
@@ -1775,6 +1867,73 @@ export const baseIdl: GmIdl = {
       ],
     },
     {
+      name: 'addFeeExemption',
+      accounts: [
+        {
+          name: 'updateAuthorityMaster',
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: 'funder',
+          isMut: true,
+          isSigner: true,
+        },
+        {
+          name: 'marketVarsAccount',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'feeExemptTarget',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'feeExemptAccount',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'systemProgram',
+          isMut: false,
+          isSigner: false,
+        },
+      ],
+      args: [
+        {
+          name: 'discount',
+          type: 'u64',
+        },
+      ],
+    },
+    {
+      name: 'removeFeeExemption',
+      accounts: [
+        {
+          name: 'updateAuthorityMaster',
+          isMut: false,
+          isSigner: true,
+        },
+        {
+          name: 'funder',
+          isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'marketVarsAccount',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'feeExemptAccount',
+          isMut: true,
+          isSigner: false,
+        },
+      ],
+      args: [],
+    },
+    {
       name: 'processInitializeBuy',
       accounts: [
         {
@@ -2223,6 +2382,11 @@ export const baseIdl: GmIdl = {
           isMut: false,
           isSigner: false,
         },
+        {
+          name: 'feeReduction',
+          isMut: false,
+          isSigner: false,
+        },
       ],
       args: [
         {
@@ -2411,6 +2575,26 @@ export const baseIdl: GmIdl = {
     },
   ],
   accounts: [
+    {
+      name: 'FeeReduction',
+      type: {
+        kind: 'struct',
+        fields: [
+          {
+            name: 'account',
+            type: 'publicKey',
+          },
+          {
+            name: 'bump',
+            type: 'u8',
+          },
+          {
+            name: 'discount',
+            type: 'u64',
+          },
+        ],
+      },
+    },
     {
       name: 'MarketVars',
       type: {
