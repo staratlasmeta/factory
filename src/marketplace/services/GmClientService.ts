@@ -16,7 +16,6 @@ import {
   getOpenOrdersForPlayerAndAsset,
   getOpenOrdersForPlayerAndCurrency,
   getAllRegisteredCurrencies,
-  getFeeExemptAccount,
 } from '../pda_getters';
 import { OrderAccountItem } from '../types';
 import { createTransactionFromInstructions } from './helpers';
