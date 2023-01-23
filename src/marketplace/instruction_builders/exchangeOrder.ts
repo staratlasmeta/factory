@@ -1,7 +1,7 @@
 import { BN, web3 } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
 import { getMarketplaceProgram } from '../utils';
-import { getOrderVault } from '../pda_getters';
+import { getFeeExemptAccount, getOrderVault } from '../pda_getters';
 import { BaseParams } from './BaseParams';
 import { getOpenOrdersCounter } from '../pda_getters';
 import { FactoryReturn } from '../../types';
@@ -62,7 +62,6 @@ export async function createExchangeInstruction({
   stakingProgramId,
   registeredStake,
   stakingAccount,
-  feeReduction,
 }: ExchangeOrderParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
   const ixSet: FactoryReturn = {
@@ -155,6 +154,8 @@ export async function createExchangeInstruction({
   }
 
   const seller = orderType === OrderSide.Buy ? orderTaker : orderInitializer;
+
+  const [feeReduction] = await getFeeExemptAccount(seller, programId);
 
   const exchangeIx = await program.methods
     .processExchange(new BN(purchaseQty), expectedPrice, seller)
