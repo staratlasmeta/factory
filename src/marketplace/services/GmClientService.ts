@@ -438,8 +438,6 @@ export class GmClientService {
       registeredStake
     );
 
-    const [feeReduction] = await getFeeExemptAccount(seller, programId);
-
     const { instructions, signers } = await createExchangeInstruction({
       connection,
       orderAccount,
@@ -456,7 +454,6 @@ export class GmClientService {
       stakingProgramId,
       registeredStake,
       stakingAccount,
-      feeReduction,
     });
 
     const transaction = createTransactionFromInstructions(instructions);
