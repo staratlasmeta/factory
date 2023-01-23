@@ -7,3 +7,4 @@ export * from './initializeMarketplace';
 export * from './registerCurrency';
 export * from './royaltyTiers';
 export * from './updateCurrency';
+export * from './feeExempt';
