@@ -1,25 +1,14 @@
-import { AnchorProvider, BN, Idl, Program, web3 } from "@project-serum/anchor";
-import type { AnchorTypes } from "../anchor/types";
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-  Token,
-} from "@solana/spl-token";
-import { SystemProgram } from "@solana/web3.js";
-import { snapshotsIdl } from "./idl/snapshotsIdl";
-import * as SNAPSHOTS_TYPES from "./idl/snapshotsIdl";
-import { findEscrowAddress } from ".";
-
-const snapshotsProgramId = new web3.PublicKey(
-  "SnapGJHJrDbWMkxMukFDWTUq1wxNMB7CcDhPEU8aJCS"
-);
+import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
+import type { AnchorTypes } from '../anchor/types';
+import { snapshotsIdl } from './idl/snapshotsIdl';
+import * as SNAPSHOTS_TYPES from './idl/snapshotsIdl';
 
 export type SNAPSHOTS_PROGRAM = SNAPSHOTS_TYPES.Snapshots;
 export type SnapshotsTypes = AnchorTypes<SNAPSHOTS_PROGRAM>;
-type Account = SnapshotsTypes["Accounts"];
+type Account = SnapshotsTypes['Accounts'];
 
-export type LockerHistoryInfo = Account["LockerHistory"];
-export type EscrowHistoryInfo = Account["EscrowHistory"];
+export type LockerHistoryInfo = Account['LockerHistory'];
+export type EscrowHistoryInfo = Account['EscrowHistory'];
 
 const encodeU16 = (num: number): Buffer => {
   const buf = Buffer.alloc(2);
@@ -35,7 +24,7 @@ const encodeU16 = (num: number): Buffer => {
  */
 export function getSnapshotsIDL(programId: web3.PublicKey): unknown {
   const _tmp = snapshotsIdl;
-  _tmp["metadata"]["address"] = programId.toBase58();
+  _tmp['metadata']['address'] = programId.toBase58();
   return _tmp;
 }
 
@@ -48,7 +37,7 @@ export async function findEscrowHistoryAddress(
   programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
   return await web3.PublicKey.findProgramAddress(
-    [Buffer.from("EscrowHistory"), escrow.toBuffer(), encodeU16(era)],
+    [Buffer.from('EscrowHistory'), escrow.toBuffer(), encodeU16(era)],
     programId
   );
 }
@@ -62,7 +51,7 @@ export async function findLockerHistoryAddress(
   programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
   return await web3.PublicKey.findProgramAddress(
-    [Buffer.from("LockerHistory"), locker.toBuffer(), encodeU16(era)],
+    [Buffer.from('LockerHistory'), locker.toBuffer(), encodeU16(era)],
     programId
   );
 }

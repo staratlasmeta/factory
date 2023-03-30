@@ -1,11 +1,5 @@
-import { AnchorProvider, BN, Idl, Program, web3 } from '@project-serum/anchor';
+import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
 import type { AnchorTypes } from '../anchor/types';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-  Token,
-} from '@solana/spl-token';
-import { SystemProgram } from '@solana/web3.js';
 import { proxyRewarderIdl } from './idl/proxyRewarderIdl';
 import * as PROXYREWARDER_TYPES from './idl/proxyRewarderIdl';
 
@@ -59,11 +53,6 @@ export async function getAllProxy(
     accounts.push(data);
   }
   return accounts;
-}
-
-interface ProxyEscrowInfoWithAddress {
-  address: string;
-  data: ProxyEscrowInfo;
 }
 
 /**

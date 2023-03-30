@@ -1,17 +1,7 @@
-import {
-  AnchorProvider,
-  BN,
-  Idl,
-  Program,
-  web3
-} from '@project-serum/anchor'
+import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
 import type { AnchorTypes } from '../anchor/types';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token'
-import { SystemProgram } from '@solana/web3.js';
 import { lockedVoterIdl } from './idl/lockedVoterIdl';
 import * as LOCKEDVOTER_TYPES from './idl/lockedVoterIdl';
-
-const snapshotsProgramId = new web3.PublicKey('Lock7kBijGCQLEFAmXcengzXKA88iDNQPriQ7TbgeyG');
 
 export type LOCKEDVOTER_PROGRAM = LOCKEDVOTER_TYPES.LockedVoter;
 export type LockedVoterTypes = AnchorTypes<LOCKEDVOTER_PROGRAM>;
@@ -27,14 +17,11 @@ export type EscrowInfo = Account['Escrow'];
  * @param programId - Deployed program ID for the program
  * @returns - The IDL object
  */
-export function getLockedVoterIDL(
-  programId: web3.PublicKey,
-): unknown {
+export function getLockedVoterIDL(programId: web3.PublicKey): unknown {
   const _tmp = lockedVoterIdl;
   _tmp['metadata']['address'] = programId.toBase58();
   return _tmp;
 }
-
 
 export async function findEscrowAddress(
   locker: web3.PublicKey,
@@ -42,14 +29,10 @@ export async function findEscrowAddress(
   programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
   return await web3.PublicKey.findProgramAddress(
-    [
-      Buffer.from("Escrow"),
-      locker.toBuffer(),
-      authority.toBuffer(),
-    ],
+    [Buffer.from('Escrow'), locker.toBuffer(), authority.toBuffer()],
     programId
   );
-};
+}
 
 interface EscrowInfoWithAddress {
   address: string;
@@ -65,9 +48,8 @@ interface EscrowInfoWithAddress {
  */
 export async function getAllEscrow(
   connection: web3.Connection,
-  programId: web3.PublicKey,
+  programId: web3.PublicKey
 ): Promise<EscrowInfoWithAddress[]> {
-
   const idl = getLockedVoterIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
@@ -75,10 +57,10 @@ export async function getAllEscrow(
   const _escrowAccounts = await program.account.escrow.all();
   const escrowAccounts = [];
   for (const escrow of _escrowAccounts) {
-    let data: EscrowInfoWithAddress = {
+    const data: EscrowInfoWithAddress = {
       address: escrow.publicKey.toBase58(),
-      data: <EscrowInfo>escrow.account
-    }
+      data: <EscrowInfo>escrow.account,
+    };
     escrowAccounts.push(data);
   }
   return escrowAccounts;
