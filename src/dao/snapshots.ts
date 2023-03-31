@@ -2,6 +2,7 @@ import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
 import type { AnchorTypes } from '../anchor/types';
 import { snapshotsIdl } from './idl/snapshotsIdl';
 import * as SNAPSHOTS_TYPES from './idl/snapshotsIdl';
+import { PublicKey, TransactionInstruction } from '@solana/web3.js';
 
 export type SNAPSHOTS_PROGRAM = SNAPSHOTS_TYPES.Snapshots;
 export type SnapshotsTypes = AnchorTypes<SNAPSHOTS_PROGRAM>;
@@ -15,6 +16,30 @@ const encodeU16 = (num: number): Buffer => {
   buf.writeUInt16LE(num);
   return buf;
 };
+
+export async function getOrCreateEscrowHistory(
+  escrow: PublicKey,
+  era: number,
+  programId: web3.PublicKey
+): Promise<{
+  escrowHistory: PublicKey;
+  instruction: TransactionInstruction | null;
+}> {
+  const [escrowHistory] = await findEscrowHistoryAddress(
+    escrow,
+    era,
+    programId
+  );
+  const escrowHistoryData =
+    await this.program.account.escrowHistory.fetchNullable(escrowHistory);
+  if (escrowHistoryData) {
+    return { escrowHistory, instruction: null };
+  }
+  return {
+    escrowHistory,
+    instruction: await this.newEscrowHistoryIX(escrow, escrowHistory, era),
+  };
+}
 
 /**
  * Returns the snapshots IDL
