@@ -5,6 +5,7 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
   Token,
+  AccountLayout,
 } from '@solana/spl-token';
 
 type TokenAccount = {
@@ -108,7 +109,7 @@ export async function getTokenAccount(
     }
   | {
       tokenAccount: web3.Keypair | web3.PublicKey;
-      createInstruction: web3.TransactionInstruction;
+      createInstruction: web3.TransactionInstruction[];
     }
 > {
   // Get all parsed token accounts for a given owner and mint
@@ -156,14 +157,16 @@ export async function getTokenAccount(
     if (account === null || account.owner.equals(SystemProgram.programId)) {
       return {
         tokenAccount: associatedTokenAddress,
-        createInstruction: Token.createAssociatedTokenAccountInstruction(
-          ASSOCIATED_TOKEN_PROGRAM_ID,
-          TOKEN_PROGRAM_ID,
-          mint,
-          associatedTokenAddress,
-          wallet,
-          newAccountFunder
-        ),
+        createInstruction: [
+          Token.createAssociatedTokenAccountInstruction(
+            ASSOCIATED_TOKEN_PROGRAM_ID,
+            TOKEN_PROGRAM_ID,
+            mint,
+            associatedTokenAddress,
+            wallet,
+            newAccountFunder
+          ),
+        ],
       };
     }
 
@@ -181,12 +184,21 @@ export async function getTokenAccount(
       const newTokenAccount = web3.Keypair.generate();
       return {
         tokenAccount: newTokenAccount,
-        createInstruction: Token.createInitAccountInstruction(
-          TOKEN_PROGRAM_ID,
-          mint,
-          newTokenAccount.publicKey,
-          wallet
-        ),
+        createInstruction: [
+          SystemProgram.createAccount({
+            fromPubkey: newAccountFunder,
+            newAccountPubkey: newTokenAccount.publicKey,
+            lamports: await Token.getMinBalanceRentForExemptAccount(connection),
+            space: AccountLayout.span,
+            programId: TOKEN_PROGRAM_ID,
+          }),
+          Token.createInitAccountInstruction(
+            TOKEN_PROGRAM_ID,
+            mint,
+            newTokenAccount.publicKey,
+            wallet
+          ),
+        ],
       };
     }
   } else {
