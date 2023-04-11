@@ -50,7 +50,7 @@ export async function withdrawTokensInstruction({
   const response = await getTokenAccount(connection, user, stakeMint);
   tokenAccount = response.tokenAccount;
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
   }
 
   if (tokenAccount instanceof web3.Keypair) {
