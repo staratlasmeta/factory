@@ -1070,7 +1070,7 @@ export async function createHarvestInstruction(
   );
   const tokenAccount: web3.PublicKey | web3.Keypair = response.tokenAccount;
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
   }
 
   if (tokenAccount instanceof web3.Keypair) {
@@ -1155,7 +1155,7 @@ export async function createWithdrawFuelInstruction(
   const response = await getTokenAccount(connection, playerPublicKey, fuelMint);
   const tokenAccount: web3.PublicKey | web3.Keypair = response.tokenAccount;
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
   }
 
   if (tokenAccount instanceof web3.Keypair) {
@@ -1243,7 +1243,7 @@ export async function createWithdrawFoodInstruction(
   const response = await getTokenAccount(connection, playerPublicKey, foodMint);
   const tokenAccount: web3.PublicKey | web3.Keypair = response.tokenAccount;
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
   }
 
   if (tokenAccount instanceof web3.Keypair) {
@@ -1331,7 +1331,7 @@ export async function createWithdrawArmsInstruction(
   const response = await getTokenAccount(connection, playerPublicKey, armsMint);
   const tokenAccount: web3.PublicKey | web3.Keypair = response.tokenAccount;
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
   }
 
   if (tokenAccount instanceof web3.Keypair) {
@@ -1430,7 +1430,7 @@ export async function createWithdrawShipsInstruction(
   const potentialAtlasTokenAccount: web3.PublicKey | web3.Keypair =
     atlasResponse.tokenAccount;
   if ('createInstruction' in atlasResponse) {
-    ixSet.instructions.push(atlasResponse.createInstruction);
+    ixSet.instructions.push(...atlasResponse.createInstruction);
   }
 
   if (potentialAtlasTokenAccount instanceof web3.Keypair) {
@@ -1450,7 +1450,7 @@ export async function createWithdrawShipsInstruction(
   const potentialShipTokenAccount: web3.PublicKey | web3.Keypair =
     shipResponse.tokenAccount;
   if ('createInstruction' in shipResponse) {
-    ixSet.instructions.push(shipResponse.createInstruction);
+    ixSet.instructions.push(...shipResponse.createInstruction);
   }
 
   if (potentialShipTokenAccount instanceof web3.Keypair) {
@@ -1470,7 +1470,7 @@ export async function createWithdrawShipsInstruction(
   const potentialToolkitTokenAccount: web3.PublicKey | web3.Keypair =
     response.tokenAccount;
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
   }
 
   if (potentialToolkitTokenAccount instanceof web3.Keypair) {

@@ -90,7 +90,7 @@ export async function createExchangeInstruction({
     orderTaker
   );
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
     if (response.tokenAccount instanceof web3.Keypair) {
       initializerDepositTokenAccount = response.tokenAccount.publicKey;
       ixSet.signers.push(response.tokenAccount);
@@ -109,7 +109,7 @@ export async function createExchangeInstruction({
     orderTaker
   );
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
 
     if (response.tokenAccount instanceof web3.Keypair) {
       initializerReceiveTokenAccount = response.tokenAccount.publicKey;
@@ -139,7 +139,7 @@ export async function createExchangeInstruction({
     initializerDepositMint
   );
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
 
     if (response.tokenAccount instanceof web3.Keypair) {
       orderTakerReceiveTokenAccount = response.tokenAccount.publicKey;
