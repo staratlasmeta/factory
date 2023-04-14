@@ -3,6 +3,7 @@ import type { AnchorTypes } from '../anchor/types';
 import { snapshotsIdl } from './idl/snapshotsIdl';
 import * as SNAPSHOTS_TYPES from './idl/snapshotsIdl';
 import { PublicKey, TransactionInstruction } from '@solana/web3.js';
+import { SystemProgram } from '@solana/web3.js';
 
 export type SNAPSHOTS_PROGRAM = SNAPSHOTS_TYPES.Snapshots;
 export type SnapshotsTypes = AnchorTypes<SNAPSHOTS_PROGRAM>;
@@ -17,10 +18,33 @@ const encodeU16 = (num: number): Buffer => {
   return buf;
 };
 
+export async function newEscrowHistoryIX(
+  escrow: PublicKey,
+  escrowHistory: PublicKey,
+  era: number,
+  payer: PublicKey,
+  programId: PublicKey,
+  connection: web3.Connection
+): Promise<TransactionInstruction> {
+  const provider = new AnchorProvider(connection, null, null);
+  const idl = getSnapshotsIDL(programId);
+  const program = new Program(<Idl>idl, programId, provider);
+  return program.instruction.createEscrowHistory(era, {
+    accounts: {
+      escrow,
+      escrowHistory,
+      payer,
+      systemProgram: SystemProgram.programId,
+    },
+  });
+}
+
 export async function getOrCreateEscrowHistory(
   escrow: PublicKey,
   era: number,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
+  connection: web3.Connection,
+  payer: PublicKey
 ): Promise<{
   escrowHistory: PublicKey;
   instruction: TransactionInstruction | null;
@@ -30,14 +54,25 @@ export async function getOrCreateEscrowHistory(
     era,
     programId
   );
-  const escrowHistoryData =
-    await this.program.account.escrowHistory.fetchNullable(escrowHistory);
+  const provider = new AnchorProvider(connection, null, null);
+  const idl = getSnapshotsIDL(programId);
+  const program = new Program(<Idl>idl, programId, provider);
+  const escrowHistoryData = await program.account.escrowHistory.fetchNullable(
+    escrowHistory
+  );
   if (escrowHistoryData) {
     return { escrowHistory, instruction: null };
   }
   return {
     escrowHistory,
-    instruction: await this.newEscrowHistoryIX(escrow, escrowHistory, era),
+    instruction: await newEscrowHistoryIX(
+      escrow,
+      escrowHistory,
+      era,
+      payer,
+      programId,
+      connection
+    ),
   };
 }
 
