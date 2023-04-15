@@ -50,7 +50,7 @@ export async function unstakeTokensInstruction({
   const response = await getTokenAccount(connection, user, rewardMint);
   tokenAccount = response.tokenAccount;
   if ('createInstruction' in response) {
-    ixSet.instructions.push(response.createInstruction);
+    ixSet.instructions.push(...response.createInstruction);
   }
 
   if (tokenAccount instanceof web3.Keypair) {
