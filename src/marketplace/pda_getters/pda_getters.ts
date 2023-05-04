@@ -107,3 +107,13 @@ export async function getOpenOrdersCounter(
     programId
   );
 }
+
+export async function getFeeExemptAccount(
+  targetAccount: PublicKey,
+  programId: PublicKey
+): Promise<[PublicKey, number]> {
+  return PublicKey.findProgramAddress(
+    [Seeds.FEE_EXEMPT_SEED, targetAccount.toBuffer()],
+    programId
+  );
+}

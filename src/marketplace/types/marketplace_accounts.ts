@@ -1,14 +1,17 @@
 import { BN, web3 } from '@project-serum/anchor';
 import type { AnchorTypes } from '../../anchor/types';
+
 export interface MarketVarsInfo {
   updateAuthorityMaster: web3.PublicKey;
 }
+
 import * as GM_TYPES from './gmIdl';
 
 export type GM_PROGRAM = GM_TYPES.GmIdl;
 export type GmTypes = AnchorTypes<GM_PROGRAM>;
 type Account = GmTypes['Accounts'];
 
+export type FeeExemptInfo = Account['FeeReduction'];
 export type MarketVarsAccountInfo = Account['MarketVars'];
 export type OpenOrdersCounterInfo = Account['OpenOrdersCounter'];
 export type OrderAccountInfo = Account['OrderAccount'];
