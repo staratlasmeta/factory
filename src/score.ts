@@ -8,10 +8,6 @@ import { scoreLogBaseIdl } from './util/scoreLogIdl';
 import { getTokenAccount } from './util';
 import * as SCORE_TYPES from './util/scoreIdl';
 
-const factionProgramId = new web3.PublicKey(
-  'FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe'
-);
-
 export type SCORE_PROGRAM = SCORE_TYPES.Score;
 export type ScoreTypes = AnchorTypes<SCORE_PROGRAM>;
 type Account = ScoreTypes['Accounts'];
@@ -565,7 +561,10 @@ export async function createInitialDepositInstruction(
   shipQuantity: number,
   shipMint: web3.PublicKey,
   shipTokenAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
+  factionEnlistmentProgramId: web3.PublicKey = new web3.PublicKey(
+    'FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe'
+  )
 ): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
@@ -587,7 +586,7 @@ export async function createInitialDepositInstruction(
     await getScoreVarsShipAccount(programId, shipMint);
   const [playerFactionPDA] = await getPlayerFactionPDA(
     playerPublicKey,
-    factionProgramId
+    factionEnlistmentProgramId
   );
 
   const idl = getScoreIDL(programId);
