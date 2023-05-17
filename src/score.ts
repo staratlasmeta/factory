@@ -8,10 +8,6 @@ import { scoreLogBaseIdl } from './util/scoreLogIdl';
 import { getTokenAccount } from './util';
 import * as SCORE_TYPES from './util/scoreIdl';
 
-const factionProgramId = new web3.PublicKey(
-  'FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe'
-);
-
 export type SCORE_PROGRAM = SCORE_TYPES.Score;
 export type ScoreTypes = AnchorTypes<SCORE_PROGRAM>;
 type Account = ScoreTypes['Accounts'];
@@ -558,6 +554,7 @@ export async function createUpdateRewardRateInstruction(
  * @param shipMint - Ship mint address
  * @param shipTokenAccount - Token account for the ship resource being deposited
  * @param programId - Deployed program ID for the SCORE program
+ * @param factionProgramId
  */
 export async function createInitialDepositInstruction(
   connection: web3.Connection,
@@ -565,7 +562,10 @@ export async function createInitialDepositInstruction(
   shipQuantity: number,
   shipMint: web3.PublicKey,
   shipTokenAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
+  factionProgramId = new web3.PublicKey(
+    'FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe'
+  )
 ): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
