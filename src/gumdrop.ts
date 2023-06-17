@@ -58,7 +58,7 @@ export const getClaimStatusKey = async (
   distributor: web3.PublicKey,
   programId: web3.PublicKey = GUMDROP_DISTRIBUTOR_ID
 ): Promise<[web3.PublicKey, number]> => {
-  return await web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from('ClaimStatus'),
       index.toArrayLike(Buffer, 'le', 8),

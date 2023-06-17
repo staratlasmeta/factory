@@ -16,11 +16,11 @@ import { AccountMeta } from '@solana/web3.js';
  * @param mint - Asset mint
  * @param buyer
  */
-export async function getAtaForMint(
+export function getAtaForMint(
   mint: web3.PublicKey,
   buyer: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [buyer.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
     ASSOCIATED_TOKEN_PROGRAM_ID
   );
