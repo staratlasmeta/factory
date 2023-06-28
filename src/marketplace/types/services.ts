@@ -47,3 +47,8 @@ export type GmCurrencyLogEvent = {
   royalty: BN;
   timestamp: BN;
 };
+
+export type GmFeeExemption = {
+  publicKey: string;
+  feeReductionPercentageAsDecimal: number;
+};

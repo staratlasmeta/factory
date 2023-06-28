@@ -1,6 +1,6 @@
 import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
-import { RegisteredCurrencyItem } from '../types';
+import { FeeExemptInfo, FeeExemptItem, RegisteredCurrencyItem } from '../types';
 import * as Seeds from './seeds';
 import { getGmIDL } from './../utils/getMarketplaceProgram';
 
@@ -116,4 +116,16 @@ export async function getFeeExemptAccount(
     [Seeds.FEE_EXEMPT_SEED, targetAccount.toBuffer()],
     programId
   );
+}
+
+export async function getAllFeeExemptAccounts(
+  connection: web3.Connection,
+  programId: web3.PublicKey
+): Promise<FeeExemptItem[]> {
+  const provider = new AnchorProvider(connection, null, null);
+  const idl = getGmIDL(programId);
+  const program = new Program(idl as Idl, programId, provider);
+  const feeExemptAccounts = await program.account.feeReduction.all();
+
+  return feeExemptAccounts as FeeExemptItem[];
 }
