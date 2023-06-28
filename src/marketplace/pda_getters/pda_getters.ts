@@ -1,6 +1,6 @@
 import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
 import { PublicKey } from '@solana/web3.js';
-import { FeeExemptInfo, FeeExemptItem, RegisteredCurrencyItem } from '../types';
+import { FeeExemptItem, RegisteredCurrencyItem } from '../types';
 import * as Seeds from './seeds';
 import { getGmIDL } from './../utils/getMarketplaceProgram';
 
