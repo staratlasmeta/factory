@@ -10,7 +10,7 @@ export interface StakeTokensParams extends BaseStakingParams {
   stakeMint: web3.PublicKey;
   registeredStake: web3.PublicKey;
   stakingAccount: web3.PublicKey;
-  stakeQuantity: number;
+  stakeQuantity: BN;
 }
 
 /**
@@ -47,7 +47,7 @@ export async function stakeTokensInstruction({
   };
 
   const ix = await program.methods
-    .stakeTokens(new BN(stakeQuantity))
+    .stakeTokens(stakeQuantity)
     .accounts({
       user,
       stakeMint,
