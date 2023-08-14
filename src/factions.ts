@@ -185,11 +185,11 @@ export function getIDL(programId: web3.PublicKey): unknown {
   return _tmp;
 }
 
-export async function getPlayerFactionPDA(
+export function getPlayerFactionPDA(
   playerPublicKey: web3.PublicKey,
   programId: web3.PublicKey
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [Buffer.from(FACTION_PREFIX, 'utf8'), playerPublicKey.toBuffer()],
     programId
   );

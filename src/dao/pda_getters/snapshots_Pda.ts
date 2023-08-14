@@ -19,7 +19,7 @@ export const findEscrowHistoryAddress = (
   era: number,
   snapshotsProgram: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.Snapshots
 ): Promise<[PublicKey, number]> => {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [Seeds.ESCROW_HISTORY_SEED, escrow.toBuffer(), encodeU16(era)],
     snapshotsProgram
   );
@@ -33,7 +33,7 @@ export const findLockerHistoryAddress = (
   locker: PublicKey = DAO_MAINNET_ACCOUNT_ADDRESSES.LOCKER,
   snapshotsProgram: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.Snapshots
 ): Promise<[PublicKey, number]> => {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [Seeds.LOCKER_HISTORY_SEED, locker.toBuffer(), encodeU16(era)],
     snapshotsProgram
   );

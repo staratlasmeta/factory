@@ -14,13 +14,13 @@ import {
 /**
  * Returns the public key and bump seed for a registered stake account
  * */
-export async function getRegisteredStake(
+export function getRegisteredStake(
   programId: PublicKey,
   authority: PublicKey,
   stakeToken: PublicKey,
   rewardToken: PublicKey
 ): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [
       REGISTERED_STAKE,
       authority.toBuffer(),
@@ -34,12 +34,12 @@ export async function getRegisteredStake(
 /**
  * Returns the public key and bump seed for a staking account
  * */
-export async function getStakingAccount(
+export function getStakingAccount(
   programId: PublicKey,
   user: PublicKey,
   registeredStake: PublicKey
 ): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [STAKING_ACCOUNT, user.toBuffer(), registeredStake.toBuffer()],
     programId
   );
@@ -74,21 +74,21 @@ export async function getStakingAccountsForRegisteredStake(
  *
  * @param programId - Deployed program ID for the Staking Program
  */
-export async function getStakingVarsAccount(
+export function getStakingVarsAccount(
   programId: PublicKey
 ): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress([STAKING_VARS], programId);
+  return PublicKey.findProgramAddressSync([STAKING_VARS], programId);
 }
 
 /**
  * Returns the public key and bump seed for a user's token escrow
  * */
-export async function getTokenEscrow(
+export function getTokenEscrow(
   programId: PublicKey,
   user: PublicKey,
   registeredStake: PublicKey
 ): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [STAKING_ESCROW, user.toBuffer(), registeredStake.toBuffer()],
     programId
   );
@@ -97,11 +97,11 @@ export async function getTokenEscrow(
 /**
  * Returns the public key and bump seed for a registered stake's reward vault authority
  * */
-export async function getRewardAuth(
+export function getRewardAuth(
   programId: PublicKey,
   registeredStake: PublicKey
 ): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [REWARD_AUTH, registeredStake.toBuffer()],
     programId
   );

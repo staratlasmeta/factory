@@ -10,7 +10,7 @@ export const findProxyAddress = (
   user: PublicKey,
   proxyRewarder: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.ProxyRewarder
 ): Promise<[PublicKey, number]> => {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [Seeds.PROXY_SEED, escrowKey.toBuffer(), user.toBuffer()],
     proxyRewarder
   );
@@ -23,7 +23,7 @@ export const findProxyEscrowAddress = (
   base: PublicKey,
   proxyRewarder: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.ProxyRewarder
 ): Promise<[PublicKey, number]> => {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [Seeds.PROXY_ESCROW_SEED, base.toBuffer()],
     proxyRewarder
   );

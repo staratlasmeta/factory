@@ -10,7 +10,7 @@ export const findUserLockerEscrowAddress = (
   locker: PublicKey = DAO_MAINNET_ACCOUNT_ADDRESSES.LOCKER,
   lockedVoterProgram: PublicKey = DAO_MAINNET_PROGRAM_ADDRESSES.LockedVoter
 ): Promise<[PublicKey, number]> => {
-  return PublicKey.findProgramAddress(
+  return PublicKey.findProgramAddressSync(
     [Seeds.ESCROW_SEED, locker.toBuffer(), authority.toBuffer()],
     lockedVoterProgram
   );
