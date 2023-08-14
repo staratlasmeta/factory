@@ -304,7 +304,8 @@ export class GmClientService {
     /** Default to sell order values */
     let orderMethod:
       | typeof createInitializeBuyOrderInstruction
-      | typeof createInitializeSellOrderInstruction = createInitializeSellOrderInstruction;
+      | typeof createInitializeSellOrderInstruction =
+      createInitializeSellOrderInstruction;
     let depositMint: PublicKey = itemMint;
     let receiveMint: PublicKey = quoteMint;
 

@@ -20,6 +20,7 @@
     "clean": "rm -rf dist",
     "prepare": "npm run build",
     "lint": "eslint src --max-warnings=0",
+    "lint:fix": "npm run lint -- --fix",
     "test": "jest --detectOpenHandles --no-cache --silent",
     "start": "tsc --watch",
     "docs": "npx typedoc --out docs src",
