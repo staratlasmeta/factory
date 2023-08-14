@@ -1,6 +1,6 @@
 {
   "name": "@staratlas/factory",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "description": "Star Atlas Factory for constructing Transactions targeting Solana on-chain programs",
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
     "clean": "rm -rf dist",
     "prepare": "npm run build",
     "lint": "eslint src --max-warnings=0",
+    "lint:fix": "npm run lint -- --fix",
     "test": "jest --detectOpenHandles --no-cache --silent",
     "start": "tsc --watch",
     "docs": "npx typedoc --out docs src",

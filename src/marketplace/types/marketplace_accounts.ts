@@ -35,6 +35,11 @@ export type RoyaltyTier = {
 
 export type RoyaltyTiers = [RoyaltyTier];
 
+export interface FeeExemptItem {
+  publicKey: web3.PublicKey;
+  account: FeeExemptInfo;
+}
+
 export enum GmLogs {
   CancelOrderMemo = 'CancelOrderMemo',
   ExchangeMemo = 'ExchangeMemo',

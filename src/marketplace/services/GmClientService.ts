@@ -16,13 +16,14 @@ import {
   getOpenOrdersForPlayerAndAsset,
   getOpenOrdersForPlayerAndCurrency,
   getAllRegisteredCurrencies,
+  getAllFeeExemptAccounts,
 } from '../pda_getters';
-import { OrderAccountItem } from '../types';
+import { GmFeeExemption, OrderAccountItem } from '../types';
 import { createTransactionFromInstructions } from './helpers';
 import { getAssociatedTokenAddress } from '../../util';
 import { Order, OrderSide } from '../models/Order';
 import { GmRegisteredCurrency } from '../types';
-import { ONE_MILLION } from './constants';
+import { ONE_MILLION, TEN_THOUSAND } from './constants';
 import { convertDecimalPriceToBn } from '../utils';
 import { getStakingAccount } from '../../atlas-staking';
 
@@ -303,7 +304,8 @@ export class GmClientService {
     /** Default to sell order values */
     let orderMethod:
       | typeof createInitializeBuyOrderInstruction
-      | typeof createInitializeSellOrderInstruction = createInitializeSellOrderInstruction;
+      | typeof createInitializeSellOrderInstruction =
+      createInitializeSellOrderInstruction;
     let depositMint: PublicKey = itemMint;
     let receiveMint: PublicKey = quoteMint;
 
@@ -513,5 +515,27 @@ export class GmClientService {
         slotContext,
       });
     });
+  }
+
+  async getAllFeeExemptions(
+    connection: Connection,
+    programId: PublicKey
+  ): Promise<GmFeeExemption[]> {
+    const result: GmFeeExemption[] = [];
+
+    const feeExemptAccounts = await getAllFeeExemptAccounts(
+      connection,
+      programId
+    );
+
+    for (const feeExemptAccount of feeExemptAccounts) {
+      result.push({
+        publicKey: feeExemptAccount.account.account.toString(),
+        feeReductionPercentageAsDecimal:
+          feeExemptAccount.account.discount.toNumber() / TEN_THOUSAND,
+      });
+    }
+
+    return result;
   }
 }
