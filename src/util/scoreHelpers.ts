@@ -1,4 +1,4 @@
-import { AnchorProvider, web3 } from '@project-serum/anchor';
+import { AnchorProvider, BN, web3 } from '@project-serum/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   MintLayout,
@@ -7,7 +7,6 @@ import {
 } from '@solana/spl-token';
 import { byteArrayToLong } from '.';
 import { strict as assert } from 'assert';
-import BN from 'bn.js';
 import { AccountMeta } from '@solana/web3.js';
 
 /**
