@@ -38,9 +38,9 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
+    "@types/bn.js": "^5.1.5",
     "@typescript-eslint/eslint-plugin": "^7.3.0",
     "@typescript-eslint/parser": "^7.3.0",
-    "borsh": "^0.4.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
