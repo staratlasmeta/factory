@@ -39,13 +39,11 @@
     "mobx-utils": "^6.0.5"
   },
   "devDependencies": {
-    "@types/big.js": "^6.1.5",
-    "@types/bs58": "^4.0.1",
+    "@types/big.js": "^6.2.2",
     "@types/jest": "^27.0.2",
     "@typescript-eslint/eslint-plugin": "^4.26.0",
     "@typescript-eslint/parser": "^4.26.0",
     "borsh": "^0.4.0",
-    "bs58": "^4.0.1",
     "cross-env": "^7.0.3",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.5.0",
