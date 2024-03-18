@@ -90,7 +90,7 @@ export async function createExchangeInstruction({
     connection,
     orderInitializer,
     initializerDepositMint,
-    orderTaker
+    orderTaker,
   );
   if ('createInstruction' in response) {
     ixSet.instructions.push(...response.createInstruction);
@@ -109,7 +109,7 @@ export async function createExchangeInstruction({
     connection,
     orderInitializer,
     initializerReceiveMint,
-    orderTaker
+    orderTaker,
   );
   if ('createInstruction' in response) {
     ixSet.instructions.push(...response.createInstruction);
@@ -127,19 +127,19 @@ export async function createExchangeInstruction({
   const [orderVaultAccount] = await getOrderVault(
     orderInitializer,
     initializerDepositMint,
-    programId
+    programId,
   );
   const [openOrdersCounter] = await getOpenOrdersCounter(
     orderInitializer,
     initializerDepositMint,
-    programId
+    programId,
   );
 
   // Get order taker receive token account
   response = await getTokenAccount(
     connection,
     orderTaker,
-    initializerDepositMint
+    initializerDepositMint,
   );
   if ('createInstruction' in response) {
     ixSet.instructions.push(...response.createInstruction);

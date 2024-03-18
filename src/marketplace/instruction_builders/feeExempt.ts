@@ -36,7 +36,7 @@ export async function createAddFeeExemptionInstruction({
   const FEE_EXEMPTION = 1_000_000;
   const [feeExemptAccount] = await getFeeExemptAccount(
     feeExemptTarget,
-    programId
+    programId,
   );
   const [marketVarsAccount] = await getMarketVarsAccount(programId);
   const instruction = [
@@ -79,7 +79,7 @@ export async function createRemoveFeeExemptionInstruction({
 
   const [feeExemptAccount] = await getFeeExemptAccount(
     feeExemptTarget,
-    programId
+    programId,
   );
   const [marketVarsAccount] = await getMarketVarsAccount(programId);
   const instruction = [

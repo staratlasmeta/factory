@@ -22,7 +22,7 @@ export async function createAccountInstruction(
   connection: web3.Connection,
   payer: web3.PublicKey,
   orderAccount: web3.Keypair,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<TransactionInstruction> {
   const idl = getGmIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -33,7 +33,7 @@ export async function createAccountInstruction(
     newAccountPubkey: orderAccount.publicKey,
     space: program.account.orderAccount.size,
     lamports: await connection.getMinimumBalanceForRentExemption(
-      program.account.orderAccount.size
+      program.account.orderAccount.size,
     ),
     programId,
   });
@@ -55,7 +55,7 @@ export async function createAccountTransaction(
   connection: web3.Connection,
   payer: web3.PublicKey,
   orderAccount: web3.Keypair,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<Transaction> {
   const idl = getGmIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -71,10 +71,10 @@ export async function createAccountTransaction(
       newAccountPubkey: orderAccount.publicKey,
       space: program.account.orderAccount.size,
       lamports: await connection.getMinimumBalanceForRentExemption(
-        program.account.orderAccount.size
+        program.account.orderAccount.size,
       ),
       programId,
-    })
+    }),
   );
 
   return tx;

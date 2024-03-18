@@ -58,7 +58,7 @@ export async function createInitializeBuyOrderInstruction({
   const response = await getTokenAccount(
     connection,
     initializerMainAccount,
-    receiveMint
+    receiveMint,
   );
 
   tokenAccount = response.tokenAccount;
@@ -76,7 +76,7 @@ export async function createInitializeBuyOrderInstruction({
   const [counterAddress] = await getOpenOrdersCounter(
     initializerMainAccount,
     depositMint,
-    programId
+    programId,
   );
   const orderCounter = await connection.getAccountInfo(counterAddress);
   if (orderCounter === null) {
@@ -97,7 +97,7 @@ export async function createInitializeBuyOrderInstruction({
     connection,
     initializerMainAccount,
     orderAccount,
-    programId
+    programId,
   );
   ixSet.instructions.push(orderAccountIx);
 
@@ -158,7 +158,7 @@ export async function createInitializeSellOrderInstruction({
   const response = await getTokenAccount(
     connection,
     initializerMainAccount,
-    receiveMint
+    receiveMint,
   );
 
   tokenAccount = response.tokenAccount;
@@ -177,7 +177,7 @@ export async function createInitializeSellOrderInstruction({
   const [counterAddress] = await getOpenOrdersCounter(
     initializerMainAccount,
     depositMint,
-    programId
+    programId,
   );
   const orderCounter = await connection.getAccountInfo(counterAddress);
   if (orderCounter === null) {
@@ -198,7 +198,7 @@ export async function createInitializeSellOrderInstruction({
     connection,
     initializerMainAccount,
     orderAccount,
-    programId
+    programId,
   );
   ixSet.instructions.push(orderAccountIx);
 

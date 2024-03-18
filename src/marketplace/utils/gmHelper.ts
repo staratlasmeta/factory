@@ -38,8 +38,8 @@ export async function initializeAtaForMint({
         mint,
         ataPubkey,
         owner,
-        owner
-      )
+        owner,
+      ),
     );
   }
 
@@ -48,7 +48,7 @@ export async function initializeAtaForMint({
 
 export const convertDecimalPriceToBn = (
   uiPrice: number,
-  decimals: number
+  decimals: number,
 ): BN => {
   return new BN(uiPrice * 10 ** decimals);
 };

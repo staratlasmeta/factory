@@ -40,7 +40,7 @@ export async function registerStakeInstruction({
     programId,
     authority,
     stakeMint,
-    rewardMint
+    rewardMint,
   );
   const rewardAta = await associatedAddress({
     owner: registeredStake,

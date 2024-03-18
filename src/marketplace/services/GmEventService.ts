@@ -41,7 +41,7 @@ export class GmEventService {
   protected onEvent: (
     eventType: GmEventType,
     order: Order,
-    slotContext: number
+    slotContext: number,
   ) => void;
   protected eventListeners: number[] = [];
 
@@ -50,7 +50,7 @@ export class GmEventService {
   constructor(
     connection: Connection,
     programId: PublicKey,
-    commitment?: Commitment
+    commitment?: Commitment,
   ) {
     this.connection = connection;
     this.programId = programId;
@@ -81,26 +81,26 @@ export class GmEventService {
 
     const createId = this.program.addEventListener(
       GmLogs.InitializeMemo,
-      this.handleOrderCreated
+      this.handleOrderCreated,
     );
     const exchangeId = this.program.addEventListener(
       GmLogs.ExchangeMemo,
-      this.handleOrderExchanged
+      this.handleOrderExchanged,
     );
     const cancelId = this.program.addEventListener(
       GmLogs.CancelOrderMemo,
-      this.handleOrderCanceled
+      this.handleOrderCanceled,
     );
     const registerCurrencyId = this.program.addEventListener(
       GmLogs.RegisterCurrencyMemo,
-      this.handleCurrencyRegistered
+      this.handleCurrencyRegistered,
     );
 
     this.eventListeners.push(
       createId,
       exchangeId,
       cancelId,
-      registerCurrencyId
+      registerCurrencyId,
     );
   }
 
@@ -115,7 +115,11 @@ export class GmEventService {
   }
 
   setEventHandler(
-    handler: (eventType: GmEventType, order: Order, slotContext: number) => void
+    handler: (
+      eventType: GmEventType,
+      order: Order,
+      slotContext: number,
+    ) => void,
   ): void {
     this.onEvent = handler;
     for (const event of this.queuedEvents) {
@@ -130,7 +134,7 @@ export class GmEventService {
       await gmClientService.getRegisteredCurrencies(
         this.connection,
         this.programId,
-        true
+        true,
       );
 
     for (const info of registeredCurrencyInfo) {
@@ -140,7 +144,7 @@ export class GmEventService {
 
   protected getParsedOrderFromEvent(
     event: GmLogEvent,
-    slotContext: number
+    slotContext: number,
   ): Order | null {
     const currencyInfo =
       this.registeredCurrencyInfo[event.currencyMint.toString()];
@@ -171,7 +175,7 @@ export class GmEventService {
     this.processEvent(
       GmEventType.orderAdded,
       this.getParsedOrderFromEvent(event, slotContext),
-      slotContext
+      slotContext,
     );
   }
 
@@ -179,7 +183,7 @@ export class GmEventService {
     this.processEvent(
       GmEventType.orderModified,
       this.getParsedOrderFromEvent(event, slotContext),
-      slotContext
+      slotContext,
     );
   }
 
@@ -187,7 +191,7 @@ export class GmEventService {
     this.processEvent(
       GmEventType.orderRemoved,
       this.getParsedOrderFromEvent(event, slotContext),
-      slotContext
+      slotContext,
     );
   }
 
@@ -201,7 +205,7 @@ export class GmEventService {
   protected processEvent(
     eventType: GmEventType,
     order: Order,
-    slotContext: number
+    slotContext: number,
   ): void {
     if (!this.onEvent) {
       this.queuedEvents.push({

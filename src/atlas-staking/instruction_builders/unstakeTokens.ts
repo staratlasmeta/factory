@@ -39,7 +39,7 @@ export async function unstakeTokensInstruction({
   const registeredStakeInfo = await getRegisteredStakeAccountInfo(
     connection,
     registeredStake,
-    programId
+    programId,
   );
   const rewardMint = registeredStakeInfo.rewardMint;
 

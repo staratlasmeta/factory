@@ -16,7 +16,7 @@ import { getStakingVarsAccount } from './pda_getters';
 export async function getRegisteredStakeAccountInfo(
   connection: web3.Connection,
   registeredStake: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<RegisteredStakeAccountInfo> {
   const program = getStakingProgram({ connection, programId });
 
@@ -34,13 +34,12 @@ export async function getRegisteredStakeAccountInfo(
 export async function getStakingAccountInfo(
   connection: web3.Connection,
   stakingAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<StakingAccountInfo> {
   const program = getStakingProgram({ connection, programId });
 
-  const stakingAccountInfo = await program.account.stakingAccount.fetch(
-    stakingAccount
-  );
+  const stakingAccountInfo =
+    await program.account.stakingAccount.fetch(stakingAccount);
   return stakingAccountInfo as StakingAccountInfo;
 }
 
@@ -52,7 +51,7 @@ export async function getStakingAccountInfo(
  */
 export async function getStakingVarsAccountInfo(
   connection: web3.Connection,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<StakingVarsAccountInfo> {
   const program = getStakingProgram({
     connection: connection,
@@ -60,8 +59,7 @@ export async function getStakingVarsAccountInfo(
   });
 
   const [stakingVarsAccount] = await getStakingVarsAccount(programId);
-  const stakingVarsInfo = await program.account.stakingVars.fetch(
-    stakingVarsAccount
-  );
+  const stakingVarsInfo =
+    await program.account.stakingVars.fetch(stakingVarsAccount);
   return stakingVarsInfo as StakingVarsAccountInfo;
 }

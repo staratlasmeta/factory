@@ -65,7 +65,7 @@ export function longToByteArray(long: number): number[] {
  * Helper function to switch case string inputs for faction filter
  */
 export async function convertFactionStringToNum(
-  factionName: string
+  factionName: string,
 ): Promise<number> {
   switch (factionName.toLowerCase()) {
     case 'mud':
@@ -88,11 +88,11 @@ export async function convertFactionStringToNum(
  */
 export async function getAssociatedTokenAddress(
   owner: PublicKey,
-  mint: PublicKey
+  mint: PublicKey,
 ): Promise<PublicKey> {
   const [address] = await PublicKey.findProgramAddress(
     [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
-    ASSOCIATED_TOKEN_PROGRAM_ID
+    ASSOCIATED_TOKEN_PROGRAM_ID,
   );
   return address;
 }
@@ -102,7 +102,7 @@ export async function getTokenAccount(
   wallet: web3.PublicKey,
   mint: web3.PublicKey,
   newAccountFunder: web3.PublicKey = wallet,
-  amountNeededHeuristic?: number
+  amountNeededHeuristic?: number,
 ): Promise<
   | {
       tokenAccount: web3.PublicKey;
@@ -148,11 +148,11 @@ export async function getTokenAccount(
   if (tokenAccount === null) {
     const associatedTokenAddress = await getAssociatedTokenAddress(
       wallet,
-      mint
+      mint,
     );
     const { value: account } = await connection.getParsedAccountInfo(
       associatedTokenAddress,
-      'confirmed'
+      'confirmed',
     );
     if (account === null || account.owner.equals(SystemProgram.programId)) {
       return {
@@ -164,7 +164,7 @@ export async function getTokenAccount(
             mint,
             associatedTokenAddress,
             wallet,
-            newAccountFunder
+            newAccountFunder,
           ),
         ],
       };
@@ -174,7 +174,7 @@ export async function getTokenAccount(
       'program' in account.data &&
       account.data.parsed.type === 'account' &&
       new PublicKey((account.data.parsed as TokenAccount).info.owner).equals(
-        wallet
+        wallet,
       )
     ) {
       return {
@@ -196,7 +196,7 @@ export async function getTokenAccount(
             TOKEN_PROGRAM_ID,
             mint,
             newTokenAccount.publicKey,
-            wallet
+            wallet,
           ),
         ],
       };
@@ -210,7 +210,7 @@ export async function getTokenAccount(
 
 export async function getAccountInfo(
   connection: web3.Connection,
-  account: web3.PublicKey
+  account: web3.PublicKey,
 ) {
   const { value: accountInfo } = await connection.getParsedAccountInfo(account);
   const someInfo = accountInfo.data as web3.ParsedAccountData;

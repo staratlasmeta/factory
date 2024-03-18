@@ -21,7 +21,7 @@ import { getStakingAccount, getStakingAccountInfo } from '../../atlas-staking';
  */
 export async function getMarketVarsAccountInfo(
   connection: web3.Connection,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<MarketVarsAccountInfo> {
   const program = getMarketplaceProgram({
     connection: connection,
@@ -29,16 +29,15 @@ export async function getMarketVarsAccountInfo(
   });
 
   const [marketVarsAccount] = await getMarketVarsAccount(programId);
-  const marketVarsInfo = await program.account.marketVars.fetch(
-    marketVarsAccount
-  );
+  const marketVarsInfo =
+    await program.account.marketVars.fetch(marketVarsAccount);
   return marketVarsInfo as MarketVarsAccountInfo;
 }
 
 export async function getFeeExemptAccountInfo(
   connection: web3.Connection,
   targetAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<FeeExemptInfo> {
   const program = getMarketplaceProgram({
     connection: connection,
@@ -47,7 +46,7 @@ export async function getFeeExemptAccountInfo(
 
   const [feeExemptAccount] = await getFeeExemptAccount(
     targetAccount,
-    programId
+    programId,
   );
   const feeExemptInfo = await program.account.feeExempt.fetch(feeExemptAccount);
   return feeExemptInfo as FeeExemptInfo;
@@ -63,7 +62,7 @@ export async function getFeeExemptAccountInfo(
 export async function getRegisteredCurrencyAccountInfo(
   connection: web3.Connection,
   programId: web3.PublicKey,
-  currencyMint: web3.PublicKey
+  currencyMint: web3.PublicKey,
 ): Promise<RegisteredCurrencyInfo> {
   const program = getMarketplaceProgram({
     connection: connection,
@@ -72,10 +71,10 @@ export async function getRegisteredCurrencyAccountInfo(
 
   const [registeredCurrencyAccount] = await getRegisteredCurrencyAccount(
     programId,
-    currencyMint
+    currencyMint,
   );
   const registeredCurrencyInfo = await program.account.registeredCurrency.fetch(
-    registeredCurrencyAccount
+    registeredCurrencyAccount,
   );
   return registeredCurrencyInfo as RegisteredCurrencyInfo;
 }
@@ -91,16 +90,15 @@ export async function getRegisteredCurrencyAccountInfo(
 export async function getRegisteredCurrencyInfoFromPubkey(
   connection: web3.Connection,
   programId: web3.PublicKey,
-  registeredCurrency: web3.PublicKey
+  registeredCurrency: web3.PublicKey,
 ): Promise<RegisteredCurrencyInfo> {
   const program = getMarketplaceProgram({
     connection,
     programId,
   });
 
-  const registeredCurrencyInfo = await program.account.registeredCurrency.fetch(
-    registeredCurrency
-  );
+  const registeredCurrencyInfo =
+    await program.account.registeredCurrency.fetch(registeredCurrency);
   return registeredCurrencyInfo as RegisteredCurrencyInfo;
 }
 
@@ -110,26 +108,26 @@ export async function getRoyaltyReductionForUserAndMint(
   stakingProgramId: web3.PublicKey,
   playerPubkey: web3.PublicKey,
   registeredCurrency: web3.PublicKey,
-  registeredStake: web3.PublicKey
+  registeredStake: web3.PublicKey,
 ): Promise<number> {
   let formattedDiscount = 0;
   // Find registered currency info
   const registeredCurrencyInfo = await getRegisteredCurrencyInfoFromPubkey(
     connection,
     gmProgramId,
-    registeredCurrency
+    registeredCurrency,
   );
 
   // Find user's staking account
   const [stakingAccount] = await getStakingAccount(
     stakingProgramId,
     playerPubkey,
-    registeredStake
+    registeredStake,
   );
   const stakingAccountInfo = await getStakingAccountInfo(
     connection,
     stakingAccount,
-    stakingProgramId
+    stakingProgramId,
   );
 
   if (stakingAccountInfo.unstakedTs.eq(new BN(0))) {
@@ -155,21 +153,21 @@ export async function getRoyaltyReductionForStakingAccount(
   gmProgramId: web3.PublicKey,
   stakingProgramId: web3.PublicKey,
   stakingAccount: web3.PublicKey,
-  registeredCurrency: web3.PublicKey
+  registeredCurrency: web3.PublicKey,
 ): Promise<number> {
   let formattedDiscount = 0;
   // Find registered currency info
   const registeredCurrencyInfo = await getRegisteredCurrencyInfoFromPubkey(
     connection,
     gmProgramId,
-    registeredCurrency
+    registeredCurrency,
   );
 
   // Find user's atlas staking account info
   const stakingAccountInfo = await getStakingAccountInfo(
     connection,
     stakingAccount,
-    stakingProgramId
+    stakingProgramId,
   );
 
   if (stakingAccountInfo.unstakedTs.eq(new BN(0))) {

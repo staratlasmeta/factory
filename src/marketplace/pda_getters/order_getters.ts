@@ -13,7 +13,7 @@ import { getGmIDL } from './../utils/getMarketplaceProgram';
  */
 export async function getAllOpenOrders(
   connection: web3.Connection,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<OrderAccountItem[]> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getGmIDL(programId);
@@ -37,7 +37,7 @@ export async function getAllOpenOrders(
 export async function getOpenOrdersForPlayer(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<OrderAccountItem[]> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getGmIDL(programId);
@@ -67,7 +67,7 @@ export async function getOpenOrdersForPlayer(
 export async function getOpenOrdersForCurrency(
   connection: web3.Connection,
   currencyMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<OrderAccountItem[]> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getGmIDL(programId);
@@ -97,7 +97,7 @@ export async function getOpenOrdersForCurrency(
 export async function getOpenOrdersForAsset(
   connection: web3.Connection,
   assetMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<OrderAccountItem[]> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getGmIDL(programId);
@@ -129,7 +129,7 @@ export async function getOpenOrdersForPlayerAndCurrency(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   currencyMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<OrderAccountItem[]> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getGmIDL(programId);
@@ -167,7 +167,7 @@ export async function getOpenOrdersForPlayerAndAsset(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
   assetMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<OrderAccountItem[]> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getGmIDL(programId);
@@ -203,7 +203,7 @@ export async function getOpenOrdersForPlayerAndAsset(
 export async function getSingleOrder(
   connection: web3.Connection,
   orderAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<OrderAccountInfo> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getGmIDL(programId);
