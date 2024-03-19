@@ -1,9 +1,4 @@
-import {
-  AnchorProvider,
-  BorshCoder,
-  Idl,
-  Program,
-} from '@project-serum/anchor';
+import { AnchorProvider, BorshCoder, Idl, Program } from '@coral-xyz/anchor';
 import { Commitment, Connection, PublicKey } from '@solana/web3.js';
 
 import { Order, OrderSide } from '../models';

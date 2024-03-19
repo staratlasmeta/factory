@@ -1,4 +1,4 @@
-import { web3 } from '@project-serum/anchor';
+import { web3 } from '@coral-xyz/anchor';
 import { getOpenOrdersCounter } from '../pda_getters';
 import { createOrderCounterInstruction } from './createOrderCounter';
 import { getMarketplaceProgram, getOrderSide } from '../utils';

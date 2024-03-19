@@ -1,5 +1,5 @@
-import { AnchorProvider, Program, web3 } from '@project-serum/anchor';
-import { Idl } from '@project-serum/anchor/dist/esm';
+import { AnchorProvider, Program, web3 } from '@coral-xyz/anchor';
+import { Idl } from '@coral-xyz/anchor/dist/esm';
 import { PublicKey } from '@solana/web3.js';
 import { StakingAccountItem } from '../types';
 import { getStakingIdl } from '../utils';

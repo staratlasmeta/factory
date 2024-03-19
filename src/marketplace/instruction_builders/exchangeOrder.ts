@@ -1,4 +1,4 @@
-import { BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@coral-xyz/anchor';
 import { PublicKey } from '@solana/web3.js';
 import { getMarketplaceProgram } from '../utils';
 import { getFeeExemptAccount, getOrderVault } from '../pda_getters';

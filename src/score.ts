@@ -1,4 +1,4 @@
-import { AnchorProvider, BN, Idl, Program, web3 } from '@project-serum/anchor';
+import { AnchorProvider, BN, Idl, Program, web3 } from '@coral-xyz/anchor';
 import type { AnchorTypes } from './anchor/types';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { SystemProgram } from '@solana/web3.js';

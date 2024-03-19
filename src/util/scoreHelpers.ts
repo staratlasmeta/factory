@@ -1,4 +1,4 @@
-import { AnchorProvider, BN, web3 } from '@project-serum/anchor';
+import { AnchorProvider, BN, web3 } from '@coral-xyz/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   createInitializeMintInstruction,

@@ -1,5 +1,5 @@
-import { BN, web3 } from '@project-serum/anchor';
-import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { BN, web3 } from '@coral-xyz/anchor';
+import { associatedAddress } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { createAssociatedTokenAccountInstruction } from '@solana/spl-token';
 
 export const getOrderSide = (orderAccount: any): string => {

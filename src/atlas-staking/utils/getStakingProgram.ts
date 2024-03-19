@@ -1,4 +1,4 @@
-import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
+import { AnchorProvider, Idl, Program, web3 } from '@coral-xyz/anchor';
 import { stakingIdl } from './../types/stakingIdl';
 
 /**

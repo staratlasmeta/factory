@@ -1,6 +1,6 @@
 import { BaseStakingParams } from './baseParams';
-import { web3 } from '@project-serum/anchor';
-import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { web3 } from '@coral-xyz/anchor';
+import { associatedAddress } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { getStakingProgram } from '../utils';
 import { FactoryReturn } from '../../types';
 import { getTokenAccount } from '../../util';

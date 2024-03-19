@@ -1,4 +1,4 @@
-import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
+import { AnchorProvider, Idl, Program, web3 } from '@coral-xyz/anchor';
 import { PublicKey } from '@solana/web3.js';
 import { FeeExemptItem, RegisteredCurrencyItem } from '../types';
 import * as Seeds from './seeds';

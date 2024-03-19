@@ -1,5 +1,5 @@
 import { FactionType } from '..';
-import { BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@coral-xyz/anchor';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,

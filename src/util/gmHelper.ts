@@ -1,4 +1,4 @@
-import { Idl, Program, AnchorProvider, web3 } from '@project-serum/anchor';
+import { Idl, Program, AnchorProvider, web3 } from '@coral-xyz/anchor';
 import {
   SystemProgram,
   Transaction,
