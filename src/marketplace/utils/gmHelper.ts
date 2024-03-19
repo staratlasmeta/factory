@@ -1,10 +1,6 @@
 import { BN, web3 } from '@project-serum/anchor';
 import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token';
+import { createAssociatedTokenAccountInstruction } from '@solana/spl-token';
 
 export const getOrderSide = (orderAccount: any): string => {
   if (JSON.stringify(orderAccount.orderSide) === JSON.stringify({ buy: {} })) {
@@ -32,14 +28,7 @@ export async function initializeAtaForMint({
 
   if (ataPubkeyInfo === null) {
     instructions.push(
-      Token.createAssociatedTokenAccountInstruction(
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-        TOKEN_PROGRAM_ID,
-        mint,
-        ataPubkey,
-        owner,
-        owner,
-      ),
+      createAssociatedTokenAccountInstruction(owner, ataPubkey, owner, mint),
     );
   }
 

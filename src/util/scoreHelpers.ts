@@ -1,8 +1,10 @@
 import { AnchorProvider, BN, web3 } from '@project-serum/anchor';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  createInitializeMintInstruction,
+  createMintToInstruction,
+  createTransferInstruction,
   MintLayout,
-  Token,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
 import { byteArrayToLong } from '.';
@@ -183,13 +185,12 @@ export async function mintTokens(
   mintAuthority = mintAuthority || provider.wallet.publicKey;
 
   tx.add(
-    Token.createMintToInstruction(
-      TOKEN_PROGRAM_ID,
+    createMintToInstruction(
       mint,
       destinationTokenAccount,
       mintAuthority,
-      [],
       amount,
+      [],
     ),
   );
   const txid = await provider.sendAndConfirm(tx);
@@ -230,8 +231,7 @@ export async function createMint(
 
   tx.add(createAccountInstruction);
 
-  const initialInstruction = Token.createInitMintInstruction(
-    TOKEN_PROGRAM_ID,
+  const initialInstruction = createInitializeMintInstruction(
     account.publicKey,
     decimals,
     mintAuthority,
@@ -295,13 +295,12 @@ export async function sendTokens(
 ): Promise<web3.TransactionSignature> {
   const tx = new web3.Transaction();
   tx.add(
-    Token.createTransferInstruction(
-      TOKEN_PROGRAM_ID,
+    createTransferInstruction(
       fromWallet,
       toWallet,
       provider.wallet.publicKey,
-      [],
       amount,
+      [],
     ),
   );
 

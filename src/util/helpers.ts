@@ -4,8 +4,10 @@ import { PublicKey, SystemProgram } from '@solana/web3.js';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
-  Token,
   AccountLayout,
+  createAssociatedTokenAccountInstruction,
+  createInitializeAccountInstruction,
+  getMinimumBalanceForRentExemptAccount,
 } from '@solana/spl-token';
 
 type TokenAccount = {
@@ -158,13 +160,11 @@ export async function getTokenAccount(
       return {
         tokenAccount: associatedTokenAddress,
         createInstruction: [
-          Token.createAssociatedTokenAccountInstruction(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            mint,
+          createAssociatedTokenAccountInstruction(
+            newAccountFunder,
             associatedTokenAddress,
             wallet,
-            newAccountFunder,
+            mint,
           ),
         ],
       };
@@ -188,14 +188,13 @@ export async function getTokenAccount(
           SystemProgram.createAccount({
             fromPubkey: newAccountFunder,
             newAccountPubkey: newTokenAccount.publicKey,
-            lamports: await Token.getMinBalanceRentForExemptAccount(connection),
+            lamports: await getMinimumBalanceForRentExemptAccount(connection),
             space: AccountLayout.span,
             programId: TOKEN_PROGRAM_ID,
           }),
-          Token.createInitAccountInstruction(
-            TOKEN_PROGRAM_ID,
-            mint,
+          createInitializeAccountInstruction(
             newTokenAccount.publicKey,
+            mint,
             wallet,
           ),
         ],
