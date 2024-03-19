@@ -13,7 +13,6 @@ import type {
   Context as AnchorContext,
   Program as AProgram,
   ProgramAccount,
-  StateClient,
 } from '@coral-xyz/anchor';
 import type {
   Idl,
@@ -175,15 +174,14 @@ export type AnchorProgram<
     Defined
   > = MakeInstructions<IDL['instructions'], Defined>,
   Methods extends MakeInstructions<
-    NonNullable<IDL['state']>['methods'],
+    NonNullable<IDL['instructions']>,
     Defined
-  > = MakeInstructions<NonNullable<IDL['state']>['methods'], Defined>,
+  > = MakeInstructions<NonNullable<IDL['instructions']>, Defined>,
 > = Omit<
   AProgram,
   'rpc' | 'state' | 'account' | 'transaction' | 'instruction'
 > & {
   rpc: RpcNamespace<RPCInstructions>;
-  state: StateClient<IDL>;
   account: AccountsNamespace<A>;
   transaction: TransactionNamespace<RPCInstructions & Methods>;
   instruction: InstructionNamespace<RPCInstructions & Methods>;
@@ -218,11 +216,6 @@ export type AnchorAccounts<T extends Idl, Defined> = AnchorTypeDefs<
   Defined
 >;
 
-export type AnchorState<T extends Idl, Defined> = AnchorTypeDef<
-  NonNullable<T['state']>['struct'],
-  Defined
->;
-
 export type AnchorTypes<
   T extends Idl,
   AccountMap = Record<string, never>,
@@ -231,11 +224,10 @@ export type AnchorTypes<
 > = {
   Defined: DEF;
   Accounts: AnchorAccounts<T, DEF>;
-  State: AnchorState<T, DEF>;
   Error: AnchorError<T>;
   Program: AnchorProgram<T, AccountMap, DEF>;
   Instructions: MakeInstructions<T['instructions'], DEF>;
-  Methods: MakeInstructions<NonNullable<T['state']>['methods'], DEF>;
+  Methods: MakeInstructions<NonNullable<T['instructions']>, DEF>;
   Events: AnchorEvents<NonNullable<T['events']>[number], DEF>;
   AccountMap: AccountMap;
   IDL: T;
