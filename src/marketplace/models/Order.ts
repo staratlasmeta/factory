@@ -1,4 +1,5 @@
 import { BN } from '@coral-xyz/anchor';
+import BigNumber from 'big.js';
 import { makeObservable, observable } from 'mobx';
 
 export enum OrderSide {
@@ -59,20 +60,12 @@ export class Order implements OrderType {
     });
   }
 
-  protected get decimalDivisor(): BN {
-    return new BN(10).pow(new BN(this.currencyDecimals));
+  protected get decimalDivisor(): BigNumber {
+    return new BigNumber(10).pow(this.currencyDecimals);
   }
 
-  protected get bigNumberPrice(): BN {
-    return new BN(this.price.toString());
-  }
-
-  get bnoPrice(): BN {
-    return this.bigNumberPrice;
-  }
-
-  get divisor(): BN {
-    return this.decimalDivisor;
+  protected get bigNumberPrice(): BigNumber {
+    return new BigNumber(this.price.toString());
   }
 
   get uiPrice(): number {
@@ -81,7 +74,7 @@ export class Order implements OrderType {
 
   priceForQuantity(quantity = 1): number {
     return this.bigNumberPrice
-      .mul(new BN(quantity))
+      .mul(quantity)
       .div(this.decimalDivisor)
       .toNumber();
   }
