@@ -67,6 +67,10 @@ export class Order implements OrderType {
     return new BN(this.price.toString());
   }
 
+  get bnoPrice(): BN {
+    return this.bigNumberPrice;
+  }
+
   get uiPrice(): number {
     return this.bigNumberPrice.div(this.decimalDivisor).toNumber();
   }
