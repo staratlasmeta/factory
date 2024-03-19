@@ -31,7 +31,7 @@
     "@solana/spl-token": "^0.4.1",
     "@solana/web3.js": "^1.91.1",
     "lodash": "^4.17.21",
-    "mobx": "^6.10.0",
+    "mobx": "^6.12.0",
     "mobx-utils": "^6.0.8"
   },
   "devDependencies": {
