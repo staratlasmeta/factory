@@ -71,6 +71,10 @@ export class Order implements OrderType {
     return this.bigNumberPrice;
   }
 
+  get divisor(): BN {
+    return this.decimalDivisor;
+  }
+
   get uiPrice(): number {
     return this.bigNumberPrice.div(this.decimalDivisor).toNumber();
   }
