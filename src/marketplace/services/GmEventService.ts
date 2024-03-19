@@ -1,8 +1,6 @@
 import {
   AnchorProvider,
-  BorshAccountsCoder,
-  BorshEventCoder,
-  BorshInstructionCoder,
+  BorshCoder,
   Idl,
   Program,
 } from '@project-serum/anchor';
@@ -70,12 +68,9 @@ export class GmEventService {
       commitment: this.commitment,
     });
 
-    this.program = new Program(this.idl, this.programId, this.provider, {
-      instruction: new BorshInstructionCoder(this.idl),
-      accounts: new BorshAccountsCoder(this.idl),
-      state: null,
-      events: new BorshEventCoder(this.idl),
-    });
+    const coder = new BorshCoder(this.idl);
+
+    this.program = new Program(this.idl, this.programId, this.provider, coder);
 
     await this.setCurrencyInfo();
 
