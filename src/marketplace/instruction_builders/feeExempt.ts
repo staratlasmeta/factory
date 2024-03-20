@@ -1,4 +1,4 @@
-import { BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@coral-xyz/anchor';
 import { getMarketplaceProgram } from '../utils';
 import { BaseParams } from './BaseParams';
 import { FactoryReturn } from '../../types';
@@ -36,7 +36,7 @@ export async function createAddFeeExemptionInstruction({
   const FEE_EXEMPTION = 1_000_000;
   const [feeExemptAccount] = await getFeeExemptAccount(
     feeExemptTarget,
-    programId
+    programId,
   );
   const [marketVarsAccount] = await getMarketVarsAccount(programId);
   const instruction = [
@@ -79,7 +79,7 @@ export async function createRemoveFeeExemptionInstruction({
 
   const [feeExemptAccount] = await getFeeExemptAccount(
     feeExemptTarget,
-    programId
+    programId,
   );
   const [marketVarsAccount] = await getMarketVarsAccount(programId);
   const instruction = [

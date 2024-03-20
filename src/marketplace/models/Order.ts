@@ -1,4 +1,4 @@
-import { BN } from '@project-serum/anchor';
+import { BN } from '@coral-xyz/anchor';
 import BigNumber from 'big.js';
 import { makeObservable, observable } from 'mobx';
 

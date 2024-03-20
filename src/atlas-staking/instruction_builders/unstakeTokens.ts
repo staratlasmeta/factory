@@ -1,5 +1,5 @@
-import { web3 } from '@project-serum/anchor';
-import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { web3 } from '@coral-xyz/anchor';
+import { associatedAddress } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { FactoryReturn } from '../../types';
 import { getTokenAccount } from '../../util';
 import { getRegisteredStakeAccountInfo } from '../pda_getters';
@@ -39,7 +39,7 @@ export async function unstakeTokensInstruction({
   const registeredStakeInfo = await getRegisteredStakeAccountInfo(
     connection,
     registeredStake,
-    programId
+    programId,
   );
   const rewardMint = registeredStakeInfo.rewardMint;
 

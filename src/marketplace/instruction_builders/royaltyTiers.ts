@@ -1,4 +1,4 @@
-import { BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@coral-xyz/anchor';
 import { FactoryReturn } from '../../types';
 import { getMarketplaceProgram } from '../utils';
 import { BaseParams } from './BaseParams';

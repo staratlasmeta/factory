@@ -35,7 +35,7 @@ export class GmOrderbookService {
   constructor(
     connection: Connection,
     programId: PublicKey,
-    healthcheckThresholdSeconds = 60
+    healthcheckThresholdSeconds = 60,
   ) {
     this.connection = connection;
     this.marketplaceProgramId = programId;
@@ -45,7 +45,7 @@ export class GmOrderbookService {
     this.gmClientService = new GmClientService();
     this.gmEventService = new GmEventService(
       this.connection,
-      this.marketplaceProgramId
+      this.marketplaceProgramId,
     );
 
     this.handleMarketplaceEvent = this.handleMarketplaceEvent.bind(this);
@@ -58,10 +58,10 @@ export class GmOrderbookService {
       this.orderCacheService.orderChanges,
       (event) => {
         this.eventCallBacks.forEach((callBackHandler) =>
-          callBackHandler.onEvent(event)
+          callBackHandler.onEvent(event),
         );
       },
-      250
+      250,
     );
 
     this.gmEventService.setEventHandler(this.handleMarketplaceEvent);
@@ -110,7 +110,7 @@ export class GmOrderbookService {
 
     this.gmEventService = new GmEventService(
       this.connection,
-      this.marketplaceProgramId
+      this.marketplaceProgramId,
     );
 
     this.gmEventService.setEventHandler(this.handleMarketplaceEvent);
@@ -125,7 +125,7 @@ export class GmOrderbookService {
       const slot = await this.connection.getSlot('confirmed');
       const fetchedOffers = await this.gmClientService.getAllOpenOrders(
         this.connection,
-        this.marketplaceProgramId
+        this.marketplaceProgramId,
       );
       const fetchedOffersMap = new Map<string, Order>();
 
@@ -171,7 +171,7 @@ export class GmOrderbookService {
     try {
       const orders = await this.gmClientService.getAllOpenOrders(
         this.connection,
-        this.marketplaceProgramId
+        this.marketplaceProgramId,
       );
 
       for (const order of orders) {
@@ -218,7 +218,7 @@ export class GmOrderbookService {
 
   getBuyOrdersByCurrencyAndItem(
     currencyMint: string,
-    itemMint: string
+    itemMint: string,
   ): Order[] {
     const ordersForMint = this.getBuyOrdersForMint(itemMint);
 
@@ -233,7 +233,7 @@ export class GmOrderbookService {
 
   getSellOrdersByCurrencyAndItem(
     currencyMint: string,
-    itemMint: string
+    itemMint: string,
   ): Order[] {
     const ordersForMint = this.getSellOrdersForMint(itemMint);
 
@@ -248,7 +248,7 @@ export class GmOrderbookService {
 
   protected filterOrdersByCurrency(
     currencyMint: string,
-    orders: Order[]
+    orders: Order[],
   ): Order[] {
     if (!orders.length) return [];
 
@@ -288,7 +288,7 @@ export class GmOrderbookService {
     const allOrders = this.orderCacheService.getAllOrdersCache();
     const allOrdersValues = Array.from(allOrders.values());
     const ordersFilteredByOwner = allOrdersValues.filter(
-      (order) => order.owner === publicKey
+      (order) => order.owner === publicKey,
     );
 
     return ordersFilteredByOwner;

@@ -38,7 +38,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
         },
@@ -63,10 +63,10 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake';
-              }
+              },
             ];
           };
-        }
+        },
       ];
       args: [];
     },
@@ -106,7 +106,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
         },
@@ -131,7 +131,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake';
-              }
+              },
             ];
           };
         },
@@ -139,7 +139,7 @@ export type Staking = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -184,7 +184,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
         },
@@ -210,7 +210,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake';
-              }
+              },
             ];
           };
         },
@@ -243,7 +243,7 @@ export type Staking = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -265,7 +265,7 @@ export type Staking = {
                 kind: 'const';
                 type: 'string';
                 value: 'staking-vars';
-              }
+              },
             ];
           };
         },
@@ -273,7 +273,7 @@ export type Staking = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -295,7 +295,7 @@ export type Staking = {
                 kind: 'const';
                 type: 'string';
                 value: 'staking-vars';
-              }
+              },
             ];
           };
         },
@@ -336,7 +336,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'reward_mint';
-              }
+              },
             ];
           };
         },
@@ -364,7 +364,7 @@ export type Staking = {
           name: 'tokenProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -374,7 +374,7 @@ export type Staking = {
         {
           name: 'cooldownPeriod';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -412,7 +412,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
         },
@@ -438,16 +438,16 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake';
-              }
+              },
             ];
           };
-        }
+        },
       ];
       args: [
         {
           name: 'updatedStakingPeriod';
           type: 'u16';
-        }
+        },
       ];
     },
     {
@@ -496,7 +496,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
         },
@@ -521,7 +521,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake';
-              }
+              },
             ];
           };
         },
@@ -549,13 +549,13 @@ export type Staking = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
           name: 'stakeAmount';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -599,7 +599,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
         },
@@ -625,7 +625,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake';
-              }
+              },
             ];
           };
         },
@@ -658,7 +658,7 @@ export type Staking = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -697,16 +697,16 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
-        }
+        },
       ];
       args: [
         {
           name: 'cooldownPeriod';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -744,10 +744,10 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
-        }
+        },
       ];
       args: [
         {
@@ -757,7 +757,7 @@ export type Staking = {
         {
           name: 'newStakingPeriod';
           type: 'u16';
-        }
+        },
       ];
     },
     {
@@ -806,7 +806,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake.reward_mint';
-              }
+              },
             ];
           };
         },
@@ -832,7 +832,7 @@ export type Staking = {
                 type: 'publicKey';
                 account: 'RegisteredStake';
                 path: 'registered_stake';
-              }
+              },
             ];
           };
         },
@@ -845,10 +845,10 @@ export type Staking = {
           name: 'tokenProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
-    }
+    },
   ];
   accounts: [
     {
@@ -883,7 +883,7 @@ export type Staking = {
           {
             name: 'bump';
             type: 'u8';
-          }
+          },
         ];
       };
     },
@@ -943,7 +943,7 @@ export type Staking = {
           {
             name: 'bump';
             type: 'u8';
-          }
+          },
         ];
       };
     },
@@ -959,10 +959,10 @@ export type Staking = {
           {
             name: 'bump';
             type: 'u8';
-          }
+          },
         ];
       };
-    }
+    },
   ];
   errors: [
     {
@@ -1019,7 +1019,7 @@ export type Staking = {
       code: 6010;
       name: 'NotOnCooldown';
       msg: 'Staking account is not on cooldown';
-    }
+    },
   ];
   metadata: Record<string, unknown>;
 };

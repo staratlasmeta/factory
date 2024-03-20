@@ -67,7 +67,7 @@ export class OrderCacheService {
   get mints(): string[] {
     return union(
       Array.from(this.buyOrdersCache.keys()),
-      Array.from(this.sellOrdersCache.keys())
+      Array.from(this.sellOrdersCache.keys()),
     );
   }
 

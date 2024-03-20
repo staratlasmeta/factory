@@ -1,5 +1,5 @@
-import { web3 } from '@project-serum/anchor';
-import type { AnchorTypes } from '@saberhq/anchor-contrib';
+import { web3 } from '@coral-xyz/anchor';
+import { AnchorTypes } from '../../anchor/types';
 
 import * as STAKING_TYPES from './stakingIdl';
 

@@ -13,8 +13,7 @@ import type {
   Context as AnchorContext,
   Program as AProgram,
   ProgramAccount,
-  StateClient,
-} from '@project-serum/anchor';
+} from '@coral-xyz/anchor';
 import type {
   Idl,
   IdlAccountItem,
@@ -26,7 +25,7 @@ import type {
   IdlType,
   IdlTypeDef,
   IdlTypeDefTyStruct,
-} from '@project-serum/anchor/dist/esm/idl';
+} from '@coral-xyz/anchor/dist/esm/idl';
 import type {
   AccountMeta,
   PublicKey,
@@ -58,7 +57,7 @@ type Context<A extends IdlAccountItem[]> = Omit<AnchorContext, 'accounts'> & {
 type MakeInstructionsNamespace<
   R extends InstructionsParsed,
   Ret,
-  Mk extends { [M in keyof R]: unknown } = { [M in keyof R]: unknown }
+  Mk extends { [M in keyof R]: unknown } = { [M in keyof R]: unknown },
 > = {
   [M in keyof R]: ((
     ...args: [...R[M]['args'], Context<R[M]['accounts']>]
@@ -132,18 +131,18 @@ type TypeMap = {
 type DecodeType<T extends IdlType, Defined> = T extends keyof TypeMap
   ? TypeMap[T]
   : T extends { defined: keyof Defined }
-  ? Defined[T['defined']]
-  : T extends { option: { defined: keyof Defined } }
-  ? Defined[T['option']['defined']] | null
-  : T extends { option: keyof TypeMap }
-  ? TypeMap[T['option']] | null
-  : T extends { vec: { defined: keyof Defined } }
-  ? Defined[T['vec']['defined']][]
-  : T extends { vec: keyof TypeMap }
-  ? TypeMap[T['vec']][]
-  : T extends { array: [idlType: keyof TypeMap, size: number] }
-  ? TypeMap[T['array'][0]][]
-  : unknown;
+    ? Defined[T['defined']]
+    : T extends { option: { defined: keyof Defined } }
+      ? Defined[T['option']['defined']] | null
+      : T extends { option: keyof TypeMap }
+        ? TypeMap[T['option']] | null
+        : T extends { vec: { defined: keyof Defined } }
+          ? Defined[T['vec']['defined']][]
+          : T extends { vec: keyof TypeMap }
+            ? TypeMap[T['vec']][]
+            : T extends { array: [idlType: keyof TypeMap, size: number] }
+              ? TypeMap[T['array'][0]][]
+              : unknown;
 
 type MakeArgs<A extends IdlField[], Defined> = {
   [K in keyof A]: A[K] extends IdlField
@@ -175,15 +174,14 @@ export type AnchorProgram<
     Defined
   > = MakeInstructions<IDL['instructions'], Defined>,
   Methods extends MakeInstructions<
-    NonNullable<IDL['state']>['methods'],
+    NonNullable<IDL['instructions']>,
     Defined
-  > = MakeInstructions<NonNullable<IDL['state']>['methods'], Defined>
+  > = MakeInstructions<NonNullable<IDL['instructions']>, Defined>,
 > = Omit<
   AProgram,
   'rpc' | 'state' | 'account' | 'transaction' | 'instruction'
 > & {
   rpc: RpcNamespace<RPCInstructions>;
-  state: StateClient<IDL>;
   account: AccountsNamespace<A>;
   transaction: TransactionNamespace<RPCInstructions & Methods>;
   instruction: InstructionNamespace<RPCInstructions & Methods>;
@@ -210,7 +208,7 @@ type AnchorTypeDefs<T extends IdlTypeDef[], Defined> = {
 
 export type AnchorDefined<
   T extends Idl,
-  D = Record<string, never>
+  D = Record<string, never>,
 > = AnchorTypeDefs<NonNullable<T['types']>, D>;
 
 export type AnchorAccounts<T extends Idl, Defined> = AnchorTypeDefs<
@@ -218,24 +216,18 @@ export type AnchorAccounts<T extends Idl, Defined> = AnchorTypeDefs<
   Defined
 >;
 
-export type AnchorState<T extends Idl, Defined> = AnchorTypeDef<
-  NonNullable<T['state']>['struct'],
-  Defined
->;
-
 export type AnchorTypes<
   T extends Idl,
   AccountMap = Record<string, never>,
   D = Record<string, never>,
-  DEF = AnchorDefined<T, D>
+  DEF = AnchorDefined<T, D>,
 > = {
   Defined: DEF;
   Accounts: AnchorAccounts<T, DEF>;
-  State: AnchorState<T, DEF>;
   Error: AnchorError<T>;
   Program: AnchorProgram<T, AccountMap, DEF>;
   Instructions: MakeInstructions<T['instructions'], DEF>;
-  Methods: MakeInstructions<NonNullable<T['state']>['methods'], DEF>;
+  Methods: MakeInstructions<NonNullable<T['instructions']>, DEF>;
   Events: AnchorEvents<NonNullable<T['events']>[number], DEF>;
   AccountMap: AccountMap;
   IDL: T;
