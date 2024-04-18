@@ -1,4 +1,4 @@
-import { web3 } from '@project-serum/anchor';
+import { web3 } from '@coral-xyz/anchor';
 import { getOpenOrdersCounter } from '../pda_getters';
 import { createOrderCounterInstruction } from './createOrderCounter';
 import { getMarketplaceProgram, getOrderSide } from '../utils';
@@ -41,7 +41,7 @@ export async function createCancelOrderInstruction({
 
   // Fetch order account and get order info
   const orderAccountInfo = (await program.account.orderAccount.fetch(
-    orderAccount
+    orderAccount,
   )) as OrderAccountInfo;
   const orderSide = getOrderSide(orderAccountInfo);
   const depositMint =
@@ -55,7 +55,7 @@ export async function createCancelOrderInstruction({
   const response = await getTokenAccount(
     connection,
     orderInitializer,
-    depositMint
+    depositMint,
   );
   tokenAccount = response.tokenAccount;
   if ('createInstruction' in response) {
@@ -73,7 +73,7 @@ export async function createCancelOrderInstruction({
   const [counterAddress] = await getOpenOrdersCounter(
     orderInitializer,
     depositMint,
-    programId
+    programId,
   );
   const orderCounter = await connection.getAccountInfo(counterAddress);
   if (orderCounter === null) {

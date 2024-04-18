@@ -16,7 +16,7 @@ export async function sendAndConfirmTransaction(
         skipPreflight: true,
         commitment: 'singleGossip',
         preflightCommitment: null,
-      }
+      },
     );
   } catch (e) {
     console.log(e);

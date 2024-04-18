@@ -1,7 +1,7 @@
 import { Transaction, TransactionInstruction } from '@solana/web3.js';
 
 export const createTransactionFromInstructions = (
-  instructions: TransactionInstruction[]
+  instructions: TransactionInstruction[],
 ): Transaction => {
   const transaction = new Transaction();
 
