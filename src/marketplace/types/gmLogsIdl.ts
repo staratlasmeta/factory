@@ -35,7 +35,7 @@ export type GmLogsIdl = {
           name: 'timestamp';
           type: 'i64';
           index: false;
-        }
+        },
       ];
     },
     {
@@ -95,7 +95,7 @@ export type GmLogsIdl = {
           name: 'orderId';
           type: 'publicKey';
           index: false;
-        }
+        },
       ];
     },
     {
@@ -155,7 +155,7 @@ export type GmLogsIdl = {
           name: 'orderId';
           type: 'publicKey';
           index: false;
-        }
+        },
       ];
     },
     {
@@ -215,7 +215,7 @@ export type GmLogsIdl = {
           name: 'orderId';
           type: 'publicKey';
           index: false;
-        }
+        },
       ];
     },
     {
@@ -245,7 +245,7 @@ export type GmLogsIdl = {
           name: 'timestamp';
           type: 'i64';
           index: false;
-        }
+        },
       ];
     },
     {
@@ -275,7 +275,7 @@ export type GmLogsIdl = {
           name: 'timestamp';
           type: 'i64';
           index: false;
-        }
+        },
       ];
     },
     {
@@ -305,7 +305,7 @@ export type GmLogsIdl = {
           name: 'timestamp';
           type: 'i64';
           index: false;
-        }
+        },
       ];
     },
     {
@@ -330,9 +330,9 @@ export type GmLogsIdl = {
           name: 'timestamp';
           type: 'i64';
           index: false;
-        }
+        },
       ];
-    }
+    },
   ];
   metadata: Record<string, unknown>;
 };

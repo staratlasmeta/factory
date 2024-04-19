@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [16.17.1]
+        node-version: [ 20.12.0 ]
     steps:
       - uses: oleksiyrudenko/gha-git-credentials@v2-latest
         with:
@@ -17,11 +17,11 @@ jobs:
           name: 'Github CI'
           email: 'actions@github.com'
           token: '${{ secrets.GITHUB_TOKEN }}'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: '0'
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies

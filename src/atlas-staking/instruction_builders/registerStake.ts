@@ -1,5 +1,5 @@
-import { BN, web3 } from '@project-serum/anchor';
-import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { BN, web3 } from '@coral-xyz/anchor';
+import { associatedAddress } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { FactoryReturn } from '../../types';
 import { getRegisteredStake } from '../pda_getters';
 import { getStakingProgram } from '../utils';
@@ -40,7 +40,7 @@ export async function registerStakeInstruction({
     programId,
     authority,
     stakeMint,
-    rewardMint
+    rewardMint,
   );
   const rewardAta = await associatedAddress({
     owner: registeredStake,

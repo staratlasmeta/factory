@@ -1,4 +1,4 @@
-import { BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@coral-xyz/anchor';
 import type { AnchorTypes } from '../../anchor/types';
 
 export interface MarketVarsInfo {
