@@ -20,7 +20,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -40,10 +40,10 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'RegisteredCurrency';
                 path: 'registered_currency.token_mint';
-              }
+              },
             ];
           };
-        }
+        },
       ];
       args: [
         {
@@ -53,7 +53,7 @@ export type GmIdl = {
         {
           name: 'discount';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -74,7 +74,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -94,16 +94,16 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'RegisteredCurrency';
                 path: 'registered_currency.token_mint';
-              }
+              },
             ];
           };
-        }
+        },
       ];
       args: [
         {
           name: 'stakeAmount';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -124,7 +124,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -144,7 +144,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'currency_mint';
-              }
+              },
             ];
           };
         },
@@ -157,7 +157,7 @@ export type GmIdl = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -179,7 +179,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -187,7 +187,7 @@ export type GmIdl = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -209,7 +209,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -229,7 +229,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'currency_mint';
-              }
+              },
             ];
           };
         },
@@ -247,13 +247,13 @@ export type GmIdl = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
           name: 'royalty';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -274,7 +274,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -294,7 +294,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'currency_mint';
-              }
+              },
             ];
           };
         },
@@ -312,7 +312,7 @@ export type GmIdl = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -334,7 +334,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -354,7 +354,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'currency_mint';
-              }
+              },
             ];
           };
         },
@@ -367,13 +367,13 @@ export type GmIdl = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
           name: 'royalty';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -394,7 +394,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -414,10 +414,10 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'RegisteredCurrency';
                 path: 'registered_currency.token_mint';
-              }
+              },
             ];
           };
-        }
+        },
       ];
       args: [
         {
@@ -427,7 +427,7 @@ export type GmIdl = {
         {
           name: 'discount';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -462,13 +462,13 @@ export type GmIdl = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
           name: 'discount';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -493,7 +493,7 @@ export type GmIdl = {
           name: 'feeExemptAccount';
           isMut: true;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -515,7 +515,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -550,7 +550,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'deposit_mint';
-              }
+              },
             ];
           };
         },
@@ -569,7 +569,7 @@ export type GmIdl = {
                 kind: 'account';
                 type: 'publicKey';
                 path: 'order_initializer';
-              }
+              },
             ];
           };
         },
@@ -604,7 +604,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'deposit_mint';
-              }
+              },
             ];
           };
         },
@@ -629,7 +629,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'deposit_mint';
-              }
+              },
             ];
           };
         },
@@ -647,7 +647,7 @@ export type GmIdl = {
           name: 'tokenProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -657,7 +657,7 @@ export type GmIdl = {
         {
           name: 'originationQty';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -678,7 +678,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -713,7 +713,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'deposit_mint';
-              }
+              },
             ];
           };
         },
@@ -732,7 +732,7 @@ export type GmIdl = {
                 kind: 'account';
                 type: 'publicKey';
                 path: 'order_initializer';
-              }
+              },
             ];
           };
         },
@@ -767,7 +767,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'receive_mint';
-              }
+              },
             ];
           };
         },
@@ -792,7 +792,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'deposit_mint';
-              }
+              },
             ];
           };
         },
@@ -810,7 +810,7 @@ export type GmIdl = {
           name: 'tokenProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -820,7 +820,7 @@ export type GmIdl = {
         {
           name: 'originationQty';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -887,7 +887,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'OrderAccount';
                 path: 'order_account.order_initializer_pubkey';
-              }
+              },
             ];
           };
         },
@@ -917,7 +917,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'currency_mint';
-              }
+              },
             ];
           };
         },
@@ -950,7 +950,7 @@ export type GmIdl = {
           name: 'feeReduction';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -964,7 +964,7 @@ export type GmIdl = {
         {
           name: 'seller';
           type: 'publicKey';
-        }
+        },
       ];
     },
     {
@@ -990,7 +990,7 @@ export type GmIdl = {
                 kind: 'const';
                 type: 'string';
                 value: 'market-vars';
-              }
+              },
             ];
           };
         },
@@ -1025,7 +1025,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'deposit_mint';
-              }
+              },
             ];
           };
         },
@@ -1044,7 +1044,7 @@ export type GmIdl = {
                 kind: 'account';
                 type: 'publicKey';
                 path: 'order_initializer';
-              }
+              },
             ];
           };
         },
@@ -1074,7 +1074,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'deposit_mint';
-              }
+              },
             ];
           };
         },
@@ -1082,7 +1082,7 @@ export type GmIdl = {
           name: 'tokenProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
     },
@@ -1120,7 +1120,7 @@ export type GmIdl = {
                 type: 'publicKey';
                 account: 'Mint';
                 path: 'deposit_mint';
-              }
+              },
             ];
           };
         },
@@ -1133,10 +1133,10 @@ export type GmIdl = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [];
-    }
+    },
   ];
   accounts: [
     {
@@ -1155,7 +1155,7 @@ export type GmIdl = {
           {
             name: 'discount';
             type: 'u64';
-          }
+          },
         ];
       };
     },
@@ -1171,7 +1171,7 @@ export type GmIdl = {
           {
             name: 'bump';
             type: 'u8';
-          }
+          },
         ];
       };
     },
@@ -1187,7 +1187,7 @@ export type GmIdl = {
           {
             name: 'bump';
             type: 'u8';
-          }
+          },
         ];
       };
     },
@@ -1237,7 +1237,7 @@ export type GmIdl = {
           {
             name: 'createdAtTimestamp';
             type: 'i64';
-          }
+          },
         ];
       };
     },
@@ -1269,10 +1269,10 @@ export type GmIdl = {
                 defined: 'RoyaltyTier';
               };
             };
-          }
+          },
         ];
       };
-    }
+    },
   ];
   types: [
     {
@@ -1287,7 +1287,7 @@ export type GmIdl = {
           {
             name: 'discount';
             type: 'u64';
-          }
+          },
         ];
       };
     },
@@ -1301,7 +1301,7 @@ export type GmIdl = {
           },
           {
             name: 'Sell';
-          }
+          },
         ];
       };
     },
@@ -1315,10 +1315,10 @@ export type GmIdl = {
           },
           {
             name: 'Currency';
-          }
+          },
         ];
       };
-    }
+    },
   ];
   errors: [
     {
@@ -1430,7 +1430,7 @@ export type GmIdl = {
       code: 6021;
       name: 'InvalidSeller';
       msg: 'Order seller did not match expected seller';
-    }
+    },
   ];
   metadata: Record<string, unknown>;
 };

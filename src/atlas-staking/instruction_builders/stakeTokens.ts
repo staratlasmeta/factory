@@ -1,5 +1,5 @@
-import { BN, web3 } from '@project-serum/anchor';
-import { associatedAddress } from '@project-serum/anchor/dist/cjs/utils/token';
+import { BN, web3 } from '@coral-xyz/anchor';
+import { associatedAddress } from '@coral-xyz/anchor/dist/cjs/utils/token';
 import { FactoryReturn } from '../../types';
 import { getStakingProgram } from '../utils';
 import { BaseStakingParams } from './baseParams';
@@ -10,7 +10,7 @@ export interface StakeTokensParams extends BaseStakingParams {
   stakeMint: web3.PublicKey;
   registeredStake: web3.PublicKey;
   stakingAccount: web3.PublicKey;
-  stakeQuantity: number;
+  stakeQuantity: BN;
 }
 
 /**
@@ -47,7 +47,7 @@ export async function stakeTokensInstruction({
   };
 
   const ix = await program.methods
-    .stakeTokens(new BN(stakeQuantity))
+    .stakeTokens(stakeQuantity)
     .accounts({
       user,
       stakeMint,

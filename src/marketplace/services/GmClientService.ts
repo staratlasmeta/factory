@@ -1,4 +1,4 @@
-import { BN } from '@project-serum/anchor';
+import { BN } from '@coral-xyz/anchor';
 import { Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js';
 
 import {
@@ -16,13 +16,14 @@ import {
   getOpenOrdersForPlayerAndAsset,
   getOpenOrdersForPlayerAndCurrency,
   getAllRegisteredCurrencies,
+  getAllFeeExemptAccounts,
 } from '../pda_getters';
-import { OrderAccountItem } from '../types';
+import { GmFeeExemption, OrderAccountItem } from '../types';
 import { createTransactionFromInstructions } from './helpers';
 import { getAssociatedTokenAddress } from '../../util';
 import { Order, OrderSide } from '../models/Order';
 import { GmRegisteredCurrency } from '../types';
-import { ONE_MILLION } from './constants';
+import { ONE_MILLION, TEN_THOUSAND } from './constants';
 import { convertDecimalPriceToBn } from '../utils';
 import { getStakingAccount } from '../../atlas-staking';
 
@@ -42,7 +43,7 @@ export class GmClientService {
   async getRegisteredCurrencies(
     connection: Connection,
     programId: PublicKey,
-    invalidateCache = false
+    invalidateCache = false,
   ): Promise<GmRegisteredCurrency[]> {
     if (this.currencyInfo?.length && !invalidateCache) return this.currencyInfo;
 
@@ -50,14 +51,14 @@ export class GmClientService {
 
     const currencyInfo = await getAllRegisteredCurrencies(
       connection,
-      programId
+      programId,
     );
 
     for (const info of currencyInfo) {
       const { mint, royalty, saVault } = info;
       const tokenSupplylInformation = await connection.getTokenSupply(
         mint,
-        'recent'
+        'recent',
       );
 
       const { decimals } = tokenSupplylInformation.value;
@@ -83,7 +84,7 @@ export class GmClientService {
    */
   async getAllOpenOrders(
     connection: Connection,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<Order[]> {
     const openOrders = await getAllOpenOrders(connection, programId);
     const slotContext = await connection.getSlot();
@@ -92,7 +93,7 @@ export class GmClientService {
       connection,
       programId,
       openOrders,
-      slotContext
+      slotContext,
     );
   }
 
@@ -106,12 +107,12 @@ export class GmClientService {
   async getOpenOrdersForPlayer(
     connection: Connection,
     playerPublicKey: PublicKey,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<Order[]> {
     const openOrders = await getOpenOrdersForPlayer(
       connection,
       playerPublicKey,
-      programId
+      programId,
     );
     const slotContext = await connection.getSlot();
 
@@ -119,7 +120,7 @@ export class GmClientService {
       connection,
       programId,
       openOrders,
-      slotContext
+      slotContext,
     );
   }
 
@@ -134,12 +135,12 @@ export class GmClientService {
   async getOpenOrdersForCurrency(
     connection: Connection,
     currencyMint: PublicKey,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<Order[]> {
     const openOrders = await getOpenOrdersForCurrency(
       connection,
       currencyMint,
-      programId
+      programId,
     );
     const slotContext = await connection.getSlot();
 
@@ -147,7 +148,7 @@ export class GmClientService {
       connection,
       programId,
       openOrders,
-      slotContext
+      slotContext,
     );
   }
 
@@ -162,12 +163,12 @@ export class GmClientService {
   async getOpenOrdersForAsset(
     connection: Connection,
     assetMint: PublicKey,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<Order[]> {
     const openOrders = await getOpenOrdersForAsset(
       connection,
       assetMint,
-      programId
+      programId,
     );
     const slotContext = await connection.getSlot();
 
@@ -175,7 +176,7 @@ export class GmClientService {
       connection,
       programId,
       openOrders,
-      slotContext
+      slotContext,
     );
   }
 
@@ -192,13 +193,13 @@ export class GmClientService {
     connection: Connection,
     playerPublicKey: PublicKey,
     currencyMint: PublicKey,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<Order[]> {
     const openOrders = await getOpenOrdersForPlayerAndCurrency(
       connection,
       playerPublicKey,
       currencyMint,
-      programId
+      programId,
     );
     const slotContext = await connection.getSlot();
 
@@ -206,7 +207,7 @@ export class GmClientService {
       connection,
       programId,
       openOrders,
-      slotContext
+      slotContext,
     );
   }
 
@@ -223,13 +224,13 @@ export class GmClientService {
     connection: Connection,
     playerPublicKey: PublicKey,
     assetMint: PublicKey,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<Order[]> {
     const openOrders = await getOpenOrdersForPlayerAndAsset(
       connection,
       playerPublicKey,
       assetMint,
-      programId
+      programId,
     );
     const slotContext = await connection.getSlot();
 
@@ -237,7 +238,7 @@ export class GmClientService {
       connection,
       programId,
       openOrders,
-      slotContext
+      slotContext,
     );
   }
 
@@ -252,12 +253,12 @@ export class GmClientService {
   async getOpenOrder(
     connection: Connection,
     orderAccount: PublicKey,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<Order> {
     const orderAccountInfo = await getSingleOrder(
       connection,
       orderAccount,
-      programId
+      programId,
     );
     const orderAccountItem = {
       publicKey: orderAccount,
@@ -268,7 +269,7 @@ export class GmClientService {
       connection,
       programId,
       [orderAccountItem],
-      slotContext
+      slotContext,
     );
 
     return result;
@@ -295,7 +296,7 @@ export class GmClientService {
     quantity: number,
     price: BN,
     programId: PublicKey,
-    orderSide: OrderSide
+    orderSide: OrderSide,
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
@@ -303,7 +304,8 @@ export class GmClientService {
     /** Default to sell order values */
     let orderMethod:
       | typeof createInitializeBuyOrderInstruction
-      | typeof createInitializeSellOrderInstruction = createInitializeSellOrderInstruction;
+      | typeof createInitializeSellOrderInstruction =
+      createInitializeSellOrderInstruction;
     let depositMint: PublicKey = itemMint;
     let receiveMint: PublicKey = quoteMint;
 
@@ -316,7 +318,7 @@ export class GmClientService {
 
     const initializerDepositTokenAccount = await getAssociatedTokenAddress(
       orderCreator,
-      depositMint
+      depositMint,
     );
 
     const { ixSet } = await orderMethod({
@@ -340,14 +342,14 @@ export class GmClientService {
     connection: Connection,
     uiPrice: number,
     quoteCurrency: PublicKey,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<BN> {
     const allCurrencyInfo = await this.getRegisteredCurrencies(
       connection,
-      programId
+      programId,
     );
     const { decimals } = allCurrencyInfo.find(
-      (info) => info.mint.toString() === quoteCurrency.toString()
+      (info) => info.mint.toString() === quoteCurrency.toString(),
     );
 
     return convertDecimalPriceToBn(uiPrice, decimals);
@@ -365,7 +367,7 @@ export class GmClientService {
     connection: Connection,
     orderAccount: PublicKey,
     orderInitializer: PublicKey,
-    programId: PublicKey
+    programId: PublicKey,
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
@@ -399,11 +401,11 @@ export class GmClientService {
     purchaseQty: number,
     programId: PublicKey,
     stakingProgramId: PublicKey = new PublicKey(
-      'ATLocKpzDbTokxgvnLew3d7drZkEzLzDpzwgrgWKDbmc'
+      'ATLocKpzDbTokxgvnLew3d7drZkEzLzDpzwgrgWKDbmc',
     ),
     registeredStake: PublicKey = new PublicKey(
-      'J5GhV1WKcEU98c1kZt36ixjaErrrPNWbZhg3JQDg114E'
-    )
+      'J5GhV1WKcEU98c1kZt36ixjaErrrPNWbZhg3JQDg114E',
+    ),
   ): Promise<{
     transaction: Transaction;
     signers: Keypair[];
@@ -420,21 +422,21 @@ export class GmClientService {
 
     const orderTakerDepositTokenAccount = await getAssociatedTokenAddress(
       orderTaker,
-      order.orderType === OrderSide.Buy ? assetMint : currencyMint
+      order.orderType === OrderSide.Buy ? assetMint : currencyMint,
     );
 
     const currencyInfo = await this.getRegisteredCurrencies(
       connection,
-      programId
+      programId,
     );
     const { saVault } = currencyInfo.find(
-      (curr) => curr.mint === order.currencyMint
+      (curr) => curr.mint === order.currencyMint,
     );
 
     const [stakingAccount] = await getStakingAccount(
       stakingProgramId,
       seller,
-      registeredStake
+      registeredStake,
     );
 
     const { instructions, signers } = await createExchangeInstruction({
@@ -464,13 +466,13 @@ export class GmClientService {
     connection: Connection,
     programId: PublicKey,
     orderAccountItems: OrderAccountItem[],
-    slotContext: number
+    slotContext: number,
   ): Promise<Order[]> {
     if (!orderAccountItems.length) return [];
 
     const currencyInfo = await this.getRegisteredCurrencies(
       connection,
-      programId
+      programId,
     );
 
     return orderAccountItems.map((accountItem) => {
@@ -494,7 +496,7 @@ export class GmClientService {
       const createdAt = accountItem.account.createdAtTimestamp.toNumber();
 
       const { decimals: currencyDecimals } = currencyInfo.find(
-        (info) => info.mint.toString() === currencyMint
+        (info) => info.mint.toString() === currencyMint,
       );
 
       return new Order({
@@ -513,5 +515,27 @@ export class GmClientService {
         slotContext,
       });
     });
+  }
+
+  async getAllFeeExemptions(
+    connection: Connection,
+    programId: PublicKey,
+  ): Promise<GmFeeExemption[]> {
+    const result: GmFeeExemption[] = [];
+
+    const feeExemptAccounts = await getAllFeeExemptAccounts(
+      connection,
+      programId,
+    );
+
+    for (const feeExemptAccount of feeExemptAccounts) {
+      result.push({
+        publicKey: feeExemptAccount.account.account.toString(),
+        feeReductionPercentageAsDecimal:
+          feeExemptAccount.account.discount.toNumber() / TEN_THOUSAND,
+      });
+    }
+
+    return result;
   }
 }

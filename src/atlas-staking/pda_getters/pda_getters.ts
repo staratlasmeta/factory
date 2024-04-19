@@ -1,5 +1,5 @@
-import { AnchorProvider, Program, web3 } from '@project-serum/anchor';
-import { Idl } from '@project-serum/anchor/dist/esm';
+import { AnchorProvider, Program, web3 } from '@coral-xyz/anchor';
+import { Idl } from '@coral-xyz/anchor/dist/esm';
 import { PublicKey } from '@solana/web3.js';
 import { StakingAccountItem } from '../types';
 import { getStakingIdl } from '../utils';
@@ -18,7 +18,7 @@ export function getRegisteredStake(
   programId: PublicKey,
   authority: PublicKey,
   stakeToken: PublicKey,
-  rewardToken: PublicKey
+  rewardToken: PublicKey,
 ): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddressSync(
     [
@@ -27,7 +27,7 @@ export function getRegisteredStake(
       stakeToken.toBuffer(),
       rewardToken.toBuffer(),
     ],
-    programId
+    programId,
   );
 }
 
@@ -37,18 +37,18 @@ export function getRegisteredStake(
 export function getStakingAccount(
   programId: PublicKey,
   user: PublicKey,
-  registeredStake: PublicKey
+  registeredStake: PublicKey,
 ): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddressSync(
     [STAKING_ACCOUNT, user.toBuffer(), registeredStake.toBuffer()],
-    programId
+    programId,
   );
 }
 
 export async function getStakingAccountsForRegisteredStake(
   connection: web3.Connection,
   programId: PublicKey,
-  registeredStake: PublicKey
+  registeredStake: PublicKey,
 ): Promise<StakingAccountItem[]> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getStakingIdl(programId);
@@ -74,8 +74,13 @@ export async function getStakingAccountsForRegisteredStake(
  *
  * @param programId - Deployed program ID for the Staking Program
  */
+<<<<<<< HEAD
 export function getStakingVarsAccount(
   programId: PublicKey
+=======
+export async function getStakingVarsAccount(
+  programId: PublicKey,
+>>>>>>> upstream/develop
 ): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddressSync([STAKING_VARS], programId);
 }
@@ -86,11 +91,11 @@ export function getStakingVarsAccount(
 export function getTokenEscrow(
   programId: PublicKey,
   user: PublicKey,
-  registeredStake: PublicKey
+  registeredStake: PublicKey,
 ): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddressSync(
     [STAKING_ESCROW, user.toBuffer(), registeredStake.toBuffer()],
-    programId
+    programId,
   );
 }
 
@@ -99,10 +104,10 @@ export function getTokenEscrow(
  * */
 export function getRewardAuth(
   programId: PublicKey,
-  registeredStake: PublicKey
+  registeredStake: PublicKey,
 ): Promise<[PublicKey, number]> {
   return PublicKey.findProgramAddressSync(
     [REWARD_AUTH, registeredStake.toBuffer()],
-    programId
+    programId,
   );
 }

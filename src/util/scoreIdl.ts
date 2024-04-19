@@ -64,7 +64,7 @@ export type Score = {
           name: 'toolkitMint';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -78,7 +78,7 @@ export type Score = {
         {
           name: 'treasuryAuthBump';
           type: 'u8';
-        }
+        },
       ];
     },
     {
@@ -108,7 +108,7 @@ export type Score = {
           name: 'systemProgram';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -154,7 +154,7 @@ export type Score = {
         {
           name: 'millisecondsToBurnOneToolkit';
           type: 'u32';
-        }
+        },
       ];
     },
     {
@@ -179,7 +179,7 @@ export type Score = {
           name: 'shipMint';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -189,7 +189,7 @@ export type Score = {
         {
           name: 'scorevarsShipBump';
           type: 'u8';
-        }
+        },
       ];
     },
     {
@@ -214,7 +214,7 @@ export type Score = {
           name: 'shipMint';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -228,7 +228,7 @@ export type Score = {
         {
           name: 'newRewardRatePerSecond';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -293,7 +293,7 @@ export type Score = {
           name: 'shipTokenAccountEscrow';
           isMut: true;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -315,7 +315,7 @@ export type Score = {
         {
           name: 'shipQuantity';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -370,7 +370,7 @@ export type Score = {
           name: 'shipTokenAccountEscrow';
           isMut: true;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -392,7 +392,7 @@ export type Score = {
         {
           name: 'shipQuantity';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -467,7 +467,7 @@ export type Score = {
           name: 'fuelTokenAccountEscrow';
           isMut: true;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -493,7 +493,7 @@ export type Score = {
         {
           name: 'fuelQuantity';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -568,7 +568,7 @@ export type Score = {
           name: 'foodTokenAccountEscrow';
           isMut: true;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -594,7 +594,7 @@ export type Score = {
         {
           name: 'foodQuantity';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -669,7 +669,7 @@ export type Score = {
           name: 'armsTokenAccountEscrow';
           isMut: true;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -695,7 +695,7 @@ export type Score = {
         {
           name: 'armsQuantity';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -760,7 +760,7 @@ export type Score = {
           name: 'toolkitTokenAccountSource';
           isMut: true;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -778,7 +778,7 @@ export type Score = {
         {
           name: 'toolkitQuantity';
           type: 'u64';
-        }
+        },
       ];
     },
     {
@@ -818,7 +818,7 @@ export type Score = {
           name: 'shipMint';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -832,7 +832,7 @@ export type Score = {
         {
           name: 'scorevarsShipBump';
           type: 'u8';
-        }
+        },
       ];
     },
     {
@@ -882,7 +882,7 @@ export type Score = {
           name: 'shipMint';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -900,7 +900,7 @@ export type Score = {
         {
           name: 'treasuryAuthBump';
           type: 'u8';
-        }
+        },
       ];
     },
     {
@@ -960,7 +960,7 @@ export type Score = {
           name: 'shipMint';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -982,7 +982,7 @@ export type Score = {
         {
           name: 'escrowBump';
           type: 'u8';
-        }
+        },
       ];
     },
     {
@@ -1042,7 +1042,7 @@ export type Score = {
           name: 'shipMint';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -1064,7 +1064,7 @@ export type Score = {
         {
           name: 'escrowBump';
           type: 'u8';
-        }
+        },
       ];
     },
     {
@@ -1124,7 +1124,7 @@ export type Score = {
           name: 'shipMint';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -1146,7 +1146,7 @@ export type Score = {
         {
           name: 'escrowBump';
           type: 'u8';
-        }
+        },
       ];
     },
     {
@@ -1231,7 +1231,7 @@ export type Score = {
           name: 'toolkitMint';
           isMut: true;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -1261,7 +1261,7 @@ export type Score = {
         {
           name: 'treasuryBump';
           type: 'u8';
-        }
+        },
       ];
     },
     {
@@ -1341,7 +1341,7 @@ export type Score = {
           name: 'clock';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -1371,9 +1371,9 @@ export type Score = {
         {
           name: 'escrowAuthBump';
           type: 'u8';
-        }
+        },
       ];
-    }
+    },
   ];
   accounts: [
     {
@@ -1400,7 +1400,7 @@ export type Score = {
           {
             name: 'toolkitMint';
             type: 'publicKey';
-          }
+          },
         ];
       };
     },
@@ -1448,7 +1448,7 @@ export type Score = {
           {
             name: 'millisecondsToBurnOneToolkit';
             type: 'u32';
-          }
+          },
         ];
       };
     },
@@ -1540,10 +1540,10 @@ export type Score = {
           {
             name: 'totalRewardsPaid';
             type: 'u64';
-          }
+          },
         ];
       };
-    }
+    },
   ];
   types: [
     {
@@ -1562,10 +1562,10 @@ export type Score = {
           },
           {
             name: 'Toolkits';
-          }
+          },
         ];
       };
-    }
+    },
   ];
   errors: [
     {
@@ -1657,7 +1657,7 @@ export type Score = {
       code: 317;
       name: 'IncorrectTokenAccountMint';
       msg: 'Token or Mint Account mint is not correct!';
-    }
+    },
   ];
   // eslint-disable-next-line @typescript-eslint/ban-types
   metadata: {};

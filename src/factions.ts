@@ -1,4 +1,4 @@
-import { AnchorProvider, Idl, Program, web3 } from '@project-serum/anchor';
+import { AnchorProvider, Idl, Program, web3 } from '@coral-xyz/anchor';
 import { AnchorTypes } from './anchor/types';
 
 export type FactionEnlistment = {
@@ -27,7 +27,7 @@ export type FactionEnlistment = {
           name: 'clock';
           isMut: false;
           isSigner: false;
-        }
+        },
       ];
       args: [
         {
@@ -37,9 +37,9 @@ export type FactionEnlistment = {
         {
           name: 'factionId';
           type: 'u8';
-        }
+        },
       ];
-    }
+    },
   ];
   accounts: [
     {
@@ -68,17 +68,17 @@ export type FactionEnlistment = {
             type: {
               array: ['u64', 5];
             };
-          }
+          },
         ];
       };
-    }
+    },
   ];
   errors: [
     {
       code: 300;
       name: 'FactionTypeError';
       msg: 'Faction ID must be 0, 1, or 2.';
-    }
+    },
   ];
   // eslint-disable-next-line @typescript-eslint/ban-types
   metadata: {};
@@ -187,11 +187,11 @@ export function getIDL(programId: web3.PublicKey): unknown {
 
 export function getPlayerFactionPDA(
   playerPublicKey: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
   return web3.PublicKey.findProgramAddressSync(
     [Buffer.from(FACTION_PREFIX, 'utf8'), playerPublicKey.toBuffer()],
-    programId
+    programId,
   );
 }
 
@@ -202,11 +202,11 @@ export async function enlistToFaction(
   connection: web3.Connection,
   factionID: FactionType,
   playerPublicKey: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const [playerFactionPda, bump] = await getPlayerFactionPDA(
     playerPublicKey,
-    programId
+    programId,
   );
 
   const idl = getIDL(programId);
@@ -222,7 +222,7 @@ export async function enlistToFaction(
         systemProgram: web3.SystemProgram.programId,
         clock: web3.SYSVAR_CLOCK_PUBKEY,
       },
-    }
+    },
   );
 
   return txInstruction;
@@ -234,7 +234,7 @@ export async function enlistToFaction(
 export async function getPlayer(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<PlayerFaction> {
   // Wallet not required to query player faction account
   const provider = new AnchorProvider(connection, null, null);
@@ -243,7 +243,7 @@ export async function getPlayer(
 
   const [playerFactionPDA] = await getPlayerFactionPDA(
     playerPublicKey,
-    programId
+    programId,
   );
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
   return obj as PlayerFaction;
@@ -254,7 +254,7 @@ export async function getPlayer(
  */
 export async function getAllPlayers(
   connection: web3.Connection,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<PlayerFaction[]> {
   // Wallet not required to query player faction accounts
   const provider = new AnchorProvider(connection, null, null);
@@ -263,7 +263,7 @@ export async function getAllPlayers(
   const programAccounts = await program.account.playerFactionData.all();
 
   const players = programAccounts.map(
-    (player) => <PlayerFaction>player.account
+    (player) => <PlayerFaction>player.account,
   );
 
   return players;
@@ -275,7 +275,7 @@ export async function getAllPlayers(
 export async function getPlayersOfFaction(
   connection: web3.Connection,
   factionID: FactionType,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<PlayerFaction[]> {
   // Wallet not required to query player faction accounts
   const provider = new AnchorProvider(connection, null, null);

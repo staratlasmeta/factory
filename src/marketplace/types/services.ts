@@ -1,4 +1,4 @@
-import { BN } from '@project-serum/anchor';
+import { BN } from '@coral-xyz/anchor';
 import { PublicKey } from '@solana/web3.js';
 
 import { Order } from '../models';
@@ -46,4 +46,9 @@ export type GmCurrencyLogEvent = {
   saCurrencyVault: PublicKey;
   royalty: BN;
   timestamp: BN;
+};
+
+export type GmFeeExemption = {
+  publicKey: string;
+  feeReductionPercentageAsDecimal: number;
 };

@@ -1,11 +1,13 @@
 import { FactionType } from '..';
-import { BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@coral-xyz/anchor';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
-  Token,
   AccountLayout,
+  createAssociatedTokenAccountInstruction,
+  createInitializeAccountInstruction,
+  getMinimumBalanceForRentExemptAccount,
 } from '@solana/spl-token';
 
 type TokenAccount = {
@@ -65,7 +67,7 @@ export function longToByteArray(long: number): number[] {
  * Helper function to switch case string inputs for faction filter
  */
 export async function convertFactionStringToNum(
-  factionName: string
+  factionName: string,
 ): Promise<number> {
   switch (factionName.toLowerCase()) {
     case 'mud':
@@ -88,11 +90,11 @@ export async function convertFactionStringToNum(
  */
 export async function getAssociatedTokenAddress(
   owner: PublicKey,
-  mint: PublicKey
+  mint: PublicKey,
 ): Promise<PublicKey> {
   const [address] = PublicKey.findProgramAddressSync(
     [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
-    ASSOCIATED_TOKEN_PROGRAM_ID
+    ASSOCIATED_TOKEN_PROGRAM_ID,
   );
   return address;
 }
@@ -102,7 +104,7 @@ export async function getTokenAccount(
   wallet: web3.PublicKey,
   mint: web3.PublicKey,
   newAccountFunder: web3.PublicKey = wallet,
-  amountNeededHeuristic?: number
+  amountNeededHeuristic?: number,
 ): Promise<
   | {
       tokenAccount: web3.PublicKey;
@@ -148,23 +150,21 @@ export async function getTokenAccount(
   if (tokenAccount === null) {
     const associatedTokenAddress = await getAssociatedTokenAddress(
       wallet,
-      mint
+      mint,
     );
     const { value: account } = await connection.getParsedAccountInfo(
       associatedTokenAddress,
-      'confirmed'
+      'confirmed',
     );
     if (account === null || account.owner.equals(SystemProgram.programId)) {
       return {
         tokenAccount: associatedTokenAddress,
         createInstruction: [
-          Token.createAssociatedTokenAccountInstruction(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            mint,
+          createAssociatedTokenAccountInstruction(
+            newAccountFunder,
             associatedTokenAddress,
             wallet,
-            newAccountFunder
+            mint,
           ),
         ],
       };
@@ -174,7 +174,7 @@ export async function getTokenAccount(
       'program' in account.data &&
       account.data.parsed.type === 'account' &&
       new PublicKey((account.data.parsed as TokenAccount).info.owner).equals(
-        wallet
+        wallet,
       )
     ) {
       return {
@@ -188,15 +188,14 @@ export async function getTokenAccount(
           SystemProgram.createAccount({
             fromPubkey: newAccountFunder,
             newAccountPubkey: newTokenAccount.publicKey,
-            lamports: await Token.getMinBalanceRentForExemptAccount(connection),
+            lamports: await getMinimumBalanceForRentExemptAccount(connection),
             space: AccountLayout.span,
             programId: TOKEN_PROGRAM_ID,
           }),
-          Token.createInitAccountInstruction(
-            TOKEN_PROGRAM_ID,
-            mint,
+          createInitializeAccountInstruction(
             newTokenAccount.publicKey,
-            wallet
+            mint,
+            wallet,
           ),
         ],
       };
@@ -210,7 +209,7 @@ export async function getTokenAccount(
 
 export async function getAccountInfo(
   connection: web3.Connection,
-  account: web3.PublicKey
+  account: web3.PublicKey,
 ) {
   const { value: accountInfo } = await connection.getParsedAccountInfo(account);
   const someInfo = accountInfo.data as web3.ParsedAccountData;

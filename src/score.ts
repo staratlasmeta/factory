@@ -1,4 +1,4 @@
-import { AnchorProvider, BN, Idl, Program, web3 } from '@project-serum/anchor';
+import { AnchorProvider, BN, Idl, Program, web3 } from '@coral-xyz/anchor';
 import type { AnchorTypes } from './anchor/types';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { SystemProgram } from '@solana/web3.js';
@@ -34,12 +34,12 @@ export function getScoreIDL(programId: web3.PublicKey): unknown {
  * @param programId - Deployed program ID for the SCORE program
  * @returns - [Public key, bump seed]
  */
-export function getScoreVarsAccount(
-  programId: web3.PublicKey
+export async function getScoreVarsAccount(
+  programId: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
   return web3.PublicKey.findProgramAddressSync(
     [Buffer.from('SCOREVARS')],
-    programId
+    programId,
   );
 }
 
@@ -52,11 +52,11 @@ export function getScoreVarsAccount(
  */
 export function getScoreVarsShipAccount(
   programId: web3.PublicKey,
-  shipMint: web3.PublicKey
+  shipMint: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
   return web3.PublicKey.findProgramAddressSync(
     [Buffer.from('SCOREVARS_SHIP'), shipMint.toBuffer()],
-    programId
+    programId,
   );
 }
 
@@ -73,7 +73,7 @@ export function getScoreEscrowAccount(
   programId: web3.PublicKey,
   shipMint: web3.PublicKey,
   resourceMint: web3.PublicKey,
-  playerPublicKey: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
   const seeds = [
     Buffer.from('SCORE_ESCROW'),
@@ -97,7 +97,7 @@ export function getScoreEscrowAccount(
 export function getScoreEscrowAuthAccount(
   programId: web3.PublicKey,
   shipMint: web3.PublicKey,
-  playerPublicKey: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
   return web3.PublicKey.findProgramAddressSync(
     [
@@ -105,7 +105,7 @@ export function getScoreEscrowAuthAccount(
       playerPublicKey.toBuffer(),
       shipMint.toBuffer(),
     ],
-    programId
+    programId,
   );
 }
 
@@ -120,7 +120,7 @@ export function getScoreEscrowAuthAccount(
 export function getShipStakingAccount(
   programId: web3.PublicKey,
   assetMint: web3.PublicKey,
-  playerPublicKey: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
   return web3.PublicKey.findProgramAddressSync(
     [
@@ -128,7 +128,7 @@ export function getShipStakingAccount(
       playerPublicKey.toBuffer(),
       assetMint.toBuffer(),
     ],
-    programId
+    programId,
   );
 }
 
@@ -140,7 +140,7 @@ export function getShipStakingAccount(
  */
 export async function getScoreVarsInfo(
   connection: web3.Connection,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<ScoreVarsInfo> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getScoreIDL(programId);
@@ -163,7 +163,7 @@ export async function getShipStakingAccountInfo(
   connection: web3.Connection,
   programId: web3.PublicKey,
   shipMint: web3.PublicKey,
-  playerPublicKey: web3.PublicKey
+  playerPublicKey: web3.PublicKey,
 ): Promise<ShipStakingInfo> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getScoreIDL(programId);
@@ -172,7 +172,7 @@ export async function getShipStakingAccountInfo(
   const [shipStakingAccount] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const obj = await program.account.shipStaking.fetch(shipStakingAccount);
   return <ShipStakingInfo>obj;
@@ -188,7 +188,7 @@ export async function getShipStakingAccountInfo(
 export async function decodeEvent(
   connection: web3.Connection,
   programId: web3.PublicKey,
-  event: string
+  event: string,
 ): Promise<any> {
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>scoreLogBaseIdl, programId, provider);
@@ -205,7 +205,7 @@ export async function decodeEvent(
 export async function getScoreVarsShipInfo(
   connection: web3.Connection,
   programId: web3.PublicKey,
-  shipMint: web3.PublicKey
+  shipMint: web3.PublicKey,
 ): Promise<ScoreVarsShipInfo> {
   const provider = new AnchorProvider(connection, null, null);
   const idl = getScoreIDL(programId);
@@ -213,7 +213,7 @@ export async function getScoreVarsShipInfo(
 
   const [scoreVarsShipAccount] = await getScoreVarsShipAccount(
     programId,
-    shipMint
+    shipMint,
   );
   const obj = await program.account.scoreVarsShip.fetch(scoreVarsShipAccount);
   return <ScoreVarsShipInfo>obj;
@@ -225,12 +225,12 @@ export async function getScoreVarsShipInfo(
  * @param programId - Deployed program ID for the SCORE program
  * @returns - [Treasury's Public key, bump seed]
  */
-export function getScoreTreasuryTokenAccount(
-  programId: web3.PublicKey
+export async function getScoreTreasuryTokenAccount(
+  programId: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
   return web3.PublicKey.findProgramAddressSync(
     [Buffer.from('SCORE_TREASURY')],
-    programId
+    programId,
   );
 }
 
@@ -240,12 +240,12 @@ export function getScoreTreasuryTokenAccount(
  * @param programId - Deployed program ID for the SCORE program
  * @returns - [Authority account public key, bump seed]
  */
-export function getScoreTreasuryAuthAccount(
-  programId: web3.PublicKey
+export async function getScoreTreasuryAuthAccount(
+  programId: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
   return web3.PublicKey.findProgramAddressSync(
     [Buffer.from('SCORE_TREASURY_AUTHORITY')],
-    programId
+    programId,
   );
 }
 
@@ -258,7 +258,7 @@ export function getScoreTreasuryAuthAccount(
  */
 export async function getAllRegisteredShips(
   connection: web3.Connection,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<ScoreVarsShipInfo[]> {
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -281,7 +281,7 @@ export async function getAllRegisteredShips(
  */
 export async function getAllFleets(
   connection: web3.Connection,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<ShipStakingInfo[]> {
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -306,7 +306,7 @@ export async function getAllFleets(
 export async function getAllFleetsForUserPublicKey(
   connection: web3.Connection,
   playerPublicKey: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<ShipStakingInfo[]> {
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -319,13 +319,13 @@ export async function getAllFleetsForUserPublicKey(
     const [playerShipStakingAccount] = await getShipStakingAccount(
       programId,
       ship.account.shipMint as web3.PublicKey,
-      playerPublicKey
+      playerPublicKey,
     );
     playerShipStakingAccounts.push(playerShipStakingAccount);
   }
 
   const _playerFleets = await program.account.shipStaking.fetchMultiple(
-    playerShipStakingAccounts
+    playerShipStakingAccounts,
   );
   const playerFleets: ShipStakingInfo[] = _playerFleets
     .filter((fleet) => fleet !== null)
@@ -354,7 +354,7 @@ export async function createScoreVarsInitializeInstruction(
   foodMint: web3.PublicKey,
   armsMint: web3.PublicKey,
   toolkitMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -364,9 +364,8 @@ export async function createScoreVarsInitializeInstruction(
     await getScoreTreasuryTokenAccount(programId);
   const [treasuryAuthorityAccount, treasuryAuthBump] =
     await getScoreTreasuryAuthAccount(programId);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const ix = await program.instruction.processInitialize(
     scoreVarsBump,
@@ -388,7 +387,7 @@ export async function createScoreVarsInitializeInstruction(
         toolkitMint: toolkitMint,
       },
       signers: [],
-    }
+    },
   );
   return ix;
 }
@@ -423,7 +422,7 @@ export async function createRegisterShipInstruction(
   millisecondsToBurnArms: number,
   millisecondsToBurnToolkit: number,
   rewardRatePerSecond: number,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -431,9 +430,8 @@ export async function createRegisterShipInstruction(
 
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const ix = await program.instruction.processRegisterShip(
     scoreVarsBump,
@@ -456,7 +454,7 @@ export async function createRegisterShipInstruction(
         systemProgram: SystemProgram.programId,
       },
       signers: [],
-    }
+    },
   );
   return ix;
 }
@@ -474,7 +472,7 @@ export async function createDeregisterShipInstruction(
   connection: web3.Connection,
   updateAuthorityAccount: web3.PublicKey,
   shipMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -482,9 +480,8 @@ export async function createDeregisterShipInstruction(
 
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const ix = await program.instruction.processDeregisterShip(
     scoreVarsBump,
@@ -497,7 +494,7 @@ export async function createDeregisterShipInstruction(
         shipMint: shipMint,
       },
       signers: [],
-    }
+    },
   );
   return ix;
 }
@@ -516,7 +513,7 @@ export async function createUpdateRewardRateInstruction(
   updateAuthorityAccount: web3.PublicKey,
   shipMint: web3.PublicKey,
   newRewardRatePerSecond: number,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -524,9 +521,8 @@ export async function createUpdateRewardRateInstruction(
 
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const ix = await program.instruction.processUpdateRewardRate(
     scoreVarsBump,
@@ -540,7 +536,7 @@ export async function createUpdateRewardRateInstruction(
         shipMint: shipMint,
       },
       signers: [],
-    }
+    },
   );
   return ix;
 }
@@ -563,30 +559,30 @@ export async function createInitialDepositInstruction(
   shipTokenAccount: web3.PublicKey,
   programId: web3.PublicKey,
   factionEnlistmentProgramId: web3.PublicKey = new web3.PublicKey(
-    'FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe'
-  )
+    'FACTNmq2FhA2QNTnGM2aWJH3i7zT3cND5CgvjYTjyVYe',
+  ),
 ): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     null,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
   const [playerFactionPDA] = await getPlayerFactionPDA(
     playerPublicKey,
-    factionEnlistmentProgramId
+    factionEnlistmentProgramId,
   );
 
   const idl = getScoreIDL(programId);
@@ -613,7 +609,7 @@ export async function createInitialDepositInstruction(
         shipTokenAccountSource: shipTokenAccount,
         shipTokenAccountEscrow: shipEscrow,
       },
-    }
+    },
   );
   return ix;
 }
@@ -634,23 +630,23 @@ export async function createPartialDepositInstruction(
   shipQuantity: number,
   shipMint: web3.PublicKey,
   shipTokenAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     null,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
@@ -677,7 +673,7 @@ export async function createPartialDepositInstruction(
         shipTokenAccountSource: shipTokenAccount,
         shipTokenAccountEscrow: shipEscrow,
       },
-    }
+    },
   );
   return ix;
 }
@@ -702,29 +698,28 @@ export async function createRearmInstruction(
   shipMint: web3.PublicKey,
   armsMint: web3.PublicKey,
   armsTokenAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [armsEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     armsMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -753,7 +748,7 @@ export async function createRearmInstruction(
         armsTokenAccountSource: armsTokenAccount,
         armsTokenAccountEscrow: armsEscrow,
       },
-    }
+    },
   );
 
   return ix;
@@ -779,29 +774,28 @@ export async function createRefeedInstruction(
   shipMint: web3.PublicKey,
   foodMint: web3.PublicKey,
   foodTokenAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [foodEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     foodMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -830,7 +824,7 @@ export async function createRefeedInstruction(
         foodTokenAccountSource: foodTokenAccount,
         foodTokenAccountEscrow: foodEscrow,
       },
-    }
+    },
   );
 
   return ix;
@@ -856,29 +850,28 @@ export async function createRefuelInstruction(
   shipMint: web3.PublicKey,
   fuelMint: web3.PublicKey,
   fuelTokenAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [fuelEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     fuelMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -907,7 +900,7 @@ export async function createRefuelInstruction(
         fuelTokenAccountSource: fuelTokenAccount,
         fuelTokenAccountEscrow: fuelEscrow,
       },
-    }
+    },
   );
 
   return ix;
@@ -933,18 +926,17 @@ export async function createRepairInstruction(
   shipMint: web3.PublicKey,
   toolkitMint: web3.PublicKey,
   toolkitTokenAccount: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -969,7 +961,7 @@ export async function createRepairInstruction(
         toolkitMint: toolkitMint,
         toolkitTokenAccountSource: toolkitTokenAccount,
       },
-    }
+    },
   );
 
   return ix;
@@ -989,18 +981,17 @@ export async function createSettleInstruction(
   playerPublicKey: web3.PublicKey,
   updateAuthorityAccount: web3.PublicKey,
   shipMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -1019,7 +1010,7 @@ export async function createSettleInstruction(
         clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       },
-    }
+    },
   );
   return ix;
 }
@@ -1037,12 +1028,12 @@ export async function createHarvestInstruction(
   playerPublicKey: web3.PublicKey,
   atlasMint: web3.PublicKey,
   shipMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<FactoryReturn> {
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
@@ -1065,7 +1056,7 @@ export async function createHarvestInstruction(
   const response = await getTokenAccount(
     connection,
     playerPublicKey,
-    atlasMint
+    atlasMint,
   );
   const tokenAccount: web3.PublicKey | web3.Keypair = response.tokenAccount;
   if ('createInstruction' in response) {
@@ -1096,7 +1087,7 @@ export async function createHarvestInstruction(
         clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       },
-    }
+    },
   );
   ixSet.instructions.push(ix);
   return ixSet;
@@ -1116,29 +1107,28 @@ export async function createWithdrawFuelInstruction(
   playerPublicKey: web3.PublicKey,
   fuelMint: web3.PublicKey,
   shipMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<FactoryReturn> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [fuelEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     fuelMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -1184,7 +1174,7 @@ export async function createWithdrawFuelInstruction(
         clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       },
-    }
+    },
   );
   ixSet.instructions.push(ix);
   return ixSet;
@@ -1204,29 +1194,28 @@ export async function createWithdrawFoodInstruction(
   playerPublicKey: web3.PublicKey,
   foodMint: web3.PublicKey,
   shipMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<FactoryReturn> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [foodEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     foodMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -1272,7 +1261,7 @@ export async function createWithdrawFoodInstruction(
         clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       },
-    }
+    },
   );
   ixSet.instructions.push(ix);
   return ixSet;
@@ -1292,29 +1281,28 @@ export async function createWithdrawArmsInstruction(
   playerPublicKey: web3.PublicKey,
   armsMint: web3.PublicKey,
   shipMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<FactoryReturn> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [armsEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     armsMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
 
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
@@ -1360,7 +1348,7 @@ export async function createWithdrawArmsInstruction(
         clock: web3.SYSVAR_CLOCK_PUBKEY,
         shipMint: shipMint,
       },
-    }
+    },
   );
   ixSet.instructions.push(ix);
   return ixSet;
@@ -1382,29 +1370,28 @@ export async function createWithdrawShipsInstruction(
   shipMint: web3.PublicKey,
   atlasMint: web3.PublicKey,
   toolkitMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<FactoryReturn> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipEscrow, escrowBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     null,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [scoreVarsShipAccount, scoreVarsShipBump] =
     await getScoreVarsShipAccount(programId, shipMint);
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
   const [treasuryTokenAccount, treasuryBump] =
     await getScoreTreasuryTokenAccount(programId);
   const [treasuryAuthorityAccount, treasuryAuthBump] =
@@ -1424,7 +1411,7 @@ export async function createWithdrawShipsInstruction(
   const atlasResponse = await getTokenAccount(
     connection,
     playerPublicKey,
-    atlasMint
+    atlasMint,
   );
   const potentialAtlasTokenAccount: web3.PublicKey | web3.Keypair =
     atlasResponse.tokenAccount;
@@ -1444,7 +1431,7 @@ export async function createWithdrawShipsInstruction(
   const shipResponse = await getTokenAccount(
     connection,
     playerPublicKey,
-    shipMint
+    shipMint,
   );
   const potentialShipTokenAccount: web3.PublicKey | web3.Keypair =
     shipResponse.tokenAccount;
@@ -1464,7 +1451,7 @@ export async function createWithdrawShipsInstruction(
   const response = await getTokenAccount(
     connection,
     playerPublicKey,
-    toolkitMint
+    toolkitMint,
   );
   const potentialToolkitTokenAccount: web3.PublicKey | web3.Keypair =
     response.tokenAccount;
@@ -1506,7 +1493,7 @@ export async function createWithdrawShipsInstruction(
         shipMint: shipMint,
         toolkitMint: toolkitMint,
       },
-    }
+    },
   );
   ixSet.instructions.push(ix);
   return ixSet;
@@ -1530,44 +1517,43 @@ export async function closeAccountsInstruction(
   fuelMint: web3.PublicKey,
   foodMint: web3.PublicKey,
   armsMint: web3.PublicKey,
-  programId: web3.PublicKey
+  programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
   const [escrowAuthority, escrowAuthBump] = await getScoreEscrowAuthAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [shipEscrow, shipBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     null,
-    playerPublicKey
+    playerPublicKey,
   );
   const [fuelEscrow, fuelBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     fuelMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [foodEscrow, foodBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     foodMint,
-    playerPublicKey
+    playerPublicKey,
   );
   const [armsEscrow, armsBump] = await getScoreEscrowAccount(
     programId,
     shipMint,
     armsMint,
-    playerPublicKey
+    playerPublicKey,
   );
-  const [scoreVarsAccount, scoreVarsBump] = await getScoreVarsAccount(
-    programId
-  );
+  const [scoreVarsAccount, scoreVarsBump] =
+    await getScoreVarsAccount(programId);
   const [shipStakingAccount, stakingBump] = await getShipStakingAccount(
     programId,
     shipMint,
-    playerPublicKey
+    playerPublicKey,
   );
 
   const idl = getScoreIDL(programId);
@@ -1599,7 +1585,7 @@ export async function closeAccountsInstruction(
         armsMint: armsMint,
         clock: web3.SYSVAR_CLOCK_PUBKEY,
       },
-    }
+    },
   );
   return ix;
 }

@@ -1,11 +1,4 @@
-import {
-  AnchorProvider,
-  BorshAccountsCoder,
-  BorshEventCoder,
-  BorshInstructionCoder,
-  Idl,
-  Program,
-} from '@project-serum/anchor';
+import { AnchorProvider, BorshCoder, Idl, Program } from '@coral-xyz/anchor';
 import { Commitment, Connection, PublicKey } from '@solana/web3.js';
 
 import { Order, OrderSide } from '../models';
@@ -41,7 +34,7 @@ export class GmEventService {
   protected onEvent: (
     eventType: GmEventType,
     order: Order,
-    slotContext: number
+    slotContext: number,
   ) => void;
   protected eventListeners: number[] = [];
 
@@ -50,7 +43,7 @@ export class GmEventService {
   constructor(
     connection: Connection,
     programId: PublicKey,
-    commitment?: Commitment
+    commitment?: Commitment,
   ) {
     this.connection = connection;
     this.programId = programId;
@@ -70,37 +63,34 @@ export class GmEventService {
       commitment: this.commitment,
     });
 
-    this.program = new Program(this.idl, this.programId, this.provider, {
-      instruction: new BorshInstructionCoder(this.idl),
-      accounts: new BorshAccountsCoder(this.idl),
-      state: null,
-      events: new BorshEventCoder(this.idl),
-    });
+    const coder = new BorshCoder(this.idl);
+
+    this.program = new Program(this.idl, this.programId, this.provider, coder);
 
     await this.setCurrencyInfo();
 
     const createId = this.program.addEventListener(
       GmLogs.InitializeMemo,
-      this.handleOrderCreated
+      this.handleOrderCreated,
     );
     const exchangeId = this.program.addEventListener(
       GmLogs.ExchangeMemo,
-      this.handleOrderExchanged
+      this.handleOrderExchanged,
     );
     const cancelId = this.program.addEventListener(
       GmLogs.CancelOrderMemo,
-      this.handleOrderCanceled
+      this.handleOrderCanceled,
     );
     const registerCurrencyId = this.program.addEventListener(
       GmLogs.RegisterCurrencyMemo,
-      this.handleCurrencyRegistered
+      this.handleCurrencyRegistered,
     );
 
     this.eventListeners.push(
       createId,
       exchangeId,
       cancelId,
-      registerCurrencyId
+      registerCurrencyId,
     );
   }
 
@@ -115,7 +105,11 @@ export class GmEventService {
   }
 
   setEventHandler(
-    handler: (eventType: GmEventType, order: Order, slotContext: number) => void
+    handler: (
+      eventType: GmEventType,
+      order: Order,
+      slotContext: number,
+    ) => void,
   ): void {
     this.onEvent = handler;
     for (const event of this.queuedEvents) {
@@ -130,7 +124,7 @@ export class GmEventService {
       await gmClientService.getRegisteredCurrencies(
         this.connection,
         this.programId,
-        true
+        true,
       );
 
     for (const info of registeredCurrencyInfo) {
@@ -140,7 +134,7 @@ export class GmEventService {
 
   protected getParsedOrderFromEvent(
     event: GmLogEvent,
-    slotContext: number
+    slotContext: number,
   ): Order | null {
     const currencyInfo =
       this.registeredCurrencyInfo[event.currencyMint.toString()];
@@ -171,7 +165,7 @@ export class GmEventService {
     this.processEvent(
       GmEventType.orderAdded,
       this.getParsedOrderFromEvent(event, slotContext),
-      slotContext
+      slotContext,
     );
   }
 
@@ -179,7 +173,7 @@ export class GmEventService {
     this.processEvent(
       GmEventType.orderModified,
       this.getParsedOrderFromEvent(event, slotContext),
-      slotContext
+      slotContext,
     );
   }
 
@@ -187,7 +181,7 @@ export class GmEventService {
     this.processEvent(
       GmEventType.orderRemoved,
       this.getParsedOrderFromEvent(event, slotContext),
-      slotContext
+      slotContext,
     );
   }
 
@@ -201,7 +195,7 @@ export class GmEventService {
   protected processEvent(
     eventType: GmEventType,
     order: Order,
-    slotContext: number
+    slotContext: number,
   ): void {
     if (!this.onEvent) {
       this.queuedEvents.push({

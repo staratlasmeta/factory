@@ -1,4 +1,4 @@
-import { BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@coral-xyz/anchor';
 import type { AnchorTypes } from '../../anchor/types';
 
 export interface MarketVarsInfo {
@@ -34,6 +34,11 @@ export type RoyaltyTier = {
 };
 
 export type RoyaltyTiers = [RoyaltyTier];
+
+export interface FeeExemptItem {
+  publicKey: web3.PublicKey;
+  account: FeeExemptInfo;
+}
 
 export enum GmLogs {
   CancelOrderMemo = 'CancelOrderMemo',

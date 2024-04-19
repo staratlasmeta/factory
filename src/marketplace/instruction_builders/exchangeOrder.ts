@@ -1,4 +1,4 @@
-import { BN, web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@coral-xyz/anchor';
 import { PublicKey } from '@solana/web3.js';
 import { getMarketplaceProgram } from '../utils';
 import { getFeeExemptAccount, getOrderVault } from '../pda_getters';
@@ -23,6 +23,7 @@ export interface ExchangeOrderParams extends BaseParams {
   stakingProgramId: web3.PublicKey;
   registeredStake: web3.PublicKey;
   stakingAccount: web3.PublicKey;
+  extraAccounts?: web3.AccountMeta[];
 }
 
 /**
@@ -43,6 +44,7 @@ export interface ExchangeOrderParams extends BaseParams {
  * @param stakingProgramId - Deployed program ID for the Staking program
  * @param registeredStake - ATLAS staking `RegisteredStake` account
  * @param stakingAccount - Seller's ATLAS staking account
+ * @param extraAccounts - Extra accounts, used for buddy link
  */
 export async function createExchangeInstruction({
   connection,
@@ -60,6 +62,7 @@ export async function createExchangeInstruction({
   stakingProgramId,
   registeredStake,
   stakingAccount,
+  extraAccounts = [],
 }: ExchangeOrderParams): Promise<FactoryReturn> {
   const program = getMarketplaceProgram({ connection, programId });
   const ixSet: FactoryReturn = {
@@ -87,7 +90,7 @@ export async function createExchangeInstruction({
     connection,
     orderInitializer,
     initializerDepositMint,
-    orderTaker
+    orderTaker,
   );
   if ('createInstruction' in response) {
     ixSet.instructions.push(...response.createInstruction);
@@ -106,7 +109,7 @@ export async function createExchangeInstruction({
     connection,
     orderInitializer,
     initializerReceiveMint,
-    orderTaker
+    orderTaker,
   );
   if ('createInstruction' in response) {
     ixSet.instructions.push(...response.createInstruction);
@@ -124,19 +127,19 @@ export async function createExchangeInstruction({
   const [orderVaultAccount] = await getOrderVault(
     orderInitializer,
     initializerDepositMint,
-    programId
+    programId,
   );
   const [openOrdersCounter] = await getOpenOrdersCounter(
     orderInitializer,
     initializerDepositMint,
-    programId
+    programId,
   );
 
   // Get order taker receive token account
   response = await getTokenAccount(
     connection,
     orderTaker,
-    initializerDepositMint
+    initializerDepositMint,
   );
   if ('createInstruction' in response) {
     ixSet.instructions.push(...response.createInstruction);
@@ -175,6 +178,7 @@ export async function createExchangeInstruction({
       stakingAccount,
       feeReduction,
     })
+    .remainingAccounts(extraAccounts)
     .instruction();
 
   ixSet.instructions.push(exchangeIx);
