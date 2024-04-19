@@ -34,10 +34,10 @@ export function getScoreIDL(programId: web3.PublicKey): unknown {
  * @param programId - Deployed program ID for the SCORE program
  * @returns - [Public key, bump seed]
  */
-export async function getScoreVarsAccount(
+export function getScoreVarsAccount(
   programId: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [Buffer.from('SCOREVARS')],
     programId,
   );
@@ -50,11 +50,11 @@ export async function getScoreVarsAccount(
  * @param shipMint - Ship mint address
  * @returns - [Ship account public key, bump seed]
  */
-export async function getScoreVarsShipAccount(
+export function getScoreVarsShipAccount(
   programId: web3.PublicKey,
   shipMint: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [Buffer.from('SCOREVARS_SHIP'), shipMint.toBuffer()],
     programId,
   );
@@ -69,7 +69,7 @@ export async function getScoreVarsShipAccount(
  * @param playerPublicKey - Player's public key
  * @returns - [Escrow account public key, bump seed]
  */
-export async function getScoreEscrowAccount(
+export function getScoreEscrowAccount(
   programId: web3.PublicKey,
   shipMint: web3.PublicKey,
   resourceMint: web3.PublicKey,
@@ -83,7 +83,7 @@ export async function getScoreEscrowAccount(
   if (resourceMint !== null) {
     seeds.push(resourceMint.toBuffer());
   }
-  return web3.PublicKey.findProgramAddress(seeds, programId);
+  return web3.PublicKey.findProgramAddressSync(seeds, programId);
 }
 
 /**
@@ -94,12 +94,12 @@ export async function getScoreEscrowAccount(
  * @param playerPublicKey - Player's public key
  * @returns - [Authority account public key, bump seed]
  */
-export async function getScoreEscrowAuthAccount(
+export function getScoreEscrowAuthAccount(
   programId: web3.PublicKey,
   shipMint: web3.PublicKey,
   playerPublicKey: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from('SCORE_ESCROW_AUTHORITY'),
       playerPublicKey.toBuffer(),
@@ -117,12 +117,12 @@ export async function getScoreEscrowAuthAccount(
  * @param playerPublicKey - Player's public key
  * @returns - [Staking account public key, bump seed]
  */
-export async function getShipStakingAccount(
+export function getShipStakingAccount(
   programId: web3.PublicKey,
   assetMint: web3.PublicKey,
   playerPublicKey: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [
       Buffer.from('SCORE_INFO'),
       playerPublicKey.toBuffer(),
@@ -225,10 +225,10 @@ export async function getScoreVarsShipInfo(
  * @param programId - Deployed program ID for the SCORE program
  * @returns - [Treasury's Public key, bump seed]
  */
-export async function getScoreTreasuryTokenAccount(
+export function getScoreTreasuryTokenAccount(
   programId: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [Buffer.from('SCORE_TREASURY')],
     programId,
   );
@@ -240,10 +240,10 @@ export async function getScoreTreasuryTokenAccount(
  * @param programId - Deployed program ID for the SCORE program
  * @returns - [Authority account public key, bump seed]
  */
-export async function getScoreTreasuryAuthAccount(
+export function getScoreTreasuryAuthAccount(
   programId: web3.PublicKey,
 ): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+  return web3.PublicKey.findProgramAddressSync(
     [Buffer.from('SCORE_TREASURY_AUTHORITY')],
     programId,
   );
