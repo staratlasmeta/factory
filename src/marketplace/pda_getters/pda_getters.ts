@@ -11,7 +11,7 @@ import { getGmIDL } from './../utils/getMarketplaceProgram';
  */
 export function getMarketVarsAccount(
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync([Seeds.MARKET_VARS_SEED], programId);
 }
 
@@ -24,7 +24,7 @@ export function getOrderVault(
   orderInitializer: PublicKey,
   tokenMint: PublicKey,
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [Seeds.ORDER_VAULT_SEED, orderInitializer.toBuffer(), tokenMint.toBuffer()],
     programId,
@@ -40,7 +40,7 @@ export function getOrderVault(
 export function getOrderVaultAuth(
   playerPubkey: PublicKey,
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [Seeds.ORDER_VAULT_AUTH_SEED, playerPubkey.toBuffer()],
     programId,
@@ -56,7 +56,7 @@ export function getOrderVaultAuth(
 export function getRegisteredCurrencyAccount(
   programId: PublicKey,
   currencyMint: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [Seeds.REGISTERED_CURRENCY_SEED, currencyMint.toBuffer()],
     programId,
@@ -96,7 +96,7 @@ export function getOpenOrdersCounter(
   playerPubkey: PublicKey,
   depositMint: PublicKey,
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [
       Seeds.OPEN_ORDERS_COUNTER,
@@ -110,7 +110,7 @@ export function getOpenOrdersCounter(
 export function getFeeExemptAccount(
   targetAccount: PublicKey,
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [Seeds.FEE_EXEMPT_SEED, targetAccount.toBuffer()],
     programId,

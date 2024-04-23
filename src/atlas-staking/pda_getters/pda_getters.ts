@@ -19,7 +19,7 @@ export function getRegisteredStake(
   authority: PublicKey,
   stakeToken: PublicKey,
   rewardToken: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [
       REGISTERED_STAKE,
@@ -38,7 +38,7 @@ export function getStakingAccount(
   programId: PublicKey,
   user: PublicKey,
   registeredStake: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [STAKING_ACCOUNT, user.toBuffer(), registeredStake.toBuffer()],
     programId,
@@ -76,7 +76,7 @@ export async function getStakingAccountsForRegisteredStake(
  */
 export function getStakingVarsAccount(
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync([STAKING_VARS], programId);
 }
 
@@ -87,7 +87,7 @@ export function getTokenEscrow(
   programId: PublicKey,
   user: PublicKey,
   registeredStake: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [STAKING_ESCROW, user.toBuffer(), registeredStake.toBuffer()],
     programId,
@@ -100,7 +100,7 @@ export function getTokenEscrow(
 export function getRewardAuth(
   programId: PublicKey,
   registeredStake: PublicKey,
-): Promise<[PublicKey, number]> {
+): [PublicKey, number] {
   return PublicKey.findProgramAddressSync(
     [REWARD_AUTH, registeredStake.toBuffer()],
     programId,
