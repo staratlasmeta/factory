@@ -11,7 +11,7 @@ jobs:
       matrix:
         node-version: [ 20.12.0 ]
     steps:
-      - uses: oleksiyrudenko/gha-git-credentials@v2-latest
+      - uses: oleksiyrudenko/gha-git-credentials@v2.1.2
         with:
           global: true
           name: 'Github CI'
