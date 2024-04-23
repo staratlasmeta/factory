@@ -28,7 +28,7 @@ export async function getMarketVarsAccountInfo(
     programId: programId,
   });
 
-  const [marketVarsAccount] =  getMarketVarsAccount(programId);
+  const [marketVarsAccount] = getMarketVarsAccount(programId);
   const marketVarsInfo =
     await program.account.marketVars.fetch(marketVarsAccount);
   return marketVarsInfo as MarketVarsAccountInfo;
@@ -44,10 +44,7 @@ export async function getFeeExemptAccountInfo(
     programId: programId,
   });
 
-  const [feeExemptAccount] =  getFeeExemptAccount(
-    targetAccount,
-    programId,
-  );
+  const [feeExemptAccount] = getFeeExemptAccount(targetAccount, programId);
   const feeExemptInfo = await program.account.feeExempt.fetch(feeExemptAccount);
   return feeExemptInfo as FeeExemptInfo;
 }
@@ -69,7 +66,7 @@ export async function getRegisteredCurrencyAccountInfo(
     programId: programId,
   });
 
-  const [registeredCurrencyAccount] =  getRegisteredCurrencyAccount(
+  const [registeredCurrencyAccount] = getRegisteredCurrencyAccount(
     programId,
     currencyMint,
   );
@@ -119,7 +116,7 @@ export async function getRoyaltyReductionForUserAndMint(
   );
 
   // Find user's staking account
-  const [stakingAccount] =  getStakingAccount(
+  const [stakingAccount] = getStakingAccount(
     stakingProgramId,
     playerPubkey,
     registeredStake,

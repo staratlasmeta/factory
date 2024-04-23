@@ -44,7 +44,7 @@ export async function createATokenAccount(
   payer = payer || provider.wallet.publicKey;
   owner = owner || provider.wallet.publicKey;
 
-  const [associatedTokenAccount] =  getAtaForMint(mint, owner);
+  const [associatedTokenAccount] = getAtaForMint(mint, owner);
   const tx = new web3.Transaction();
   const ix = await createAssociatedTokenAccountInstruction(
     associatedTokenAccount,

@@ -73,7 +73,7 @@ export async function createInitializeBuyOrderInstruction({
     initializerReceiveTokenAccount = tokenAccount;
   }
   // Derive the open orders counter, initializing if necessary
-  const [counterAddress] =  getOpenOrdersCounter(
+  const [counterAddress] = getOpenOrdersCounter(
     initializerMainAccount,
     depositMint,
     programId,
@@ -174,7 +174,7 @@ export async function createInitializeSellOrderInstruction({
   }
 
   // Derive the open orders counter, initializing if necessary
-  const [counterAddress] =  getOpenOrdersCounter(
+  const [counterAddress] = getOpenOrdersCounter(
     initializerMainAccount,
     depositMint,
     programId,
