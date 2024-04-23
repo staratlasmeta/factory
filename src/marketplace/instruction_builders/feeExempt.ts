@@ -34,11 +34,11 @@ export async function createAddFeeExemptionInstruction({
   };
 
   const FEE_EXEMPTION = 1_000_000;
-  const [feeExemptAccount] = await getFeeExemptAccount(
+  const [feeExemptAccount] =  getFeeExemptAccount(
     feeExemptTarget,
     programId,
   );
-  const [marketVarsAccount] = await getMarketVarsAccount(programId);
+  const [marketVarsAccount] =  getMarketVarsAccount(programId);
   const instruction = [
     await program.methods
       .addFeeExemption(new BN(FEE_EXEMPTION))
@@ -77,11 +77,11 @@ export async function createRemoveFeeExemptionInstruction({
     instructions: [],
   };
 
-  const [feeExemptAccount] = await getFeeExemptAccount(
+  const [feeExemptAccount] =  getFeeExemptAccount(
     feeExemptTarget,
     programId,
   );
-  const [marketVarsAccount] = await getMarketVarsAccount(programId);
+  const [marketVarsAccount] =  getMarketVarsAccount(programId);
   const instruction = [
     await program.methods
       .removeFeeExemption()

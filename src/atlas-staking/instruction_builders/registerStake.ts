@@ -36,7 +36,7 @@ export async function registerStakeInstruction({
     signers: [],
   };
 
-  const [registeredStake] = await getRegisteredStake(
+  const [registeredStake] =  getRegisteredStake(
     programId,
     authority,
     stakeMint,

@@ -58,7 +58,7 @@ export async function getStakingVarsAccountInfo(
     programId: programId,
   });
 
-  const [stakingVarsAccount] = await getStakingVarsAccount(programId);
+  const [stakingVarsAccount] =  getStakingVarsAccount(programId);
   const stakingVarsInfo =
     await program.account.stakingVars.fetch(stakingVarsAccount);
   return stakingVarsInfo as StakingVarsAccountInfo;

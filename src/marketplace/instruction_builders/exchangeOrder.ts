@@ -124,12 +124,12 @@ export async function createExchangeInstruction({
     initializerReceiveTokenAccount = response.tokenAccount;
   }
 
-  const [orderVaultAccount] = await getOrderVault(
+  const [orderVaultAccount] =  getOrderVault(
     orderInitializer,
     initializerDepositMint,
     programId,
   );
-  const [openOrdersCounter] = await getOpenOrdersCounter(
+  const [openOrdersCounter] =  getOpenOrdersCounter(
     orderInitializer,
     initializerDepositMint,
     programId,
@@ -156,7 +156,7 @@ export async function createExchangeInstruction({
 
   const seller = orderType === OrderSide.Buy ? orderTaker : orderInitializer;
 
-  const [feeReduction] = await getFeeExemptAccount(seller, programId);
+  const [feeReduction] =  getFeeExemptAccount(seller, programId);
 
   const exchangeIx = await program.methods
     .processExchange(new BN(purchaseQty), expectedPrice, seller)
