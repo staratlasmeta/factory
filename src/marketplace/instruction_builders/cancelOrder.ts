@@ -70,7 +70,7 @@ export async function createCancelOrderInstruction({
   }
 
   // Derive the open orders counter, initializing if necessary
-  const [counterAddress] = await getOpenOrdersCounter(
+  const [counterAddress] = getOpenOrdersCounter(
     orderInitializer,
     depositMint,
     programId,

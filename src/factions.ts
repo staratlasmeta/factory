@@ -185,11 +185,11 @@ export function getIDL(programId: web3.PublicKey): unknown {
   return _tmp;
 }
 
-export async function getPlayerFactionPDA(
+export function getPlayerFactionPDA(
   playerPublicKey: web3.PublicKey,
   programId: web3.PublicKey,
-): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+): [web3.PublicKey, number] {
+  return web3.PublicKey.findProgramAddressSync(
     [Buffer.from(FACTION_PREFIX, 'utf8'), playerPublicKey.toBuffer()],
     programId,
   );
@@ -204,7 +204,7 @@ export async function enlistToFaction(
   playerPublicKey: web3.PublicKey,
   programId: web3.PublicKey,
 ): Promise<web3.TransactionInstruction> {
-  const [playerFactionPda, bump] = await getPlayerFactionPDA(
+  const [playerFactionPda, bump] = getPlayerFactionPDA(
     playerPublicKey,
     programId,
   );
@@ -241,10 +241,7 @@ export async function getPlayer(
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const [playerFactionPDA] = await getPlayerFactionPDA(
-    playerPublicKey,
-    programId,
-  );
+  const [playerFactionPDA] = getPlayerFactionPDA(playerPublicKey, programId);
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
   return obj as PlayerFaction;
 }
