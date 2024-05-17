@@ -653,7 +653,6 @@ export async function createPartialDepositInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = getScoreVarsShipAccount(
     programId,
     shipMint,
-    playerPublicKey,
   );
 
   const idl = getScoreIDL(programId);
@@ -944,7 +943,6 @@ export async function createRepairInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = getScoreVarsShipAccount(
     programId,
     shipMint,
-    playerPublicKey,
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
@@ -1001,7 +999,6 @@ export async function createSettleInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = getScoreVarsShipAccount(
     programId,
     shipMint,
-    playerPublicKey,
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
@@ -1142,7 +1139,6 @@ export async function createWithdrawFuelInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = getScoreVarsShipAccount(
     programId,
     shipMint,
-    playerPublicKey,
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
