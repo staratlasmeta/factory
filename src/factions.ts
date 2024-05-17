@@ -241,7 +241,8 @@ export async function getPlayer(
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const [playerFactionPDA] = getPlayerFactionPDA(playerPublicKey, programId);
+  const [playerFactionPDA] = getPlayerFactionPDA(playerPublicKey, programId,
+  );
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
   return obj as PlayerFaction;
 }

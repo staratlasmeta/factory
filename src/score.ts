@@ -211,7 +211,8 @@ export async function getScoreVarsShipInfo(
   const idl = getScoreIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const [scoreVarsShipAccount] = getScoreVarsShipAccount(programId, shipMint);
+  const [scoreVarsShipAccount] = getScoreVarsShipAccount(programId, shipMint,
+  );
   const obj = await program.account.scoreVarsShip.fetch(scoreVarsShipAccount);
   return <ScoreVarsShipInfo>obj;
 }
@@ -652,6 +653,7 @@ export async function createPartialDepositInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = getScoreVarsShipAccount(
     programId,
     shipMint,
+    playerPublicKey,
   );
 
   const idl = getScoreIDL(programId);
@@ -942,6 +944,7 @@ export async function createRepairInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = getScoreVarsShipAccount(
     programId,
     shipMint,
+    playerPublicKey,
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
@@ -998,6 +1001,7 @@ export async function createSettleInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = getScoreVarsShipAccount(
     programId,
     shipMint,
+    playerPublicKey,
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
@@ -1138,6 +1142,7 @@ export async function createWithdrawFuelInstruction(
   const [scoreVarsShipAccount, scoreVarsShipBump] = getScoreVarsShipAccount(
     programId,
     shipMint,
+    playerPublicKey,
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 

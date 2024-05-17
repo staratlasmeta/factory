@@ -1,6 +1,6 @@
 {
     "name": "@staratlas/factory",
-    "version": "0.6.0",
+    "version": "0.7.0",
     "description": "Star Atlas Factory for constructing Transactions targeting Solana on-chain programs",
     "repository": {
         "type": "git",
@@ -36,6 +36,8 @@
         "mobx-utils": "^6.0.8"
     },
     "devDependencies": {
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
         "@semantic-release/changelog": "^6.0.3",
         "@semantic-release/git": "^10.0.1",
         "@types/big.js": "^6.2.2",

@@ -44,7 +44,8 @@ export async function getFeeExemptAccountInfo(
     programId: programId,
   });
 
-  const [feeExemptAccount] = getFeeExemptAccount(targetAccount, programId);
+  const [feeExemptAccount] = getFeeExemptAccount(targetAccount, programId,
+  );
   const feeExemptInfo = await program.account.feeExempt.fetch(feeExemptAccount);
   return feeExemptInfo as FeeExemptInfo;
 }
