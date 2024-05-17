@@ -433,7 +433,7 @@ export class GmClientService {
       (curr) => curr.mint === order.currencyMint,
     );
 
-    const [stakingAccount] = await getStakingAccount(
+    const [stakingAccount] = getStakingAccount(
       stakingProgramId,
       seller,
       registeredStake,

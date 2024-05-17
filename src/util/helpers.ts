@@ -88,11 +88,11 @@ export async function convertFactionStringToNum(
  * @param mint - the mint
  * @returns a promise of the associated token address
  */
-export async function getAssociatedTokenAddress(
+export function getAssociatedTokenAddress(
   owner: PublicKey,
   mint: PublicKey,
-): Promise<PublicKey> {
-  const [address] = await PublicKey.findProgramAddress(
+): PublicKey {
+  const [address] = PublicKey.findProgramAddressSync(
     [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
     ASSOCIATED_TOKEN_PROGRAM_ID,
   );

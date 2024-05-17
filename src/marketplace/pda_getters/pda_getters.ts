@@ -9,10 +9,10 @@ import { getGmIDL } from './../utils/getMarketplaceProgram';
  *
  * @param programId - Deployed program ID for Galactic Marketplace
  */
-export async function getMarketVarsAccount(
+export function getMarketVarsAccount(
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress([Seeds.MARKET_VARS_SEED], programId);
+): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync([Seeds.MARKET_VARS_SEED], programId);
 }
 
 /**
@@ -20,12 +20,12 @@ export async function getMarketVarsAccount(
  *
  * @param programId - Deployed program ID for Galactic Marketplace
  */
-export async function getOrderVault(
+export function getOrderVault(
   orderInitializer: PublicKey,
   tokenMint: PublicKey,
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
     [Seeds.ORDER_VAULT_SEED, orderInitializer.toBuffer(), tokenMint.toBuffer()],
     programId,
   );
@@ -37,11 +37,11 @@ export async function getOrderVault(
  * @param playerPubkey - Pubkey of order initializer
  * @param programId - Deployed program ID for Galactic Marketplace
  */
-export async function getOrderVaultAuth(
+export function getOrderVaultAuth(
   playerPubkey: PublicKey,
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
     [Seeds.ORDER_VAULT_AUTH_SEED, playerPubkey.toBuffer()],
     programId,
   );
@@ -53,11 +53,11 @@ export async function getOrderVaultAuth(
  * @param programId - Deployed program ID for Galactic Marketplace
  * @param currencyMint - Mint address for registered currency
  */
-export async function getRegisteredCurrencyAccount(
+export function getRegisteredCurrencyAccount(
   programId: PublicKey,
   currencyMint: PublicKey,
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
     [Seeds.REGISTERED_CURRENCY_SEED, currencyMint.toBuffer()],
     programId,
   );
@@ -92,12 +92,12 @@ export async function getAllRegisteredCurrencies(
   return currencyInfo as RegisteredCurrencyItem[];
 }
 
-export async function getOpenOrdersCounter(
+export function getOpenOrdersCounter(
   playerPubkey: PublicKey,
   depositMint: PublicKey,
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
     [
       Seeds.OPEN_ORDERS_COUNTER,
       playerPubkey.toBuffer(),
@@ -107,11 +107,11 @@ export async function getOpenOrdersCounter(
   );
 }
 
-export async function getFeeExemptAccount(
+export function getFeeExemptAccount(
   targetAccount: PublicKey,
   programId: PublicKey,
-): Promise<[PublicKey, number]> {
-  return PublicKey.findProgramAddress(
+): [PublicKey, number] {
+  return PublicKey.findProgramAddressSync(
     [Seeds.FEE_EXEMPT_SEED, targetAccount.toBuffer()],
     programId,
   );

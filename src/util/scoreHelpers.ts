@@ -17,11 +17,11 @@ import { AccountMeta } from '@solana/web3.js';
  * @param mint - Asset mint
  * @param buyer
  */
-export async function getAtaForMint(
+export function getAtaForMint(
   mint: web3.PublicKey,
   buyer: web3.PublicKey,
-): Promise<[web3.PublicKey, number]> {
-  return web3.PublicKey.findProgramAddress(
+): [web3.PublicKey, number] {
+  return web3.PublicKey.findProgramAddressSync(
     [buyer.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
     ASSOCIATED_TOKEN_PROGRAM_ID,
   );
@@ -44,7 +44,7 @@ export async function createATokenAccount(
   payer = payer || provider.wallet.publicKey;
   owner = owner || provider.wallet.publicKey;
 
-  const [associatedTokenAccount] = await getAtaForMint(mint, owner);
+  const [associatedTokenAccount] = getAtaForMint(mint, owner);
   const tx = new web3.Transaction();
   const ix = await createAssociatedTokenAccountInstruction(
     associatedTokenAccount,

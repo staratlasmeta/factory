@@ -38,6 +38,8 @@
     "devDependencies": {
         "@semantic-release/changelog": "^6.0.3",
         "@semantic-release/git": "^10.0.1",
+        "@semantic-release/changelog": "^6.0.3",
+        "@semantic-release/git": "^10.0.1",
         "@types/big.js": "^6.2.2",
         "@types/bn.js": "^5.1.5",
         "@types/jest": "^29.5.12",
