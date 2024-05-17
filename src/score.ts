@@ -1,12 +1,12 @@
 import { AnchorProvider, BN, Idl, Program, web3 } from '@coral-xyz/anchor';
-import type { AnchorTypes } from './anchor/types';
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { SystemProgram } from '@solana/web3.js';
 import { FactoryReturn, getPlayerFactionPDA } from '.';
-import { baseIdl } from './util/scoreIdl';
-import { scoreLogBaseIdl } from './util/scoreLogIdl';
+import type { AnchorTypes } from './anchor/types';
 import { getTokenAccount } from './util';
 import * as SCORE_TYPES from './util/scoreIdl';
+import { baseIdl } from './util/scoreIdl';
+import { scoreLogBaseIdl } from './util/scoreLogIdl';
 
 export type SCORE_PROGRAM = SCORE_TYPES.Score;
 export type ScoreTypes = AnchorTypes<SCORE_PROGRAM>;
@@ -211,8 +211,7 @@ export async function getScoreVarsShipInfo(
   const idl = getScoreIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const [scoreVarsShipAccount] = getScoreVarsShipAccount(programId, shipMint,
-  );
+  const [scoreVarsShipAccount] = getScoreVarsShipAccount(programId, shipMint);
   const obj = await program.account.scoreVarsShip.fetch(scoreVarsShipAccount);
   return <ScoreVarsShipInfo>obj;
 }
@@ -325,11 +324,9 @@ export async function getAllFleetsForUserPublicKey(
   const _playerFleets = await program.account.shipStaking.fetchMultiple(
     playerShipStakingAccounts,
   );
-  const playerFleets: ShipStakingInfo[] = _playerFleets
+  return _playerFleets
     .filter((fleet) => fleet !== null)
     .map((fleet) => <ShipStakingInfo>fleet);
-
-  return playerFleets;
 }
 
 /**
@@ -364,7 +361,7 @@ export async function createScoreVarsInitializeInstruction(
     getScoreTreasuryAuthAccount(programId);
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
-  const ix = await program.instruction.processInitialize(
+  return await program.instruction.processInitialize(
     scoreVarsBump,
     treasuryBump,
     treasuryAuthBump,
@@ -386,7 +383,6 @@ export async function createScoreVarsInitializeInstruction(
       signers: [],
     },
   );
-  return ix;
 }
 
 /**
@@ -431,7 +427,7 @@ export async function createRegisterShipInstruction(
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
-  const ix = await program.instruction.processRegisterShip(
+  return await program.instruction.processRegisterShip(
     scoreVarsBump,
     scoreVarsShipBump,
     new BN(rewardRatePerSecond),
@@ -454,7 +450,6 @@ export async function createRegisterShipInstruction(
       signers: [],
     },
   );
-  return ix;
 }
 
 /**
@@ -482,7 +477,7 @@ export async function createDeregisterShipInstruction(
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
-  const ix = await program.instruction.processDeregisterShip(
+  return await program.instruction.processDeregisterShip(
     scoreVarsBump,
     scoreVarsShipBump,
     {
@@ -495,7 +490,6 @@ export async function createDeregisterShipInstruction(
       signers: [],
     },
   );
-  return ix;
 }
 
 /**
@@ -524,7 +518,7 @@ export async function createUpdateRewardRateInstruction(
   );
   const [scoreVarsAccount, scoreVarsBump] = getScoreVarsAccount(programId);
 
-  const ix = await program.instruction.processUpdateRewardRate(
+  return await program.instruction.processUpdateRewardRate(
     scoreVarsBump,
     scoreVarsShipBump,
     new BN(newRewardRatePerSecond),
@@ -538,7 +532,6 @@ export async function createUpdateRewardRateInstruction(
       signers: [],
     },
   );
-  return ix;
 }
 
 /**
@@ -550,6 +543,7 @@ export async function createUpdateRewardRateInstruction(
  * @param shipMint - Ship mint address
  * @param shipTokenAccount - Token account for the ship resource being deposited
  * @param programId - Deployed program ID for the SCORE program
+ * @param factionEnlistmentProgramId
  */
 export async function createInitialDepositInstruction(
   connection: web3.Connection,
@@ -590,7 +584,7 @@ export async function createInitialDepositInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const ix = await program.instruction.processInitialDeposit(
+  return await program.instruction.processInitialDeposit(
     stakingBump,
     scoreVarsShipBump,
     escrowAuthBump,
@@ -613,7 +607,6 @@ export async function createInitialDepositInstruction(
       },
     },
   );
-  return ix;
 }
 
 /**
@@ -658,7 +651,7 @@ export async function createPartialDepositInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const ix = await program.instruction.processPartialDeposit(
+  return await program.instruction.processPartialDeposit(
     stakingBump,
     scoreVarsShipBump,
     escrowAuthBump,
@@ -679,7 +672,6 @@ export async function createPartialDepositInstruction(
       },
     },
   );
-  return ix;
 }
 
 /**
@@ -729,7 +721,7 @@ export async function createRearmInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const ix = await program.instruction.processRearm(
+  return await program.instruction.processRearm(
     stakingBump,
     scoreVarsBump,
     scoreVarsShipBump,
@@ -755,8 +747,6 @@ export async function createRearmInstruction(
       },
     },
   );
-
-  return ix;
 }
 
 /**
@@ -806,7 +796,7 @@ export async function createRefeedInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const ix = await program.instruction.processRefeed(
+  return await program.instruction.processRefeed(
     stakingBump,
     scoreVarsBump,
     scoreVarsShipBump,
@@ -832,8 +822,6 @@ export async function createRefeedInstruction(
       },
     },
   );
-
-  return ix;
 }
 
 /**
@@ -883,7 +871,7 @@ export async function createRefuelInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const ix = await program.instruction.processRefuel(
+  return await program.instruction.processRefuel(
     stakingBump,
     scoreVarsBump,
     scoreVarsShipBump,
@@ -909,8 +897,6 @@ export async function createRefuelInstruction(
       },
     },
   );
-
-  return ix;
 }
 
 /**
@@ -949,7 +935,7 @@ export async function createRepairInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const ix = await program.instruction.processRepair(
+  return await program.instruction.processRepair(
     stakingBump,
     scoreVarsBump,
     scoreVarsShipBump,
@@ -971,8 +957,6 @@ export async function createRepairInstruction(
       },
     },
   );
-
-  return ix;
 }
 
 /**
@@ -1005,7 +989,7 @@ export async function createSettleInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const ix = await program.instruction.processSettle(
+  return await program.instruction.processSettle(
     stakingBump,
     scoreVarsBump,
     scoreVarsShipBump,
@@ -1021,7 +1005,6 @@ export async function createSettleInstruction(
       },
     },
   );
-  return ix;
 }
 
 /**
@@ -1573,7 +1556,7 @@ export async function closeAccountsInstruction(
   const idl = getScoreIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const ix = await program.instruction.processCloseAccounts(
+  return await program.instruction.processCloseAccounts(
     stakingBump,
     scoreVarsBump,
     shipBump,
@@ -1601,5 +1584,4 @@ export async function closeAccountsInstruction(
       },
     },
   );
-  return ix;
 }
