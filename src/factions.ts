@@ -212,20 +212,14 @@ export async function enlistToFaction(
   const idl = getIDL(programId);
   const provider = new AnchorProvider(connection, null, null);
   const program = new Program(<Idl>idl, programId, provider);
-  const txInstruction = await program.instruction.processEnlistPlayer(
-    bump,
-    factionID,
-    {
-      accounts: {
-        playerFactionAccount: playerFactionPda,
-        playerAccount: playerPublicKey,
-        systemProgram: web3.SystemProgram.programId,
-        clock: web3.SYSVAR_CLOCK_PUBKEY,
-      },
+  return await program.instruction.processEnlistPlayer(bump, factionID, {
+    accounts: {
+      playerFactionAccount: playerFactionPda,
+      playerAccount: playerPublicKey,
+      systemProgram: web3.SystemProgram.programId,
+      clock: web3.SYSVAR_CLOCK_PUBKEY,
     },
-  );
-
-  return txInstruction;
+  });
 }
 
 /**
@@ -241,8 +235,7 @@ export async function getPlayer(
   const idl = getIDL(programId);
   const program = new Program(<Idl>idl, programId, provider);
 
-  const [playerFactionPDA] = getPlayerFactionPDA(playerPublicKey, programId,
-  );
+  const [playerFactionPDA] = getPlayerFactionPDA(playerPublicKey, programId);
   const obj = await program.account.playerFactionData.fetch(playerFactionPDA);
   return obj as PlayerFaction;
 }
@@ -260,11 +253,7 @@ export async function getAllPlayers(
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
 
-  const players = programAccounts.map(
-    (player) => <PlayerFaction>player.account,
-  );
-
-  return players;
+  return programAccounts.map((player) => <PlayerFaction>player.account);
 }
 
 /**
@@ -281,9 +270,7 @@ export async function getPlayersOfFaction(
   const program = new Program(<Idl>idl, programId, provider);
   const programAccounts = await program.account.playerFactionData.all();
 
-  const filtered = programAccounts
+  return programAccounts
     .map((player) => <PlayerFaction>player.account)
     .filter((player) => player.factionId == factionID);
-
-  return filtered;
 }
