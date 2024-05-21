@@ -4,13 +4,13 @@ import {
   getMarketVarsAccount,
   getRegisteredCurrencyAccount,
 } from './pda_getters';
-import { getMarketplaceProgram } from './../utils/getMarketplaceProgram';
+import { getMarketplaceProgram } from '../utils';
 import {
   FeeExemptInfo,
   MarketVarsAccountInfo,
   RegisteredCurrencyInfo,
   RoyaltyTiers,
-} from '../types/marketplace_accounts';
+} from '../types';
 import { getStakingAccount, getStakingAccountInfo } from '../../atlas-staking';
 
 /**
@@ -44,8 +44,7 @@ export async function getFeeExemptAccountInfo(
     programId: programId,
   });
 
-  const [feeExemptAccount] = getFeeExemptAccount(targetAccount, programId,
-  );
+  const [feeExemptAccount] = getFeeExemptAccount(targetAccount, programId);
   const feeExemptInfo = await program.account.feeExempt.fetch(feeExemptAccount);
   return feeExemptInfo as FeeExemptInfo;
 }
