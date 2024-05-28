@@ -14,6 +14,7 @@ npm i
 
 ## Packages
 
+
 | Package              | Description                                  | Version                                                                                                                    | Docs                                                                                                          |
 |:---------------------|:---------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------|
 | `@staratlas/factory` | TypeScript interface for Star Atlas programs | [![npm](https://img.shields.io/npm/v/@staratlas/factory.svg?color=blue)](https://www.npmjs.com/package/@staratlas/factory) | [![Docs](https://img.shields.io/badge/docs-typedoc-blue)](https://staratlasmeta.github.io/factory/index.html) |
