@@ -258,10 +258,7 @@ export async function confirmTokenBalance(
   expectedQuantity: number,
   confirmClosed?: boolean,
 ) {
-  const tokenData = await provider.connection.getAccountInfo(
-    tokenAccount,
-    'recent',
-  );
+  const tokenData = await provider.connection.getAccountInfo(tokenAccount);
 
   // Confirm account is closed
   if (confirmClosed === true) {
