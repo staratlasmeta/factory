@@ -56,10 +56,7 @@ export class GmClientService {
 
     for (const info of currencyInfo) {
       const { mint, royalty, saVault } = info;
-      const tokenSupplylInformation = await connection.getTokenSupply(
-        mint,
-        'recent',
-      );
+      const tokenSupplylInformation = await connection.getTokenSupply(mint);
 
       const { decimals } = tokenSupplylInformation.value;
 
